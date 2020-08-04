@@ -18,8 +18,8 @@ type MemoryInfo struct {
 	Type string
 	Preemptible bool
 	Amount float64
-    UnitType string
-    Pricing PricingInfo
+	UnitType string
+	Pricing PricingInfo
 }
 
 type ComputeInstance struct {
