@@ -37,7 +37,7 @@ type ComputeInstance struct {
 
 // ExtractResource extracts the resource details from the JSON object
 // and fills the necessary fields.
-func (instance *ComputeInstance) ExtractResource(jsonResource interface{}) {
+func (instance *ComputeInstance) ExtractResource(jsonObject interface{}) {
 }
 
 // CompletePricingInfo fills the pricing information fields.
