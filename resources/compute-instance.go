@@ -1,6 +1,6 @@
 package resources
 
-// PricingInfo structure for storing the information from the billing API
+// PricingInfo stores the information from the billing API.
 type PricingInfo struct {
 	ComponentUnit   string
 	HourlyUnitPrice int64
@@ -8,7 +8,7 @@ type PricingInfo struct {
 	CurrencyUnit    string
 }
 
-// CoreInfo structure for CPU core details
+// CoreInfo stores CPU core details.
 type CoreInfo struct {
 	Type        string
 	Preemptible bool
@@ -16,7 +16,7 @@ type CoreInfo struct {
 	Pricing     PricingInfo
 }
 
-// MemoryInfo structure for memory details
+// MemoryInfo stores memory details.
 type MemoryInfo struct {
 	Type        string
 	Preemptible bool
@@ -25,7 +25,7 @@ type MemoryInfo struct {
 	Pricing     PricingInfo
 }
 
-// ComputeInstance structure for compute instance resource type
+// ComputeInstance stores information about the compute instance resource type.
 type ComputeInstance struct {
 	ID          string
 	Name        string
@@ -35,15 +35,15 @@ type ComputeInstance struct {
 	Cores       *CoreInfo
 }
 
-// ExtractResource method that extracts the resource details from JSON file
+// ExtractResource extracts the resource details from the JSON object
 // and fills the necessary fields.
-func (instance *ComputeInstance) ExtractResource(jsonObject interface{}) {
+func (instance *ComputeInstance) ExtractResource(jsonResource interface{}) {
 }
 
-// CompletePricingInfo method that fills the pricing information fields.
+// CompletePricingInfo fills the pricing information fields.
 func (instance *ComputeInstance) CompletePricingInfo() {
 }
 
-// PrintPricingInfo method that prints the cost estimation in a readable format.
+// PrintPricingInfo prints the cost estimation in a readable format.
 func (instance *ComputeInstance) PrintPricingInfo() {
 }
