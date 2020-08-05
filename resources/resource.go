@@ -6,4 +6,3 @@ type Resouce interface {
 	CompletePricingInfo()
 	PrintPricingInfo()
 }
-
