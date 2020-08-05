@@ -10,6 +10,7 @@ type PricingInfo struct {
 
 // CoreInfo stores CPU core details.
 type CoreInfo struct {
+	Type          string
 	ResourceGroup string
 	UsageType     string
 	Number        int
@@ -18,6 +19,7 @@ type CoreInfo struct {
 
 // MemoryInfo stores memory details.
 type MemoryInfo struct {
+	Type          string
 	ResourceGroup string
 	UsageType     string
 	Amount        float64
