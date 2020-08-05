@@ -7,7 +7,7 @@ import (
 )
 
 // ExtractPlanStruct extracts tfjson.Plan struct from file in provided path
-// and returns the pointer on it if it is possible, otherwise return error.
+// and returns the pointer on it if it is possible, otherwise returns error.
 func ExtractPlanStruct (filePath string) (*tfjson.Plan, error) {
 	f, err := os.Open(filePath)
 	if err != nil {
