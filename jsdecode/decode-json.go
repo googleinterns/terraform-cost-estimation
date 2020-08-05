@@ -1,13 +1,14 @@
 package jsdecode
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	tfjson "github.com/hashicorp/terraform-json"
 )
 
-// ExtractPlanStruct extracts tfjson.Plan struct from file in provided path
-// and returns the pointer on it if it is possible, otherwise return error.
+// Function extracts tfjson.Plan struct from file in provided path and
+// returns the pointer on it if it is possible, otherwise return error.
 func ExtractPlanStruct (filePath string) (*tfjson.Plan, error) {
 	f, err := os.Open(filePath)
 	if err != nil {
@@ -18,8 +19,9 @@ func ExtractPlanStruct (filePath string) (*tfjson.Plan, error) {
 	byteFile, _ := ioutil.ReadAll(f)
 
 	var plan tfjson.Plan
-	if err = plan.UnmarshalJSON(byteFile); err != nil {
-		return nil, err
+	err = plan.UnmarshalJSON(byteFile)
+	if err != nil {
+		return &plan, err
 	}
 	return &plan, nil
 }
