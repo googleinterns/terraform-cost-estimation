@@ -1,4 +1,4 @@
-package tfjs
+package jsdecode
 
 import (
 	"fmt"
