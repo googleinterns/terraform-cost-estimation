@@ -1,9 +1,8 @@
 package resources
 
-//Interface of a general resource (ComputeInstance,...)
+//Resource is the interface of a general resource (ComputeInstance,...).
 type Resouce interface {
-	ExtractResource(jsonObject interface{})
+	ExtractResource(jsonResourceInfo interface{})
 	CompletePricingInfo()
 	PrintPricingInfo()
 }
-
