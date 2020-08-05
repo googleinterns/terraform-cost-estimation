@@ -1,17 +1,17 @@
 #!/bin/bash
+set -e
 
-FILE_PATH=$1
+FILE_PATH="$1"
 
-if [ $# != 1 ]
-then
+if (( $# != 1 )) ; then
 	echo "To call the cost estimation tool use: terraform-cost-estimation path_name"
 	echo "where path_name is the path to the Terraform plan file generated after running 'terraform plan'"
 else
-	if [ -f "$FILE_PATH" ]
-	then
+	if [ -f "$FILE_PATH" ] ; then
 		echo "File found."
 		terraform show -json "$FILE_PATH" > tfplan.json
-		go run ./main/cost-estimation.go tfplan.json
+		go run main.go tfplan.json
+		rm tfplan.json
 	else
 		echo "File does not exist or the path is not correct!"
 	fi
