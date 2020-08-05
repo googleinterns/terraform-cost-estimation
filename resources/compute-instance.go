@@ -10,19 +10,19 @@ type PricingInfo struct {
 
 // CoreInfo stores CPU core details.
 type CoreInfo struct {
-	Type        string
-	Preemptible bool
-	Number      int
-	Pricing     PricingInfo
+	ResourceGroup string
+	UsageType     string
+	Number        int
+	Pricing       PricingInfo
 }
 
 // MemoryInfo stores memory details.
 type MemoryInfo struct {
-	Type        string
-	Preemptible bool
-	Amount      float64
-	UnitType    string
-	Pricing     PricingInfo
+	ResourceGroup string
+	UsageType     string
+	Amount        float64
+	UnitType      string
+	Pricing       PricingInfo
 }
 
 // ComputeInstance stores information about the compute instance resource type.
