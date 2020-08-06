@@ -22,8 +22,7 @@ type MemoryInfo struct {
 	Type          string
 	ResourceGroup string
 	UsageType     string
-	Amount        float64
-	UnitType      string
+	AmountGB      float64
 	Pricing       PricingInfo
 }
 
