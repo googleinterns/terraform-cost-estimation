@@ -1,7 +1,6 @@
 package jsdecode
 
 import (
-	"fmt"
 	resources "github.com/googleinterns/terraform-cost-estimation/resources"
 	tfjson "github.com/hashicorp/terraform-json"
 	"io/ioutil"
