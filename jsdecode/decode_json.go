@@ -56,7 +56,7 @@ func ExtractResource(resource interface{}) *resources.ComputeInstance {
 		ID:          resourceInfo.ID,
 		Name:        resourceInfo.Name,
 		MachineType: resourceInfo.MachineType,
-		Region:      []string{resourceInfo.Zone[:len(resourceInfo.Zone)-2]},
+		Region:      resourceInfo.Zone[:len(resourceInfo.Zone)-2],
 	}
 }
 
