@@ -78,7 +78,7 @@ func GetChange(change *tfjson.Change) *ResourceStates {
 func GetConfiguration(plan *tfjson.Plan) []*ResourceStates {
 	var resources []*ResourceStates
 	for _, resourceChange := range plan.ResourceChanges {
-		if resourceChange.Type == `json:"google_compute_instance,omitempty"` {
+		if resourceChange.Type == "google_compute_instance,omitempty" {
 			if resource := GetChange(resourceChange.Change); resource != nil {
 				resources = append(resources, resource)
 			}
