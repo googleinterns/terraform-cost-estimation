@@ -2,7 +2,7 @@ package resources
 
 // PricingInfo stores the information from the billing API.
 type PricingInfo struct {
-	ComponentUnit   string
+	UsageUnit       string
 	HourlyUnitPrice int64
 	CurrencyType    string
 	CurrencyUnit    string
@@ -14,7 +14,7 @@ type CoreInfo struct {
 	ResourceGroup string
 	UsageType     string
 	Number        int
-	Pricing       PricingInfo
+	UnitPricing   PricingInfo
 }
 
 // MemoryInfo stores memory details.
@@ -23,7 +23,7 @@ type MemoryInfo struct {
 	ResourceGroup string
 	UsageType     string
 	AmountGB      float64
-	Pricing       PricingInfo
+	UnitPricing   PricingInfo
 }
 
 // ComputeInstance stores information about the compute instance resource type.
