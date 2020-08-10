@@ -107,3 +107,8 @@ n2-standard-48
 n2-standard-64
 n2-standard-8
 n2-standard-80
+custom-2-15360-ext
+custom-4-5120
+custom-6-20480
+e2-custom-6-3072
+n2d-custom-2-5120-ext
