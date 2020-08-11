@@ -55,7 +55,7 @@ func TestFitsDescription(t *testing.T) {
 
 func TestFitsCategory(t *testing.T) {
 
-	content, _ := ioutil.ReadFile("skus.json")
+	content, _ := ioutil.ReadFile("testdata/sku.json")
 	var sku billingpb.Sku
 	json.Unmarshal([]byte(content), &sku)
 	fmt.Println(sku)
