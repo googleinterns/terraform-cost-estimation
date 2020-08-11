@@ -7,6 +7,10 @@ import (
 	"os"
 )
 
+// ResourceChangeType is the type of ResourceChange and Resource supported
+// by this package, we consider ComputeInstances only for now.
+const ResourceChangeType = "google_compute_instance"
+
 // ResourceInfo conatains the information about Resource, this struct is
 // used to cast interfaces with before/after states of the certain Resource.
 type ResourceInfo struct {
@@ -44,21 +48,21 @@ func ExtractPlanStruct(filePath string) (*tfjson.Plan, error) {
 
 // ExtractResource extructs ComputeInstance from the interface
 // containing information about resource.
-func ExtractResource(resource interface{}) *resources.ComputeInstance {
-	if resource == nil {
-		return nil
-	}
-	resourceInfo, ok := resource.(*ResourceInfo)
-	if !ok {
-		return nil
-	}
-	return &resources.ComputeInstance{
-		ID:          resourceInfo.ID,
-		Name:        resourceInfo.Name,
-		MachineType: resourceInfo.MachineType,
-		Region:      resourceInfo.Zone[:len(resourceInfo.Zone)-2],
-	}
-}
+// func ExtractResource(resource interface{}) *resources.ComputeInstance {
+// 	if resource == nil {
+// 		return nil
+// 	}
+// 	resourceInfo, ok := resource.(*ResourceInfo)
+// 	if !ok {
+// 		return nil
+// 	}
+// 	return &resources.ComputeInstance{
+// 		ID:          resourceInfo.ID,
+// 		Name:        resourceInfo.Name,
+// 		MachineType: resourceInfo.MachineType,
+// 		Region:      resourceInfo.Zone[:len(resourceInfo.Zone)-2],
+// 	}
+// }
 
 // GetChange returns the pointer to the struct with states of the
 // certain resource of ComputeInstance type.
@@ -78,7 +82,7 @@ func GetChange(change *tfjson.Change) *ResourceStates {
 func GetConfiguration(plan *tfjson.Plan) []*ResourceStates {
 	var resources []*ResourceStates
 	for _, resourceChange := range plan.ResourceChanges {
-		if resourceChange.Type == "google_compute_instance,omitempty" {
+		if ResourceChangeType == resourceChange.Type {
 			if resource := GetChange(resourceChange.Change); resource != nil {
 				resources = append(resources, resource)
 			}
