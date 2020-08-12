@@ -2,6 +2,7 @@ package resources
 
 import (
 	"context"
+	"fmt"
 
 	billing "github.com/googleinterns/terraform-cost-estimation/billing"
 	billingpb "google.golang.org/genproto/googleapis/cloud/billing/v1"
@@ -29,7 +30,7 @@ func (core *CoreInfo) getPricingInfo() PricingInfo {
 }
 
 func (core *CoreInfo) isMatch(sku *billingpb.Sku, region string) bool {
-	cond1 := billing.FitsDescription(sku, []string{core.Type + " ", "Instance Core"}, []string{})
+	cond1 := core.Type != "" && billing.FitsDescription(sku, []string{core.Type + " ", "Instance Core"}, []string{})
 	cond2 := billing.FitsCategory(sku, "Compute Engine", "Compute", core.ResourceGroup, core.UsageType)
 	cond3 := billing.FitsRegion(sku, region)
 	return cond1 && cond2 && cond3
@@ -62,7 +63,7 @@ func (mem *MemoryInfo) getPricingInfo() PricingInfo {
 }
 
 func (mem *MemoryInfo) isMatch(sku *billingpb.Sku, region string) bool {
-	cond1 := billing.FitsDescription(sku, []string{mem.Type + " ", "Instance Ram"}, []string{})
+	cond1 := mem.Type != "" && billing.FitsDescription(sku, []string{mem.Type + " ", "Instance Ram"}, []string{})
 	cond2 := billing.FitsCategory(sku, "Compute Engine", "Compute", mem.ResourceGroup, mem.UsageType)
 	cond3 := billing.FitsRegion(sku, region)
 	return cond1 && cond2 && cond3
@@ -97,9 +98,18 @@ func (instance *ComputeInstance) ExtractResource(jsonObject interface{}) {
 }
 
 // CompletePricingInfo fills the pricing information fields.
-func (instance *ComputeInstance) CompletePricingInfo(ctx context.Context) {
-	instance.Cores.completePricingInfo(ctx, billing.GetSKUs, instance.Region)
-	instance.Memory.completePricingInfo(ctx, billing.GetSKUs, instance.Region)
+func (instance *ComputeInstance) CompletePricingInfo(ctx context.Context) error {
+	err1 := instance.Cores.completePricingInfo(ctx, billing.GetSKUs, instance.Region)
+	err2 := instance.Memory.completePricingInfo(ctx, billing.GetSKUs, instance.Region)
+
+	if err1 != nil {
+		return fmt.Errorf("could not find core pricing information")
+	}
+
+	if err2 != nil {
+		return fmt.Errorf("could not find memory pricing information")
+	}
+	return nil
 }
 
 // PrintPricingInfo prints the cost estimation in a readable format.

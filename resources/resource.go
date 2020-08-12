@@ -10,7 +10,7 @@ import (
 //Resource is the interface of a general resource (ComputeInstance,...).
 type Resource interface {
 	ExtractResource(jsonResourceInfo interface{})
-	CompletePricingInfo(context.Context)
+	CompletePricingInfo(context.Context) error
 	PrintPricingInfo()
 }
 
