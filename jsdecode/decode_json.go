@@ -1,7 +1,7 @@
 package jsdecode
 
 import (
-	"encoding/json"
+	//"encoding/json"
 	"errors"
 	"fmt"
 	resources "github.com/googleinterns/terraform-cost-estimation/resources"
@@ -56,17 +56,17 @@ func ExtractPlanStruct(filePath string) (*tfjson.Plan, error) {
 // complete Unmarshalling function with ResearchInfo in plan.ResourceChanges
 // for every ResourceChange in Change.before/after  instead of interface{}
 func UnmarshalJSON(b []byte) (*tfjson.Plan, error) {
-	var p tfjson.Plan
+// 	var p tfjson.Plan
 
-	type rawPlan tfjson.Plan
-	var plan rawPlan
-	if err := json.Unmarshal(b, &plan); err != nil {
-		return nil, err
-	}
+// 	type rawPlan tfjson.Plan
+// 	var plan rawPlan
+// 	if err := json.Unmarshal(b, &plan); err != nil {
+// 		return nil, err
+// 	}
 
-	// case p != nill ...
-	*p = *(*tfjson.Plan)(&plan)
-	return &p, Validate(&p)
+// 	// case p != nill ...
+// 	return &p, Validate(&p)
+	return nil, nil
 }
 
 // Validate checks to ensure that the plan is present, and the
