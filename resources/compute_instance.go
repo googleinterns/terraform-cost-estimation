@@ -87,8 +87,8 @@ type ComputeInstance struct {
 	Name        string
 	MachineType string
 	Region      string
-	Memory      *MemoryInfo
-	Cores       *CoreInfo
+	Memory      MemoryInfo
+	Cores       CoreInfo
 }
 
 // ExtractResource extracts the resource details from the JSON object
