@@ -62,10 +62,9 @@ func GetPricingInfo(sku *billingpb.Sku) (usageUnit string, hourlyUnitPrice int64
 }
 
 // GetSKUs returns the SKUs from the Compute Engine billing API or an error.
-func GetSKUs() ([]*billingpb.Sku, error) {
+func GetSKUs(ctx context.Context) ([]*billingpb.Sku, error) {
 	var skus []*billingpb.Sku
 
-	ctx := context.Background()
 	c, err := billing.NewCloudCatalogClient(ctx)
 	if err != nil {
 		return nil, err
