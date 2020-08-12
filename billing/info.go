@@ -2,7 +2,6 @@ package billing
 
 import (
 	"context"
-	"fmt"
 	"strings"
 
 	billing "cloud.google.com/go/billing/apiv1"
@@ -35,9 +34,6 @@ func FitsDescription(sku *billingpb.Sku, contains, omits []string) bool {
 func FitsCategory(sku *billingpb.Sku, serviceDisplayName, resourceFamily, resourceGroup, usageType string) bool {
 	c := sku.Category
 	cond1 := c.ServiceDisplayName == serviceDisplayName && c.ResourceFamily == resourceFamily
-	if !cond1 {
-		fmt.Println(c.ServiceDisplayName == serviceDisplayName, c.ServiceDisplayName, resourceFamily)
-	}
 	cond2 := c.ResourceGroup == resourceGroup && c.UsageType == usageType
 	return cond1 && cond2
 }
