@@ -10,10 +10,10 @@ import (
 
 // ComputeIstanceType is the type of ResourceChange and Resource supported
 // by this package, we consider ComputeInstances only for now.
-const ComputeIstanceType = "google_compute_instance"
+const ComputeInstanceType = "google_compute_instance"
 
 // TODO maybe add mem/core info
-// ResourceInfo conatains the information about Resource, this struct is
+// ResourceInfo contains the information about Resource, this struct is
 // used to cast interfaces with before/after states of the certain Resource.
 type ResourceInfo struct {
 	ID          string `json:"id,omitempty"`
@@ -48,8 +48,8 @@ func ExtractPlanStruct(filePath string) (*tfjson.Plan, error) {
 	return &plan, nil
 }
 
-// ExtractResource extructs ComputeInstance from the interface
-// containing information about resource.
+// toComputeInstance extracts ComputeInstance from the interface that
+// contains information about resource.
 func toComputeInstance(resource interface{}) *resources.ComputeInstance {
 	if resource == nil {
 		return nil
