@@ -52,11 +52,11 @@ func FitsRegion(sku *billingpb.Sku, region string) bool {
 
 // GetPricingInfo returns the pricing information of an SKU.
 func GetPricingInfo(sku *billingpb.Sku) (usageUnit string, hourlyUnitPrice int64, currencyType, currencyUnit string) {
-	pExpr := sku.PricingInfo[0].GetPricingExpression()
-	usageUnit = pExpr.GetUsageUnitDescription()
-	unitPrice := pExpr.GetTieredRates()[0].GetUnitPrice()
-	hourlyUnitPrice = int64(unitPrice.GetNanos())
-	currencyType = unitPrice.GetCurrencyCode()
+	pExpr := sku.PricingInfo[0].PricingExpression
+	usageUnit = pExpr.UsageUnitDescription
+	unitPrice := pExpr.TieredRates[0].UnitPrice
+	hourlyUnitPrice = int64(unitPrice.Nanos)
+	currencyType = unitPrice.CurrencyCode
 	currencyUnit = "nano"
 	return
 }
