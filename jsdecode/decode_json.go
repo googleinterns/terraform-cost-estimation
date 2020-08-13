@@ -61,8 +61,8 @@ func ToComputeInstance(resource interface{}) (*resources.ComputeInstance, error)
 	// Region of ComputeInstance is determined as <region>-<zone>, in case if r.Zone
 	// is empty we leave region empty and validate it in another function.
 	var region string
-	if len(r.Zone) >= 2 && r.Zone[len(r.Zone)-1] == '-' {
-		if r.Zone[len(r.Zone)-2] >= 'a' && r.Zone[len(r.Zone)-2] <= 'f' {
+	if len(r.Zone) >= 2 && r.Zone[len(r.Zone)-2] == '-' {
+		if r.Zone[len(r.Zone)-1] >= 'a' && r.Zone[len(r.Zone)-1] <= 'f' {
 			region = r.Zone[:len(r.Zone)-2]
 		}
 	} else {
