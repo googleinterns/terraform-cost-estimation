@@ -229,7 +229,7 @@ var (
 		`
 )
 
-func TesttoComputeInstance(t *testing.T) {
+func TestToComputeInstance(t *testing.T) {
 	var res1, res2, res3, res4 interface{}
 	json.Unmarshal([]byte(str1), &res1)
 	json.Unmarshal([]byte(str2), &res2)
