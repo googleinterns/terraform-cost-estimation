@@ -16,9 +16,39 @@ type PricingInfo struct {
 	CurrencyUnit    string
 }
 
+// Description holds information about additional information the SKU
+// description contains/omits (Preemptible, Custom, Predefined etc.).
+type Description struct {
+	Contains []string
+	Omits    []string
+}
+
+// BuildDescription returns a Description structure based on the description of an SKU.
+func BuildDescription(custom, preemptible, predefined bool) (d Description) {
+	if custom {
+		d.Contains = append(d.Contains, "Custom")
+	} else {
+		d.Omits = append(d.Omits, "Custom")
+	}
+
+	if preemptible {
+		d.Contains = append(d.Contains, "Preemptible")
+	} else {
+		d.Omits = append(d.Omits, "Preemptible")
+	}
+
+	if predefined {
+		d.Contains = append(d.Contains, "Predefined")
+	} else {
+		d.Omits = append(d.Omits, "Predefined")
+	}
+	return
+}
+
 // CoreInfo stores CPU core details.
 type CoreInfo struct {
 	Type          string
+	Description   Description
 	ResourceGroup string
 	UsageType     string
 	Number        int
@@ -30,15 +60,17 @@ func (core *CoreInfo) getPricingInfo() PricingInfo {
 }
 
 func (core *CoreInfo) isMatch(sku *billingpb.Sku, region string) bool {
-	cond1 := core.Type != "" && billing.FitsDescription(sku, []string{core.Type + " ", "Instance Core"}, []string{})
+	if core.Type == "" {
+		return false
+	}
+	cond1 := billing.FitsDescription(sku, append(core.Description.Contains, core.Type+" ", "Instance Core"), core.Description.Omits)
 	cond2 := billing.FitsCategory(sku, "Compute Engine", "Compute", core.ResourceGroup, core.UsageType)
 	cond3 := billing.FitsRegion(sku, region)
 	return cond1 && cond2 && cond3
 }
 
-func (core *CoreInfo) completePricingInfo(ctx context.Context,
-	getSKUs func(context.Context) ([]*billingpb.Sku, error), region string) error {
-	sku, err := getSKU(ctx, core, getSKUs, region)
+func (core *CoreInfo) completePricingInfo(skus []*billingpb.Sku, region string) error {
+	sku, err := getSKU(skus, core, region)
 
 	if err != nil {
 		return err
@@ -52,6 +84,7 @@ func (core *CoreInfo) completePricingInfo(ctx context.Context,
 // MemoryInfo stores memory details.
 type MemoryInfo struct {
 	Type          string
+	Description   Description
 	ResourceGroup string
 	UsageType     string
 	AmountGB      float64
@@ -63,15 +96,17 @@ func (mem *MemoryInfo) getPricingInfo() PricingInfo {
 }
 
 func (mem *MemoryInfo) isMatch(sku *billingpb.Sku, region string) bool {
-	cond1 := mem.Type != "" && billing.FitsDescription(sku, []string{mem.Type + " ", "Instance Ram"}, []string{})
+	if mem.Type == "" {
+		return false
+	}
+	cond1 := billing.FitsDescription(sku, append(mem.Description.Contains, mem.Type+" ", "Instance Ram"), mem.Description.Omits)
 	cond2 := billing.FitsCategory(sku, "Compute Engine", "Compute", mem.ResourceGroup, mem.UsageType)
 	cond3 := billing.FitsRegion(sku, region)
 	return cond1 && cond2 && cond3
 }
 
-func (mem *MemoryInfo) completePricingInfo(ctx context.Context,
-	getSKUs func(context.Context) ([]*billingpb.Sku, error), region string) error {
-	sku, err := getSKU(ctx, mem, getSKUs, region)
+func (mem *MemoryInfo) completePricingInfo(skus []*billingpb.Sku, region string) error {
+	sku, err := getSKU(skus, mem, region)
 
 	if err != nil {
 		return err
@@ -99,13 +134,19 @@ func (instance *ComputeInstance) ExtractResource(jsonObject interface{}) {
 
 // CompletePricingInfo fills the pricing information fields.
 func (instance *ComputeInstance) CompletePricingInfo(ctx context.Context) error {
-	err1 := instance.Cores.completePricingInfo(ctx, billing.GetSKUs, instance.Region)
-	err2 := instance.Memory.completePricingInfo(ctx, billing.GetSKUs, instance.Region)
 
+	skus, err := billing.GetSKUs(ctx)
+
+	if err != nil {
+		return fmt.Errorf("an error occurred while looking for pricing information")
+	}
+
+	err1 := instance.Cores.completePricingInfo(skus, instance.Region)
 	if err1 != nil {
 		return fmt.Errorf("could not find core pricing information")
 	}
 
+	err2 := instance.Memory.completePricingInfo(skus, instance.Region)
 	if err2 != nil {
 		return fmt.Errorf("could not find memory pricing information")
 	}
