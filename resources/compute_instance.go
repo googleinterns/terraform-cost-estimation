@@ -23,6 +23,28 @@ type Description struct {
 	Omits    []string
 }
 
+// BuildDescription returns a Description structure based on the description of an SKU.
+func BuildDescription(custom, preemptible, predefined bool) (d Description) {
+	if custom {
+		d.Contains = append(d.Contains, "Custom")
+	} else {
+		d.Omits = append(d.Omits, "Custom")
+	}
+
+	if preemptible {
+		d.Contains = append(d.Contains, "Preemptible")
+	} else {
+		d.Omits = append(d.Omits, "Preemptible")
+	}
+
+	if predefined {
+		d.Contains = append(d.Contains, "Predefined")
+	} else {
+		d.Omits = append(d.Omits, "Predefined")
+	}
+	return
+}
+
 // CoreInfo stores CPU core details.
 type CoreInfo struct {
 	Type          string
@@ -41,7 +63,7 @@ func (core *CoreInfo) isMatch(sku *billingpb.Sku, region string) bool {
 	if core.Type == "" {
 		return false
 	}
-	cond1 := billing.FitsDescription(sku, append(core.Description.Contains, core.Type+" "), core.Description.Omits)
+	cond1 := billing.FitsDescription(sku, append(core.Description.Contains, core.Type+" ", "Instance Core"), core.Description.Omits)
 	cond2 := billing.FitsCategory(sku, "Compute Engine", "Compute", core.ResourceGroup, core.UsageType)
 	cond3 := billing.FitsRegion(sku, region)
 	return cond1 && cond2 && cond3
@@ -77,7 +99,7 @@ func (mem *MemoryInfo) isMatch(sku *billingpb.Sku, region string) bool {
 	if mem.Type == "" {
 		return false
 	}
-	cond1 := billing.FitsDescription(sku, append(mem.Description.Contains, mem.Type+" "), mem.Description.Omits)
+	cond1 := billing.FitsDescription(sku, append(mem.Description.Contains, mem.Type+" ", "Instance Ram"), mem.Description.Omits)
 	cond2 := billing.FitsCategory(sku, "Compute Engine", "Compute", mem.ResourceGroup, mem.UsageType)
 	cond3 := billing.FitsRegion(sku, region)
 	return cond1 && cond2 && cond3
