@@ -14,7 +14,7 @@ type Resource interface {
 	PrintPricingInfo()
 }
 
-// skuObject is the interface for sku types (core, memory etc.)
+// skuObject is the interface for SKU types (core, memory etc.)
 // that can be looked up in the billing catalog.
 type skuObject interface {
 	isMatch(sku *billingpb.Sku, region string) bool
