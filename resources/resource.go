@@ -18,19 +18,11 @@ type Resource interface {
 // that can be looked up in the billing catalog.
 type skuObject interface {
 	isMatch(sku *billingpb.Sku, region string) bool
-	completePricingInfo(ctx context.Context,
-		getSKUs func(context.Context) ([]*billingpb.Sku, error), region string) error
+	completePricingInfo(skus []*billingpb.Sku, region string) error
 	getPricingInfo() PricingInfo
 }
 
-func getSKU(ctx context.Context, obj skuObject, getSKUs func(context.Context) ([]*billingpb.Sku, error),
-	region string) (*billingpb.Sku, error) {
-	skus, err := getSKUs(ctx)
-
-	if err != nil {
-		return nil, err
-	}
-
+func getSKU(skus []*billingpb.Sku, obj skuObject, region string) (*billingpb.Sku, error) {
 	if skus == nil || len(skus) == 0 {
 		return nil, fmt.Errorf("could not find SKUs")
 	}
