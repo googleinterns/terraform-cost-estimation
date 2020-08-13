@@ -291,7 +291,7 @@ func TestToComputeInstance(t *testing.T) {
 }
 
 func TestGetChange(t *testing.T) {
-	f, err := os.Open("testdata/new-compute-instance/tfplan.json")
+	f, err := os.Open("../testdata/new-compute-instance/tfplan.json")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -329,7 +329,7 @@ func TestGetChange(t *testing.T) {
 
 // TODO add test without "google_compute_instance".
 func TestGetResources(t *testing.T) {
-	f, err := os.Open("testdata/modified-compute-instance/tfplan.json")
+	f, err := os.Open("../testdata/modified-compute-instance/tfplan.json")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -341,7 +341,7 @@ func TestGetResources(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	expected := [1]*ResourceStates{
+	expected := []*ResourceStates{
 		&ResourceStates{
 			Before: &resources.ComputeInstance{
 				ID:          "test",
