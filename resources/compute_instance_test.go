@@ -218,7 +218,7 @@ var (
 	mem1  = MemoryInfo{"N2", Description{[]string{"Preemptible", "Custom"}, []string{}}, "RAM", "Preemptible", 100, PricingInfo{}}
 	mem2  = MemoryInfo{"N1", Description{[]string{}, []string{"Preemptible", "Custom"}}, "N1Standard", "OnDemand", 150, PricingInfo{}}
 
-	badCore = CoreInfo{"N2", Description{[]string{}, []string{}}, "CPU", "OnDemand", 8, PricingInfo{}}
+	badCore = CoreInfo{"N2", Description{[]string{}, []string{"Preemptible", "Custom", "Predefiend"}}, "CPU", "OnDemand", 8, PricingInfo{}}
 )
 
 func fakeGetSKUs() []*billingpb.Sku {
