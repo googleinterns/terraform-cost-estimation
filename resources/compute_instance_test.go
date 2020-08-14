@@ -1,7 +1,6 @@
 package resources
 
 import (
-	"context"
 	"fmt"
 	"testing"
 
@@ -214,15 +213,15 @@ var (
 	}
 	`
 
-	core1 = CoreInfo{"N2", "CPU", "Preemptible", 4, PricingInfo{}}
-	core2 = CoreInfo{"E2", "CPU", "OnDemand", 8, PricingInfo{}}
-	mem1  = MemoryInfo{"N2", "RAM", "Preemptible", 100, PricingInfo{}}
-	mem2  = MemoryInfo{"N1", "N1Standard", "OnDemand", 150, PricingInfo{}}
+	core1 = CoreInfo{"N2", Description{[]string{"Preemptible"}, []string{"Custom"}}, "CPU", "Preemptible", 4, PricingInfo{}}
+	core2 = CoreInfo{"E2", Description{[]string{"Custom"}, []string{"Preemptible"}}, "CPU", "OnDemand", 8, PricingInfo{}}
+	mem1  = MemoryInfo{"N2", Description{[]string{"Preemptible", "Custom"}, []string{}}, "RAM", "Preemptible", 100, PricingInfo{}}
+	mem2  = MemoryInfo{"N1", Description{[]string{}, []string{"Preemptible", "Custom"}}, "N1Standard", "OnDemand", 150, PricingInfo{}}
 
-	badCore = CoreInfo{"N2", "CPU", "OnDemand", 8, PricingInfo{}}
+	badCore = CoreInfo{"N2", Description{[]string{}, []string{"Preemptible", "Custom", "Predefiend"}}, "CPU", "OnDemand", 8, PricingInfo{}}
 )
 
-func fakeGetSKUs(context.Context) ([]*billingpb.Sku, error) {
+func fakeGetSKUs() []*billingpb.Sku {
 	sku1 := new(billingpb.Sku)
 	sku2 := new(billingpb.Sku)
 	sku3 := new(billingpb.Sku)
@@ -235,7 +234,7 @@ func fakeGetSKUs(context.Context) ([]*billingpb.Sku, error) {
 	jsonpb.UnmarshalString(str4, sku4)
 	jsonpb.UnmarshalString(str5, sku5)
 
-	return []*billingpb.Sku{sku1, sku2, sku3, sku4, sku5}, nil
+	return []*billingpb.Sku{sku1, sku2, sku3, sku4, sku5}
 }
 
 func TestIsMatch(t *testing.T) {
@@ -295,13 +294,13 @@ func TestCompletePricingInfo(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		err := test.skuObj.completePricingInfo(context.Background(), fakeGetSKUs, test.region)
+		err := test.skuObj.completePricingInfo(fakeGetSKUs(), test.region)
 		fail1 := (err == nil && test.err != nil) || (err != nil && test.err == nil)
 		fail2 := err != nil && test.err != nil && err.Error() != test.err.Error()
 		fail3 := test.pricing != test.skuObj.getPricingInfo()
 
 		if fail1 || fail2 || fail3 {
-			t.Errorf("{%+v}.completePricingInfo(context, fakeGetSKUs, %s) -> %+v, %+v; want %+v, %+v",
+			t.Errorf("{%+v}.completePricingInfo(skus, %s) -> %+v, %+v; want %+v, %+v",
 				test.skuObj, test.region, test.skuObj.getPricingInfo(), err, test.pricing, test.err)
 		}
 	}
