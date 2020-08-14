@@ -4,13 +4,13 @@ import (
 	"encoding/json"
 	resources "github.com/googleinterns/terraform-cost-estimation/resources"
 	tfjson "github.com/hashicorp/terraform-json"
+	"io"
 	"io/ioutil"
-	"os"
 )
 
-// ComputeIstanceType is the type of ResourceChange and Resource supported
+// ComputeInstanceType is the type of ResourceChange and Resource supported
 // by this package, we consider ComputeInstances only for now.
-const ComputeIstanceType = "google_compute_instance"
+const ComputeInstanceType = "google_compute_instance"
 
 // TODO maybe add mem/core info
 // ResourceInfo contains the information about Resource, this struct is
@@ -32,62 +32,80 @@ type ResourceStates struct {
 
 // ExtractPlanStruct extracts tfjson.Plan struct from file in provided path
 // and returns the pointer on it if it is possible, otherwise returns error.
-func ExtractPlanStruct(filePath string) (*tfjson.Plan, error) {
-	f, err := os.Open(filePath)
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
-
-	byteFile, _ := ioutil.ReadAll(f)
+func ExtractPlanStruct(reader io.Reader) (*tfjson.Plan, error) {
+	bytes, _ := ioutil.ReadAll(reader)
 
 	var plan tfjson.Plan
-	if err = plan.UnmarshalJSON(byteFile); err != nil {
+	if err := plan.UnmarshalJSON(bytes); err != nil {
 		return nil, err
 	}
 	return &plan, nil
 }
 
-// toComputeInstance extracts ComputeInstance from the interface that
+// ToComputeInstance extracts ComputeInstance from the interface that
 // contains information about resource.
-func toComputeInstance(resource interface{}) *resources.ComputeInstance {
+func ToComputeInstance(resource interface{}) (*resources.ComputeInstance, error) {
 	if resource == nil {
-		return nil
+		return nil, nil
 	}
 
-	jsonString, _ := json.Marshal(resource)
-	var r ResourceInfo
-	json.Unmarshal(jsonString, &r)
+	jsonString, err := json.Marshal(resource)
+	if err != nil {
+		return nil, err
+	}
+	var r *ResourceInfo
+	if err := json.Unmarshal(jsonString, &r); err != nil || r == nil {
+		return nil, err
+	}
+
+	// Region of ComputeInstance is determined as <region>-<zone>, in case if r.Zone
+	// is empty we leave region empty and validate it in another function.
+	var region string
+	if len(r.Zone) >= 2 && r.Zone[len(r.Zone)-2] == '-' {
+		if r.Zone[len(r.Zone)-1] >= 'a' && r.Zone[len(r.Zone)-1] <= 'f' {
+			region = r.Zone[:len(r.Zone)-2]
+		}
+	} else {
+		region = r.Zone
+	}
+
 	return &resources.ComputeInstance{
-        // TODO check if unmarshaled resource is valid and zone>2 chars
-        // add core/memory for some types of ComputeInstances
+		// TODO add core/memory for some types of ComputeInstances
 		ID:          r.ID,
 		Name:        r.Name,
 		MachineType: r.MachineType,
-		Region:      r.Zone[:len(r.Zone)-2],
-	}
+		Region:      region,
+	}, nil
 }
 
 // GetChange returns the pointer to the struct with states of the
 // certain resource of ComputeInstance type.
-func GetChange(change *tfjson.Change) *ResourceStates {
+func GetChange(change *tfjson.Change) (*ResourceStates, error) {
+	before, err := ToComputeInstance(change.Before)
+	if err != nil {
+		return nil, err
+	}
+	after, err := ToComputeInstance(change.After)
+	if err != nil {
+		return nil, err
+	}
 	resource := &ResourceStates{
-		Before: toComputeInstance(change.Before),
-		After:  toComputeInstance(change.After),
+		Before: before,
+		After:  after,
 	}
 	if resource.Before == nil && resource.After == nil {
-		return nil
+		return nil, nil
 	}
-	return resource
+	return resource, nil
 }
 
-// GetConfiguration extracts all resources of ComputeInstance type and their
+// GetResources extracts all resources of ComputeInstance type and their
 // before and after states from plan file.
-func GetConfiguration(plan *tfjson.Plan) []*ResourceStates {
+func GetResources(plan *tfjson.Plan) []*ResourceStates {
 	var resources []*ResourceStates
 	for _, resourceChange := range plan.ResourceChanges {
-		if ComputeIstanceType == resourceChange.Type {
-			if resource := GetChange(resourceChange.Change); resource != nil {
+		if ComputeInstanceType == resourceChange.Type {
+			if resource, err := GetChange(resourceChange.Change); resource != nil && err == nil {
 				resources = append(resources, resource)
 			}
 		}
