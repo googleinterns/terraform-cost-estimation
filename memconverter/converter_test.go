@@ -5,6 +5,23 @@ import (
 	"testing"
 )
 
+var (
+	u1 = float64(1000)
+	u2 = float64(1024)
+
+	b   = float64(1)
+	kb  = b * u1
+	mb  = kb * u1
+	gb  = mb * u1
+	tb  = gb * u1
+	pb  = tb * u1
+	kib = u2
+	mib = kib * u2
+	gib = mib * u2
+	tib = gib * u2
+	pib = tib * u2
+)
+
 func TestConvert(t *testing.T) {
 	var tests = []struct {
 		from string
@@ -13,34 +30,34 @@ func TestConvert(t *testing.T) {
 		rez  float64
 		err  error
 	}{
-		{"gb", 1, "gib", 0.9313225746154785, nil},
-		{"tb", 1, "tib", 0.9094947017729282, nil},
-		{"tb", 1, "gib", 931.3225746154785, nil},
-		{"tib", 1, "tb", 1.099511627776, nil},
-		{"tib", 1, "gb", 1099.511627776, nil},
-		{"mb", 10000, "gb", 10, nil},
-		{"tb", 0.5, "mb", 500000, nil},
-		{"b", 100, "kb", 0.1, nil},
-		{"mib", 123, "kib", 125952, nil},
-		{"tib", 0.00011730194091796875, "gib", 0.1201171875, nil},
-		{"pb", 3, "mb", 3000000000, nil},
-		{"tib", 178, "mib", 186646528, nil},
-		{"gb", 1000, "pib", 0.0008881784197001252, nil},
+		{"gb", 1, "gib", 1 * gb / gib, nil},
+		{"tb", 1, "tib", 1 * tb / tib, nil},
+		{"tb", 1, "gib", 1 * tb / gib, nil},
+		{"tib", 1, "tb", 1 * tib / tb, nil},
+		{"tib", 1, "gb", 1 * tib / gb, nil},
+		{"mb", 10000, "gb", 10000 * mb / gb, nil},
+		{"tb", 0.5, "mb", 0.5 * tb / mb, nil},
+		{"b", 100, "kb", 100 * b / kb, nil},
+		{"mib", 123, "kib", 123 * mib / kib, nil},
+		{"tib", 567, "gib", 567 * tib / gib, nil},
+		{"pb", 3, "mb", 3 * pb / mb, nil},
+		{"tib", 178, "mib", 178 * tib / mib, nil},
+		{"gb", 1000, "pib", 1000 * gb / pib, nil},
 		{"Mb", 178, "gb", 0, fmt.Errorf("unknown initial unit Mb")},
 		{"pb", 567, "PIB", 0, fmt.Errorf("unknown final unit PIB")},
-		{"gigabyte", 1, "gibibyte", 0.9313225746154785, nil},
-		{"terabyte", 1, "tebibyte", 0.9094947017729282, nil},
-		{"terabyte", 1, "gibibyte", 931.3225746154785, nil},
-		{"tebibyte", 1, "terabyte", 1.099511627776, nil},
-		{"tebibyte", 1, "gigabyte", 1099.511627776, nil},
-		{"megabyte", 10000, "gigabyte", 10, nil},
-		{"terabyte", 0.5, "megabyte", 500000, nil},
-		{"byte", 100, "kilobyte", 0.1, nil},
-		{"mebibyte", 123, "kibibyte", 125952, nil},
-		{"tebibyte", 0.00011730194091796875, "gibibyte", 0.1201171875, nil},
-		{"petabyte", 3, "megabyte", 3000000000, nil},
-		{"tebibyte", 178, "mebibyte", 186646528, nil},
-		{"gigabyte", 1000, "pebibyte", 0.0008881784197001252, nil},
+		{"gigabyte", 1, "gibibyte", 1 * gb / gib, nil},
+		{"terabyte", 1, "tebibyte", 1 * tb / tib, nil},
+		{"terabyte", 0.11, "gibibyte", 0.11 * tb / gib, nil},
+		{"tebibyte", 1, "terabyte", 1 * tib / tb, nil},
+		{"tebibyte", 1, "gigabyte", 1 * tib / gb, nil},
+		{"megabyte", 10000, "gigabyte", 10000 * mb / gb, nil},
+		{"terabyte", 0.5, "megabyte", 0.5 * tb / mb, nil},
+		{"byte", 100, "kilobyte", 100 * b / kb, nil},
+		{"mebibyte", 123, "kibibyte", 123 * mib / kib, nil},
+		{"tebibyte", 567, "gibibyte", 567 * tib / gib, nil},
+		{"petabyte", 3, "megabyte", 3 * pb / mb, nil},
+		{"tebibyte", 178, "mebibyte", 178 * tib / mib, nil},
+		{"gigabyte", 1000, "pebibyte", 1000 * gb / pib, nil},
 	}
 
 	for _, test := range tests {

@@ -3,8 +3,10 @@ package resources
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	billing "github.com/googleinterns/terraform-cost-estimation/billing"
+	conv "github.com/googleinterns/terraform-cost-estimation/memconverter"
 	billingpb "google.golang.org/genproto/googleapis/cloud/billing/v1"
 )
 
@@ -81,6 +83,11 @@ func (core *CoreInfo) completePricingInfo(skus []*billingpb.Sku, region string) 
 	return nil
 }
 
+func (core *CoreInfo) getTotalPrice() float64 {
+	nano := float64(1000 * 1000 * 1000)
+	return float64(core.UnitPricing.HourlyUnitPrice*int64(core.Number)) / nano
+}
+
 // MemoryInfo stores memory details.
 type MemoryInfo struct {
 	Type          string
@@ -115,6 +122,18 @@ func (mem *MemoryInfo) completePricingInfo(skus []*billingpb.Sku, region string)
 	usageUnit, hourlyUnitPrice, currencyType, currencyUnit := billing.GetPricingInfo(sku)
 	mem.UnitPricing = PricingInfo{usageUnit, hourlyUnitPrice, currencyType, currencyUnit}
 	return nil
+}
+
+func (mem *MemoryInfo) getTotalPrice() (float64, error) {
+	nano := float64(1000 * 1000 * 1000)
+	unitType := strings.Split(mem.UnitPricing.UsageUnit, " ")[0]
+	unitsNum, err := conv.Convert("gb", mem.AmountGB, unitType)
+
+	if err != nil {
+		return 0, err
+	}
+
+	return float64(mem.UnitPricing.HourlyUnitPrice) * unitsNum / nano, nil
 }
 
 // ComputeInstance stores information about the compute instance resource type.
