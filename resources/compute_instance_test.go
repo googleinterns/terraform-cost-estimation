@@ -312,14 +312,16 @@ func TestCoreGetTotalPrice(t *testing.T) {
 	c3 := CoreInfo{Number: 32, UnitPricing: PricingInfo{HourlyUnitPrice: 1121733}}
 	c4 := CoreInfo{Number: 16, UnitPricing: PricingInfo{HourlyUnitPrice: 2701000}}
 
+	nano := float64(1000 * 1000 * 1000)
+
 	tests := []struct {
 		core  CoreInfo
 		price float64
 	}{
-		{c1, 0.01396},
-		{c2, 0.179424},
-		{c3, 0.035895456},
-		{c4, 0.043216},
+		{c1, float64(6980000) * 2 / nano},
+		{c2, float64(44856000) * 4 / nano},
+		{c3, float64(1121733) * 32 / nano},
+		{c4, float64(2701000) * 16 / nano},
 	}
 
 	for _, test := range tests {
@@ -331,21 +333,27 @@ func TestCoreGetTotalPrice(t *testing.T) {
 }
 
 func TestMemGetTotalPrice(t *testing.T) {
-	m1 := MemoryInfo{AmountGB: 2, UnitPricing: PricingInfo{HourlyUnitPrice: 6980000, UsageUnit: "gigabyte hour"}}
-	m2 := MemoryInfo{AmountGB: 4, UnitPricing: PricingInfo{HourlyUnitPrice: 44856000, UsageUnit: "gigabyte hour"}}
-	m3 := MemoryInfo{AmountGB: 32, UnitPricing: PricingInfo{HourlyUnitPrice: 1121733, UsageUnit: "gibibyte hour"}}
+	m1 := MemoryInfo{AmountGB: 100, UnitPricing: PricingInfo{HourlyUnitPrice: 6980000, UsageUnit: "gigabyte hour"}}
+	m2 := MemoryInfo{AmountGB: 50, UnitPricing: PricingInfo{HourlyUnitPrice: 44856000, UsageUnit: "pebibyte hour"}}
+	m3 := MemoryInfo{AmountGB: 320, UnitPricing: PricingInfo{HourlyUnitPrice: 1121733, UsageUnit: "tebibyte hour"}}
 	m4 := MemoryInfo{AmountGB: 16, UnitPricing: PricingInfo{HourlyUnitPrice: 2701000, UsageUnit: "gibibyte hour"}}
-	m5 := MemoryInfo{AmountGB: 16, UnitPricing: PricingInfo{HourlyUnitPrice: 2701000, UsageUnit: "giBibyte hour"}}
+	m5 := MemoryInfo{AmountGB: 160, UnitPricing: PricingInfo{HourlyUnitPrice: 2701000, UsageUnit: "giBibyte hour"}}
+
+	gb := float64(1000 * 1000 * 1000)
+	gib := float64(1024 * 1024 * 1024)
+	tib := gib * float64(1024)
+	pib := tib * float64(1024)
+	nano := gb
 
 	tests := []struct {
 		mem   MemoryInfo
 		price float64
 		err   error
 	}{
-		{m1, 0.01396, nil},
-		{m2, 0.179424, nil},
-		{m3, 0.0334302485, nil},
-		{m4, 0.0402480364, nil},
+		{m1, float64(6980000) / nano * 100, nil},
+		{m2, float64(44856000) / nano * 50 * gb / pib, nil},
+		{m3, float64(1121733) / nano * 320 * gb / tib, nil},
+		{m4, float64(2701000) / nano * 16 * gb / gib, nil},
 		{m5, 0, fmt.Errorf("unknown final unit giBibyte")},
 	}
 
