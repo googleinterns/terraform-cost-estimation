@@ -247,26 +247,22 @@ func TestIsMatch(t *testing.T) {
 	tests := []struct {
 		sku    *billingpb.Sku
 		skuObj skuObject
-		region string
 		ok     bool
 	}{
-		{&sku1, &core1, "us-east1", true},
-		{&sku1, &core1, "us-central1", true},
-		{&sku3, &core1, "southamerica-east1", false},
-		{&sku2, &core1, "southamerica-east1", false},
-		{&sku2, &core2, "southamerica-west1", true},
-		{&sku2, &core2, "us-east1", false},
-		{&sku4, &core2, "us-east1", false},
-		{&sku3, &mem1, "southamerica-east1", true},
-		{&sku3, &mem1, "southamerica-west1", false},
-		{&sku4, &mem2, "us-west1", true},
+		{&sku1, &core1, true},
+		{&sku3, &core1, false},
+		{&sku2, &core1, false},
+		{&sku2, &core2, true},
+		{&sku4, &core2, false},
+		{&sku3, &mem1, true},
+		{&sku4, &mem2, true},
 	}
 
 	for _, test := range tests {
-		actual := test.skuObj.isMatch(test.sku, test.region)
+		actual := test.skuObj.isMatch(test.sku)
 		if actual != test.ok {
-			t.Errorf("sku.Description = %s, {%+v}.isMath(sku, %s) = %t; want %t",
-				test.sku.Description, test.skuObj, test.region, actual, test.ok)
+			t.Errorf("sku.Description = %s, {%+v}.isMath(sku) = %t; want %t",
+				test.sku.Description, test.skuObj, actual, test.ok)
 		}
 	}
 }
@@ -280,28 +276,27 @@ func TestCompletePricingInfo(t *testing.T) {
 
 	tests := []struct {
 		skuObj  skuObject
-		region  string
 		pricing PricingInfo
 		err     error
 	}{
-		{&core1, "us-west1", PricingInfo{"hour", 6980000, "USD", "nano"}, nil},
-		{&core2, "southamerica-east1", PricingInfo{"hour", 44856000, "USD", "nano"}, nil},
-		{&mem1, "southamerica-east1", PricingInfo{"gibibyte hour", 1121733, "USD", "nano"}, nil},
-		{&mem2, "us-east1", PricingInfo{"gibibyte hour", 2701000, "USD", "nano"}, nil},
-		{&badCore, "southamerica-east1", PricingInfo{}, fmt.Errorf("could not find SKU type")},
-		{&badCore, "us-west1", PricingInfo{}, fmt.Errorf("could not find SKU type")},
-		{&badCore, "us-east1", PricingInfo{}, fmt.Errorf("could not find SKU type")},
+		{&core1, PricingInfo{"hour", 6980000, "USD", "nano"}, nil},
+		{&core2, PricingInfo{"hour", 44856000, "USD", "nano"}, nil},
+		{&mem1, PricingInfo{"gibibyte hour", 1121733, "USD", "nano"}, nil},
+		{&mem2, PricingInfo{"gibibyte hour", 2701000, "USD", "nano"}, nil},
+		{&badCore, PricingInfo{}, fmt.Errorf("could not find core pricing information")},
+		{&badCore, PricingInfo{}, fmt.Errorf("could not find core pricing information")},
+		{&badCore, PricingInfo{}, fmt.Errorf("could not find core pricing information")},
 	}
 
 	for _, test := range tests {
-		err := test.skuObj.completePricingInfo(fakeGetSKUs(), test.region)
+		err := test.skuObj.completePricingInfo(fakeGetSKUs())
 		fail1 := (err == nil && test.err != nil) || (err != nil && test.err == nil)
 		fail2 := err != nil && test.err != nil && err.Error() != test.err.Error()
 		fail3 := test.pricing != test.skuObj.getPricingInfo()
 
 		if fail1 || fail2 || fail3 {
-			t.Errorf("{%+v}.completePricingInfo(skus, %s) -> %+v, %+v; want %+v, %+v",
-				test.skuObj, test.region, test.skuObj.getPricingInfo(), err, test.pricing, test.err)
+			t.Errorf("{%+v}.completePricingInfo(skus) -> %+v, %+v; want %+v, %+v",
+				test.skuObj, test.skuObj.getPricingInfo(), err, test.pricing, test.err)
 		}
 	}
 }

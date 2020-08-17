@@ -2,7 +2,6 @@ package resources
 
 import (
 	"context"
-	"fmt"
 
 	billingpb "google.golang.org/genproto/googleapis/cloud/billing/v1"
 )
@@ -17,20 +16,16 @@ type Resource interface {
 // skuObject is the interface for SKU types (core, memory etc.)
 // that can be looked up in the billing catalog.
 type skuObject interface {
-	isMatch(sku *billingpb.Sku, region string) bool
-	completePricingInfo(skus []*billingpb.Sku, region string) error
+	isMatch(sku *billingpb.Sku) bool
+	completePricingInfo(skus []*billingpb.Sku) error
 	getPricingInfo() PricingInfo
 }
 
-func getSKU(skus []*billingpb.Sku, obj skuObject, region string) (*billingpb.Sku, error) {
-	if skus == nil || len(skus) == 0 {
-		return nil, fmt.Errorf("could not find SKUs")
-	}
-
+func getSKU(skuObj skuObject, skus []*billingpb.Sku) *billingpb.Sku {
 	for _, sku := range skus {
-		if obj.isMatch(sku, region) {
-			return sku, nil
+		if skuObj.isMatch(sku) {
+			return sku
 		}
 	}
-	return nil, fmt.Errorf("could not find SKU type")
+	return nil
 }
