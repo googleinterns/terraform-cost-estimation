@@ -61,21 +61,20 @@ func (core *CoreInfo) getPricingInfo() PricingInfo {
 	return core.UnitPricing
 }
 
-func (core *CoreInfo) isMatch(sku *billingpb.Sku, region string) bool {
+func (core *CoreInfo) isMatch(sku *billingpb.Sku) bool {
 	if core.Type == "" {
 		return false
 	}
 	cond1 := billing.FitsDescription(sku, append(core.Description.Contains, core.Type+" ", "Instance Core"), core.Description.Omits)
 	cond2 := billing.FitsCategory(sku, "Compute Engine", "Compute", core.ResourceGroup, core.UsageType)
-	cond3 := billing.FitsRegion(sku, region)
-	return cond1 && cond2 && cond3
+	return cond1 && cond2
 }
 
-func (core *CoreInfo) completePricingInfo(skus []*billingpb.Sku, region string) error {
-	sku, err := getSKU(skus, core, region)
+func (core *CoreInfo) completePricingInfo(skus []*billingpb.Sku) error {
+	sku := getSKU(core, skus)
 
-	if err != nil {
-		return err
+	if sku == nil {
+		return fmt.Errorf("could not find core pricing information")
 	}
 
 	usageUnit, hourlyUnitPrice, currencyType, currencyUnit := billing.GetPricingInfo(sku)
@@ -102,21 +101,20 @@ func (mem *MemoryInfo) getPricingInfo() PricingInfo {
 	return mem.UnitPricing
 }
 
-func (mem *MemoryInfo) isMatch(sku *billingpb.Sku, region string) bool {
+func (mem *MemoryInfo) isMatch(sku *billingpb.Sku) bool {
 	if mem.Type == "" {
 		return false
 	}
 	cond1 := billing.FitsDescription(sku, append(mem.Description.Contains, mem.Type+" ", "Instance Ram"), mem.Description.Omits)
 	cond2 := billing.FitsCategory(sku, "Compute Engine", "Compute", mem.ResourceGroup, mem.UsageType)
-	cond3 := billing.FitsRegion(sku, region)
-	return cond1 && cond2 && cond3
+	return cond1 && cond2
 }
 
-func (mem *MemoryInfo) completePricingInfo(skus []*billingpb.Sku, region string) error {
-	sku, err := getSKU(skus, mem, region)
+func (mem *MemoryInfo) completePricingInfo(skus []*billingpb.Sku) error {
+	sku := getSKU(mem, skus)
 
-	if err != nil {
-		return err
+	if sku == nil {
+		return fmt.Errorf("could not find memory pricing information")
 	}
 
 	usageUnit, hourlyUnitPrice, currencyType, currencyUnit := billing.GetPricingInfo(sku)
@@ -155,20 +153,26 @@ func (instance *ComputeInstance) ExtractResource(jsonObject interface{}) {
 func (instance *ComputeInstance) CompletePricingInfo(ctx context.Context) error {
 
 	skus, err := billing.GetSKUs(ctx)
-
 	if err != nil {
 		return fmt.Errorf("an error occurred while looking for pricing information")
 	}
 
-	err1 := instance.Cores.completePricingInfo(skus, instance.Region)
-	if err1 != nil {
-		return fmt.Errorf("could not find core pricing information")
+	filtered, err := billing.RegionFilter(skus, instance.Region)
+
+	if err != nil {
+		return err
 	}
 
-	err2 := instance.Memory.completePricingInfo(skus, instance.Region)
-	if err2 != nil {
-		return fmt.Errorf("could not find memory pricing information")
+	err1 := instance.Cores.completePricingInfo(filtered)
+	if err1 != nil {
+		return err1
 	}
+
+	err2 := instance.Memory.completePricingInfo(filtered)
+	if err2 != nil {
+		return err2
+	}
+
 	return nil
 }
 
