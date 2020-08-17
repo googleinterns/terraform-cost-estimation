@@ -2,6 +2,7 @@ package billing
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
 	billing "cloud.google.com/go/billing/apiv1"
@@ -86,4 +87,25 @@ func GetSKUs(ctx context.Context) ([]*billingpb.Sku, error) {
 		skus = append(skus, resp)
 	}
 	return skus, nil
+}
+
+// RegionFilter returns the SKUs from the specified region.
+func RegionFilter(skus []*billingpb.Sku, region string) ([]*billingpb.Sku, error) {
+	if skus == nil || len(skus) == 0 {
+		return nil, fmt.Errorf("SKU list must not be empty")
+	}
+
+	filtered := []*billingpb.Sku{}
+
+	for _, sku := range skus {
+		if FitsRegion(sku, region) {
+			filtered = append(filtered, sku)
+		}
+	}
+
+	if filtered == nil || len(filtered) == 0 {
+		return nil, fmt.Errorf("region '" + region + "' is invalid")
+	}
+
+	return filtered, nil
 }
