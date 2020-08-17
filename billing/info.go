@@ -92,7 +92,7 @@ func GetSKUs(ctx context.Context) ([]*billingpb.Sku, error) {
 // RegionFilter returns the SKUs from the specified region.
 func RegionFilter(skus []*billingpb.Sku, region string) ([]*billingpb.Sku, error) {
 	if skus == nil || len(skus) == 0 {
-		return nil, fmt.Errorf("an error occurred while looking for the SKU list")
+		return nil, fmt.Errorf("SKU list must not be empty")
 	}
 
 	filtered := []*billingpb.Sku{}
