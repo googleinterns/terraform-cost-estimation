@@ -3,6 +3,7 @@ package resources
 import (
 	"context"
 	"fmt"
+	"os"
 	"strings"
 
 	billing "github.com/googleinterns/terraform-cost-estimation/billing"
@@ -144,11 +145,6 @@ type ComputeInstance struct {
 	Cores       CoreInfo
 }
 
-// ExtractResource extracts the resource details from the JSON object
-// and fills the necessary fields.
-func (instance *ComputeInstance) ExtractResource(jsonObject interface{}) {
-}
-
 // CompletePricingInfo fills the pricing information fields.
 func (instance *ComputeInstance) CompletePricingInfo(ctx context.Context) error {
 
@@ -176,6 +172,29 @@ func (instance *ComputeInstance) CompletePricingInfo(ctx context.Context) error 
 	return nil
 }
 
-// PrintPricingInfo prints the cost estimation in a readable format.
-func (instance *ComputeInstance) PrintPricingInfo() {
+// ComputeInstanceState holds the before and after states of a compute instance
+// and the action performed (created, destroyed etc.)
+type ComputeInstanceState struct {
+	Before *ComputeInstance
+	After  *ComputeInstance
+	Action string
+}
+
+// CompletePricingInfo completes pricing information of both before and after states.
+func (state *ComputeInstanceState) CompletePricingInfo(ctx context.Context) error {
+	err1 := state.Before.CompletePricingInfo(ctx)
+	if err1 != nil {
+		return err1
+	}
+
+	err2 := state.After.CompletePricingInfo(ctx)
+	if err2 != nil {
+		return err2
+	}
+	return nil
+}
+
+// PrintPricingInfo outputs the pricing estimation in a file/terminal.
+func (state *ComputeInstanceState) PrintPricingInfo(f *os.File) {
+
 }
