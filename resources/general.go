@@ -6,9 +6,8 @@ import (
 	billingpb "google.golang.org/genproto/googleapis/cloud/billing/v1"
 )
 
-//Resource is the interface of a general resource (ComputeInstance,...).
-type Resource interface {
-	ExtractResource(jsonResourceInfo interface{})
+//ResourceState is the interface of a general before/after resource state(ComputeInstance,...).
+type ResourceState interface {
 	CompletePricingInfo(context.Context) error
 	PrintPricingInfo()
 }
