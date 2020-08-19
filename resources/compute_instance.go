@@ -194,6 +194,27 @@ func (state *ComputeInstanceState) CompletePricingInfo(ctx context.Context) erro
 	return nil
 }
 
+func (state *ComputeInstanceState) getDelta() (DCore, DMem float64, err error) {
+	var core1, mem1, core2, mem2 float64
+	if state.Before != nil {
+		core1 = state.Before.Cores.getTotalPrice()
+		mem1, err = state.Before.Memory.getTotalPrice()
+		if err != nil {
+			return 0, 0, err
+		}
+	}
+
+	if state.After != nil {
+		core2 = state.After.Cores.getTotalPrice()
+		mem2, err = state.After.Memory.getTotalPrice()
+		if err != nil {
+			return 0, 0, err
+		}
+	}
+
+	return core2 - core1, mem2 - mem1, nil
+}
+
 // PrintPricingInfo outputs the pricing estimation in a file/terminal.
 func (state *ComputeInstanceState) PrintPricingInfo(f *os.File) {
 
