@@ -6,13 +6,8 @@ import (
 	"os"
 )
 
-var (
-	out = flag.String("out", "stdout", `Write the cost estimation to a given file path. If set to 'stdout',
+var out = flag.String("out", "stdout", `Write the cost estimation to a given file path. If set to 'stdout',
 the output will be shown in the command line.`)
-
-	arityMismatch = 1
-	fileErr       = 2
-)
 
 func main() {
 	flag.Usage = func() {
@@ -27,26 +22,26 @@ func main() {
 	if len(flag.Args()) == 0 {
 		fmt.Fprintf(os.Stderr, "Error: No input file\n\n")
 		flag.Usage()
-		os.Exit(arityMismatch)
+		os.Exit(1)
 	}
 
 	if len(flag.Args()) > 1 {
 		fmt.Fprintf(os.Stderr, "Error: Too many argumets\n\n")
 		flag.Usage()
-		os.Exit(arityMismatch)
+		os.Exit(1)
 	}
 
 	fin, errFin := os.Open(flag.Args()[0])
 	if errFin != nil {
 		fmt.Fprintf(os.Stderr, "Error: "+errFin.Error()+"\n")
-		os.Exit(fileErr)
+		os.Exit(1)
 	}
 
 	// TODO: use jsdecode package to get resources
 
 	if errFin = fin.Close(); errFin != nil {
 		fmt.Fprintf(os.Stderr, "Error: "+errFin.Error()+"\n")
-		os.Exit(fileErr)
+		os.Exit(1)
 	}
 
 	// TODO: get pricing info
