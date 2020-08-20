@@ -1,24 +1,55 @@
 package main
 
 import (
-    "fmt"
-    "os"
-    //"encoding/json"
-    //"io/ioutil"
-    //"strconv"
+	"flag"
+	"fmt"
+	"os"
+)
+
+var (
+	out = flag.String("out", "stdout", `Write the cost estimation to a given file path. If set to 'stdout',
+the output will be shown in the command line.`)
+
+	arityMismatch = 1
+	fileErr       = 2
 )
 
 func main() {
-	fmt.Println("It works! =)")
-	fmt.Println("JSON file name:", os.Args[1])
+	flag.Usage = func() {
+		fmt.Fprintf(flag.CommandLine.Output(), "Usage: go run main.go [OPTIONS] FILE\n\n")
+		fmt.Fprintf(flag.CommandLine.Output(), `  Outputs the cost estimation of Terraform resources from a JSON plan file.`)
+		fmt.Fprintf(flag.CommandLine.Output(), "\n\nOptions:\n")
+		flag.PrintDefaults()
+	}
 
-	jsonFileName := os.Args[1]
-	jsonFile, err := os.Open(jsonFileName)
+	flag.Parse()
 
-    	if err != nil {
-		// Handle error.
-      		fmt.Println(err)
-    	}
-    	fmt.Println("Successfully opened file.")
-    	defer jsonFile.Close()
+	if len(flag.Args()) == 0 {
+		fmt.Fprintf(os.Stderr, "Error: No input file\n\n")
+		flag.Usage()
+		os.Exit(arityMismatch)
+	}
+
+	if len(flag.Args()) > 1 {
+		fmt.Fprintf(os.Stderr, "Error: Too many argumets\n\n")
+		flag.Usage()
+		os.Exit(arityMismatch)
+	}
+
+	fin, errFin := os.Open(flag.Args()[0])
+	if errFin != nil {
+		fmt.Fprintf(os.Stderr, "Error: "+errFin.Error()+"\n")
+		os.Exit(fileErr)
+	}
+
+	// TODO: use jsdecode package to get resources
+
+	if errFin = fin.Close(); errFin != nil {
+		fmt.Fprintf(os.Stderr, "Error: "+errFin.Error()+"\n")
+		os.Exit(fileErr)
+	}
+
+	// TODO: get pricing info
+
+	// TODO: print output
 }
