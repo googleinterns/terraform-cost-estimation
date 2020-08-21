@@ -26,34 +26,9 @@ type Description struct {
 	Omits    []string
 }
 
-// BuildDescription returns a Description structure based on the description of an SKU.
-func BuildDescription(custom, preemptible, predefined bool) (d Description) {
-	if custom {
-		d.Contains = append(d.Contains, "Custom")
-	} else {
-		d.Omits = append(d.Omits, "Custom")
-	}
-
-	if preemptible {
-		d.Contains = append(d.Contains, "Preemptible")
-	} else {
-		d.Omits = append(d.Omits, "Preemptible")
-	}
-
-	if predefined {
-		d.Contains = append(d.Contains, "Predefined")
-	} else {
-		d.Omits = append(d.Omits, "Predefined")
-	}
-	return
-}
-
 // CoreInfo stores CPU core details.
 type CoreInfo struct {
-	Type          string
-	Description   Description
 	ResourceGroup string
-	UsageType     string
 	Number        int
 	UnitPricing   PricingInfo
 }
@@ -63,12 +38,7 @@ func (core *CoreInfo) getPricingInfo() PricingInfo {
 }
 
 func (core *CoreInfo) isMatch(sku *billingpb.Sku) bool {
-	if core.Type == "" {
-		return false
-	}
-	cond1 := billing.FitsDescription(sku, append(core.Description.Contains, core.Type+" ", "Instance Core"), core.Description.Omits)
-	cond2 := billing.FitsCategory(sku, "Compute Engine", "Compute", core.ResourceGroup, core.UsageType)
-	return cond1 && cond2
+	return core.ResourceGroup == sku.Category.ResourceGroup
 }
 
 func (core *CoreInfo) completePricingInfo(skus []*billingpb.Sku) error {
@@ -90,10 +60,7 @@ func (core *CoreInfo) getTotalPrice() float64 {
 
 // MemoryInfo stores memory details.
 type MemoryInfo struct {
-	Type          string
-	Description   Description
 	ResourceGroup string
-	UsageType     string
 	AmountGB      float64
 	UnitPricing   PricingInfo
 }
@@ -103,12 +70,7 @@ func (mem *MemoryInfo) getPricingInfo() PricingInfo {
 }
 
 func (mem *MemoryInfo) isMatch(sku *billingpb.Sku) bool {
-	if mem.Type == "" {
-		return false
-	}
-	cond1 := billing.FitsDescription(sku, append(mem.Description.Contains, mem.Type+" ", "Instance Ram"), mem.Description.Omits)
-	cond2 := billing.FitsCategory(sku, "Compute Engine", "Compute", mem.ResourceGroup, mem.UsageType)
-	return cond1 && cond2
+	return mem.ResourceGroup == sku.Category.ResourceGroup
 }
 
 func (mem *MemoryInfo) completePricingInfo(skus []*billingpb.Sku) error {
@@ -140,7 +102,9 @@ type ComputeInstance struct {
 	ID          string
 	Name        string
 	MachineType string
+	Description Description
 	Region      string
+	UsageType   string
 	Memory      MemoryInfo
 	Cores       CoreInfo
 }
@@ -154,7 +118,16 @@ func (instance *ComputeInstance) CompletePricingInfo(ctx context.Context) error 
 	}
 
 	filtered, err := billing.RegionFilter(skus, instance.Region)
+	if err != nil {
+		return err
+	}
 
+	filtered, err = billing.DescriptionFilter(filtered, instance.Description.Contains, instance.Description.Omits)
+	if err != nil {
+		return err
+	}
+
+	filtered, err = billing.CategoryFilter(filtered, "Compute Instance", "Compute", instance.UsageType)
 	if err != nil {
 		return err
 	}
