@@ -1,13 +1,5 @@
 package resources
 
-import (
-	"fmt"
-	"testing"
-
-	"github.com/golang/protobuf/jsonpb"
-	billingpb "google.golang.org/genproto/googleapis/cloud/billing/v1"
-)
-
 var (
 	str1 = `
 	{
@@ -212,7 +204,9 @@ var (
 		]
 	}
 	`
+)
 
+/*
 	core1 = CoreInfo{"N2", Description{[]string{"Preemptible"}, []string{"Custom"}}, "CPU", "Preemptible", 4, PricingInfo{}}
 	core2 = CoreInfo{"E2", Description{[]string{"Custom"}, []string{"Preemptible"}}, "CPU", "OnDemand", 8, PricingInfo{}}
 	mem1  = MemoryInfo{"N2", Description{[]string{"Preemptible", "Custom"}, []string{}}, "RAM", "Preemptible", 100, PricingInfo{}}
@@ -361,3 +355,4 @@ func TestMemGetTotalPrice(t *testing.T) {
 		}
 	}
 }
+*/

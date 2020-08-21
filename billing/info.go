@@ -32,10 +32,10 @@ func FitsDescription(sku *billingpb.Sku, contains, omits []string) bool {
 }
 
 // FitsCategory checks if an SKU has the requested category attributes.
-func FitsCategory(sku *billingpb.Sku, serviceDisplayName, resourceFamily, resourceGroup, usageType string) bool {
+func FitsCategory(sku *billingpb.Sku, serviceDisplayName, resourceFamily, usageType string) bool {
 	c := sku.Category
 	cond1 := c.ServiceDisplayName == serviceDisplayName && c.ResourceFamily == resourceFamily
-	cond2 := c.ResourceGroup == resourceGroup && c.UsageType == usageType
+	cond2 := c.UsageType == usageType
 	return cond1 && cond2
 }
 
@@ -87,6 +87,19 @@ func GetSKUs(ctx context.Context) ([]*billingpb.Sku, error) {
 		skus = append(skus, resp)
 	}
 	return skus, nil
+}
+
+// DescriptionFilter returns the SKUs that meet the description requirements.
+func DescriptionFilter(skus []*billingpb.Sku, contains, omits []string) ([]*billingpb.Sku, error) {
+	// TODO
+	return nil, nil
+}
+
+// CategoryFilter returns the SKUs with the specified category attributes.
+func CategoryFilter(skus []*billingpb.Sku, serviceDisplayName,
+	resourceFamily, usageType string) ([]*billingpb.Sku, error) {
+	// TODO
+	return nil, nil
 }
 
 // RegionFilter returns the SKUs from the specified region.
