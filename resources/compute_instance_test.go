@@ -1,5 +1,14 @@
 package resources
 
+import (
+	"fmt"
+	"math"
+	"testing"
+
+	"github.com/golang/protobuf/jsonpb"
+	billingpb "google.golang.org/genproto/googleapis/cloud/billing/v1"
+)
+
 var (
 	str1 = `
 	{
@@ -204,18 +213,27 @@ var (
 		]
 	}
 	`
+	core1 = CoreInfo{"CPU", 4, PricingInfo{}}
+	core2 = CoreInfo{"CPU", 8, PricingInfo{}}
+	core3 = core1
+	mem1  = MemoryInfo{"RAM", 100, PricingInfo{}}
+	mem2  = MemoryInfo{"N1Standard", 150, PricingInfo{}}
+	mem3  = mem1
 )
 
-/*
-	core1 = CoreInfo{"N2", Description{[]string{"Preemptible"}, []string{"Custom"}}, "CPU", "Preemptible", 4, PricingInfo{}}
-	core2 = CoreInfo{"E2", Description{[]string{"Custom"}, []string{"Preemptible"}}, "CPU", "OnDemand", 8, PricingInfo{}}
-	mem1  = MemoryInfo{"N2", Description{[]string{"Preemptible", "Custom"}, []string{}}, "RAM", "Preemptible", 100, PricingInfo{}}
-	mem2  = MemoryInfo{"N1", Description{[]string{}, []string{"Preemptible", "Custom"}}, "N1Standard", "OnDemand", 150, PricingInfo{}}
-
-	badCore = CoreInfo{"N2", Description{[]string{}, []string{"Preemptible", "Custom", "Predefiend"}}, "CPU", "OnDemand", 8, PricingInfo{}}
+const (
+	nano    = float64(1000 * 1000 * 1000)
+	epsilon = 1e-10
 )
 
-func fakeGetSKUs() []*billingpb.Sku {
+func mapToDescription(skus []*billingpb.Sku) (mapped []string) {
+	for _, sku := range skus {
+		mapped = append(mapped, sku.Description)
+	}
+	return
+}
+
+func TestCompletePricingInfo(t *testing.T) {
 	sku1 := new(billingpb.Sku)
 	sku2 := new(billingpb.Sku)
 	sku3 := new(billingpb.Sku)
@@ -228,69 +246,29 @@ func fakeGetSKUs() []*billingpb.Sku {
 	jsonpb.UnmarshalString(str4, sku4)
 	jsonpb.UnmarshalString(str5, sku5)
 
-	return []*billingpb.Sku{sku1, sku2, sku3, sku4, sku5}
-}
-
-func TestIsMatch(t *testing.T) {
-	var sku1, sku2, sku3, sku4 billingpb.Sku
-	jsonpb.UnmarshalString(str1, &sku1)
-	jsonpb.UnmarshalString(str2, &sku2)
-	jsonpb.UnmarshalString(str3, &sku3)
-	jsonpb.UnmarshalString(str4, &sku4)
-
-	tests := []struct {
-		sku    *billingpb.Sku
-		skuObj skuObject
-		ok     bool
-	}{
-		{&sku1, &core1, true},
-		{&sku3, &core1, false},
-		{&sku2, &core1, false},
-		{&sku2, &core2, true},
-		{&sku4, &core2, false},
-		{&sku3, &mem1, true},
-		{&sku4, &mem2, true},
-	}
-
-	for _, test := range tests {
-		actual := test.skuObj.isMatch(test.sku)
-		if actual != test.ok {
-			t.Errorf("sku.Description = %s, {%+v}.isMath(sku) = %t; want %t",
-				test.sku.Description, test.skuObj, actual, test.ok)
-		}
-	}
-}
-
-func TestCompletePricingInfo(t *testing.T) {
-	var sku1, sku2, sku3, sku4 billingpb.Sku
-	jsonpb.UnmarshalString(str1, &sku1)
-	jsonpb.UnmarshalString(str2, &sku2)
-	jsonpb.UnmarshalString(str3, &sku3)
-	jsonpb.UnmarshalString(str4, &sku4)
-
 	tests := []struct {
 		skuObj  skuObject
+		skus    []*billingpb.Sku
 		pricing PricingInfo
 		err     error
 	}{
-		{&core1, PricingInfo{"hour", 6980000, "USD", "nano"}, nil},
-		{&core2, PricingInfo{"hour", 44856000, "USD", "nano"}, nil},
-		{&mem1, PricingInfo{"gibibyte hour", 1121733, "USD", "nano"}, nil},
-		{&mem2, PricingInfo{"gibibyte hour", 2701000, "USD", "nano"}, nil},
-		{&badCore, PricingInfo{}, fmt.Errorf("could not find core pricing information")},
-		{&badCore, PricingInfo{}, fmt.Errorf("could not find core pricing information")},
-		{&badCore, PricingInfo{}, fmt.Errorf("could not find core pricing information")},
+		{&core1, []*billingpb.Sku{sku1, sku3, sku4}, PricingInfo{"hour", 6980000, "USD", "nano"}, nil},
+		{&core2, []*billingpb.Sku{sku2, sku3, sku4}, PricingInfo{"hour", 44856000, "USD", "nano"}, nil},
+		{&mem1, []*billingpb.Sku{sku1, sku2, sku3, sku4, sku5}, PricingInfo{"gibibyte hour", 1121733, "USD", "nano"}, nil},
+		{&mem2, []*billingpb.Sku{sku1, sku2, sku3, sku4, sku5}, PricingInfo{"gibibyte hour", 2701000, "USD", "nano"}, nil},
+		{&core3, []*billingpb.Sku{sku3, sku4}, PricingInfo{}, fmt.Errorf("could not find core pricing information")},
+		{&mem3, []*billingpb.Sku{sku1, sku2, sku5}, PricingInfo{}, fmt.Errorf("could not find memory pricing information")},
 	}
 
 	for _, test := range tests {
-		err := test.skuObj.completePricingInfo(fakeGetSKUs())
+		err := test.skuObj.completePricingInfo(test.skus)
 		fail1 := (err == nil && test.err != nil) || (err != nil && test.err == nil)
 		fail2 := err != nil && test.err != nil && err.Error() != test.err.Error()
 		fail3 := test.pricing != test.skuObj.getPricingInfo()
 
 		if fail1 || fail2 || fail3 {
-			t.Errorf("{%+v}.completePricingInfo(skus) -> %+v, %+v; want %+v, %+v",
-				test.skuObj, test.skuObj.getPricingInfo(), err, test.pricing, test.err)
+			t.Errorf("{%+v}.completePricingInfo(%+v) -> %+v, %+v; want %+v, %+v",
+				test.skuObj, mapToDescription(test.skus), test.skuObj.getPricingInfo(), err, test.pricing, test.err)
 		}
 	}
 }
@@ -300,8 +278,6 @@ func TestCoreGetTotalPrice(t *testing.T) {
 	c2 := CoreInfo{Number: 4, UnitPricing: PricingInfo{HourlyUnitPrice: 44856000}}
 	c3 := CoreInfo{Number: 32, UnitPricing: PricingInfo{HourlyUnitPrice: 1121733}}
 	c4 := CoreInfo{Number: 16, UnitPricing: PricingInfo{HourlyUnitPrice: 2701000}}
-
-	nano := float64(1000 * 1000 * 1000)
 
 	tests := []struct {
 		core  CoreInfo
@@ -315,7 +291,7 @@ func TestCoreGetTotalPrice(t *testing.T) {
 
 	for _, test := range tests {
 		actual := test.core.getTotalPrice()
-		if actual != test.price {
+		if math.Abs(actual-test.price) > epsilon {
 			t.Errorf("{%+v}.getTotalPrice() = %f ; want %f", test.core, actual, test.price)
 		}
 	}
@@ -332,7 +308,6 @@ func TestMemGetTotalPrice(t *testing.T) {
 	gib := float64(1024 * 1024 * 1024)
 	tib := gib * float64(1024)
 	pib := tib * float64(1024)
-	nano := gb
 
 	tests := []struct {
 		mem   MemoryInfo
@@ -350,9 +325,53 @@ func TestMemGetTotalPrice(t *testing.T) {
 		actual, err := test.mem.getTotalPrice()
 		fail1 := (err == nil && test.err != nil) || (err != nil && test.err == nil)
 		fail2 := err != nil && test.err != nil && err.Error() != test.err.Error()
-		if actual != test.price || fail1 || fail2 {
+		if math.Abs(actual-test.price) > epsilon || fail1 || fail2 {
 			t.Errorf("{%+v}.getTotalPrice() = %f, %+v ; want %f, %+v", test.mem, actual, err, test.price, test.err)
 		}
 	}
 }
-*/
+
+func TestGetDelta(t *testing.T) {
+	core1 := CoreInfo{Number: 4, UnitPricing: PricingInfo{HourlyUnitPrice: 12345}}
+	mem1 := MemoryInfo{AmountGB: 1000, UnitPricing: PricingInfo{HourlyUnitPrice: 23455, UsageUnit: "gigabyte hour"}}
+	instance1 := ComputeInstance{Cores: core1, Memory: mem1}
+
+	core2 := CoreInfo{Number: 16, UnitPricing: PricingInfo{HourlyUnitPrice: 12345}}
+	mem2 := MemoryInfo{AmountGB: 500, UnitPricing: PricingInfo{HourlyUnitPrice: 23455, UsageUnit: "gigabyte hour"}}
+	instance2 := ComputeInstance{Cores: core2, Memory: mem2}
+
+	core3 := CoreInfo{Number: 8, UnitPricing: PricingInfo{HourlyUnitPrice: 67458}}
+	mem3 := MemoryInfo{AmountGB: 100, UnitPricing: PricingInfo{HourlyUnitPrice: 78996, UsageUnit: "gigabyte hour"}}
+	instance3 := ComputeInstance{Cores: core3, Memory: mem3}
+
+	core4 := CoreInfo{Number: 32, UnitPricing: PricingInfo{HourlyUnitPrice: 785678}}
+	mem4 := MemoryInfo{AmountGB: 2000, UnitPricing: PricingInfo{HourlyUnitPrice: 235977, UsageUnit: "gigabyte hour"}}
+	instance4 := ComputeInstance{Cores: core4, Memory: mem4}
+
+	badCore := CoreInfo{Number: 32, UnitPricing: PricingInfo{HourlyUnitPrice: 785678}}
+	badMem := MemoryInfo{AmountGB: 2000, UnitPricing: PricingInfo{HourlyUnitPrice: 235977, UsageUnit: "gigbyte hour"}}
+	badInstance := ComputeInstance{Cores: badCore, Memory: badMem}
+
+	tests := []struct {
+		state ComputeInstanceState
+		dcore float64
+		dmem  float64
+		err   error
+	}{
+		{ComputeInstanceState{Before: &instance1, After: &instance2, Action: "test1"}, (16 - 4) * 12345, (500 - 1000) * 23455, nil},
+		{ComputeInstanceState{Before: &instance2, After: &instance3, Action: "test2"}, 8*67458 - 16*12345, 100*78996 - 500*23455, nil},
+		{ComputeInstanceState{Before: &instance3, After: &instance4, Action: "test3"}, 32*785678 - 8*67458, 2000*235977 - 100*78996, nil},
+		{ComputeInstanceState{Before: &instance2, After: &instance2, Action: "test4"}, 0, 0, nil},
+		{ComputeInstanceState{Before: &instance1, After: &badInstance, Action: "test6"}, 0, 0, fmt.Errorf("unknown final unit gigbyte")},
+	}
+
+	for _, test := range tests {
+		dcore, dmem, err := test.state.getDelta()
+		fail1 := (err == nil && test.err != nil) || (err != nil && test.err == nil)
+		fail2 := err != nil && test.err != nil && err.Error() != test.err.Error()
+		if math.Abs(dcore-test.dcore/nano) > epsilon || math.Abs(dmem-test.dmem/nano) > epsilon || fail1 || fail2 {
+			t.Errorf("<%s state>.getDelta() = %f, %f, %s ; want %f, %f, %s",
+				test.state.Action, dcore, dmem, err, test.dcore, test.dmem, test.err)
+		}
+	}
+}
