@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/golang/protobuf/jsonpb"
+
 	billingpb "google.golang.org/genproto/googleapis/cloud/billing/v1"
 )
 
@@ -194,9 +195,9 @@ func TestFitsDescription(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		actual := FitsDescription(test.sku, test.contains, test.omits)
+		actual := fitsDescription(test.sku, test.contains, test.omits)
 		if actual != test.ok {
-			t.Errorf("sku.Description = %s, FitsDescription(sku, %+v, %+v) = %t; want %t",
+			t.Errorf("sku.Description = %s, fitsDescription(sku, %+v, %+v) = %t; want %t",
 				test.sku.Description, test.contains, test.omits, actual, test.ok)
 		}
 	}
@@ -213,23 +214,22 @@ func TestFitsCategory(t *testing.T) {
 		sku                *billingpb.Sku
 		serviceDisplayName string
 		resourceFamily     string
-		resourceGroup      string
 		usageType          string
 		ok                 bool
 	}{
-		{&sku1, "Compute Engine", "Compute", "CPU", "Preemptible", true},
-		{&sku2, "VPN", "Compute", "CPU", "OnDemand", false},
-		{&sku3, "Compute Engine", "Compute Engine", "RAM", "Preemptible", false},
-		{&sku4, "Compute Engine", "Compute Engine", "CPU", "OnDemand", false},
-		{&sku4, "Compute Engine", "Compute Engine", "N1Standard", "Preemptible", false},
-		{&sku4, "Compute Engine", "Compute", "N1Standard", "OnDemand", true},
+		{&sku1, "Compute Engine", "Compute", "Preemptible", true},
+		{&sku2, "VPN", "Compute", "OnDemand", false},
+		{&sku3, "Compute Engine", "Compute Engine", "Preemptible", false},
+		{&sku4, "Compute Engine", "Compute Engine", "OnDemand", false},
+		{&sku4, "Compute Engine", "Compute Engine", "Preemptible", false},
+		{&sku4, "Compute Engine", "Compute", "OnDemand", true},
 	}
 
 	for _, test := range tests {
-		actual := FitsCategory(test.sku, test.serviceDisplayName, test.resourceFamily, test.resourceGroup, test.usageType)
+		actual := fitsCategory(test.sku, test.serviceDisplayName, test.resourceFamily, test.usageType)
 		if actual != test.ok {
-			t.Errorf("sku.Description = %s, FitsCategory(sku, %s, %s, %s, %s) = %t; want %t", test.sku.Description,
-				test.serviceDisplayName, test.resourceFamily, test.resourceGroup, test.usageType, actual, test.ok)
+			t.Errorf("sku.Description = %s, fitsCategory(sku, %s, %s, %s) = %t; want %t", test.sku.Description,
+				test.serviceDisplayName, test.resourceFamily, test.usageType, actual, test.ok)
 		}
 	}
 }
@@ -257,7 +257,7 @@ func TestFitsRegion(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		actual := FitsRegion(test.sku, test.region)
+		actual := fitsRegion(test.sku, test.region)
 		if actual != test.ok {
 			t.Errorf("sku.Description = %s, FitsRegion(sku, %s) = %t; want %t",
 				test.sku.Description, test.region, actual, test.ok)
