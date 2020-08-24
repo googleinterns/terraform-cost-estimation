@@ -11,8 +11,6 @@ import (
 	billingpb "google.golang.org/genproto/googleapis/cloud/billing/v1"
 )
 
-const nano = float64(1000 * 1000 * 1000)
-
 // PricingInfo stores the information from the billing API.
 type PricingInfo struct {
 	UsageUnit       string

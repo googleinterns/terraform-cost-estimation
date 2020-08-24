@@ -6,6 +6,11 @@ import (
 	billingpb "google.golang.org/genproto/googleapis/cloud/billing/v1"
 )
 
+const (
+	nano    = float64(1000 * 1000 * 1000)
+	epsilon = 1e-10
+)
+
 //ResourceState is the interface of a general before/after resource state(ComputeInstance,...).
 type ResourceState interface {
 	CompletePricingInfo(context.Context) error
