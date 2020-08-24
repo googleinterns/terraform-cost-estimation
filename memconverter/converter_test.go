@@ -2,10 +2,13 @@ package memconverter
 
 import (
 	"fmt"
+	"math"
 	"testing"
 )
 
-var (
+const (
+	epsilon = 1e-10
+
 	u1 = float64(1000)
 	u2 = float64(1024)
 
@@ -62,7 +65,7 @@ func TestConvert(t *testing.T) {
 
 	for _, test := range tests {
 		rez, err := Convert(test.from, test.num, test.to)
-		pass1 := err == nil && test.err == nil && rez == test.rez
+		pass1 := err == nil && test.err == nil && math.Abs(rez-test.rez) < epsilon
 		pass2 := err != nil && test.err != nil && err.Error() == test.err.Error()
 		if !(pass1 || pass2) {
 			t.Errorf("Convert(%s, %f, %s) = %f, %s; want %f, %s", test.from, test.num, test.to, rez, err.Error(), test.rez, test.err.Error())
