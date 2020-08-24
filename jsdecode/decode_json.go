@@ -76,7 +76,7 @@ func toComputeInstance(resource interface{}) (*resources.ComputeInstance, error)
 		usageType = "Preemptible"
 	}
 	//TODO add to mem/core info resourceGroup depending on MachineType.
-	return resources.NewComputeInstance(r.ID, r.Name, r.MachineType, r.Zone, r.usageType)
+	return resources.NewComputeInstance(r.InstanceID, r.Name, r.MachineType, r.Zone, r.usageType)
 }
 
 // GetChange returns the pointer to the struct with states of the
