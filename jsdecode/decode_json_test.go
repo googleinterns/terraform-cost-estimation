@@ -247,7 +247,7 @@ func TesttoComputeInstance(t *testing.T) {
 				Name:        "test",
 				MachineType: "",
 				Region:      "us-central1",
-				UsageType:	 "OnDemand",
+				UsageType:   "OnDemand",
 			},
 		},
 		{
@@ -267,7 +267,7 @@ func TesttoComputeInstance(t *testing.T) {
 				Name:        "test-us-east1-a-1",
 				MachineType: "n1-standard-1",
 				Region:      "us-east1",
-				UsageType:	 "OnDemand",
+				UsageType:   "OnDemand",
 			},
 		},
 		{
@@ -277,7 +277,7 @@ func TesttoComputeInstance(t *testing.T) {
 				Name:        "test-c2-standard-8",
 				MachineType: "c2-standard-8",
 				Region:      "us-central1",
-				UsageType:	 "OnDemand",
+				UsageType:   "OnDemand",
 			},
 		},
 	}
