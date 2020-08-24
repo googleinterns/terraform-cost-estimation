@@ -71,29 +71,12 @@ func toComputeInstance(resource interface{}) (*resources.ComputeInstance, error)
 		return nil, err
 	}
 
-	// Region of ComputeInstance is determined as <region>-<zone>, in case if r.Zone
-	// is empty we leave region empty and validate it in another function.
-	var region string
-	if len(r.Zone) >= 2 && r.Zone[len(r.Zone)-2] == '-' {
-		if r.Zone[len(r.Zone)-1] >= 'a' && r.Zone[len(r.Zone)-1] <= 'f' {
-			region = r.Zone[:len(r.Zone)-2]
-		}
-	} else {
-		region = r.Zone
-	}
-
 	usageType := "OnDemand"
- 	if len(r.Scheduling) >= 1 && r.Scheduling[0].IsPreemptible {
+	if len(r.Scheduling) >= 1 && r.Scheduling[0].IsPreemptible {
 		usageType = "Preemptible"
 	}
-	//TODO add resourceGroup in mem/core info
-	return &resources.ComputeInstance{
-		ID:          r.ID,
-		Name:        r.Name,
-		MachineType: r.MachineType,
-		Region:      region,
-		UsageType:   usageType,
-	}, nil
+	//TODO add to mem/core info resourceGroup depending on MachineType.
+	return resources.NewComputeInstance(r.ID, r.Name, r.MachineType, r.Zone, r.usageType)
 }
 
 // GetChange returns the pointer to the struct with states of the
