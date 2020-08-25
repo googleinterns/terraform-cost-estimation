@@ -105,7 +105,7 @@ var (
 								"access_config": [
 										{
 										"assigned_nat_ip": "",
-										"nat_ip": "34.72.220.173",
+										"nat_-ip": "34.72.220.173",
 										"network_tier": "PREMIUM",
 										"public_ptr_domain_name": ""
 										}
@@ -249,7 +249,10 @@ func TesttoComputeInstance(t *testing.T) {
 				Region:      "us-central1",
 				Zone:        "us-central1-a",
 				UsageType:   "OnDemand",
-				Description: {{"N1"}, {"Preemptible", "Commitment", "Custom"}},
+				Description: resources.Description{
+					[]string{"N1"},
+					[]string{"Preemptible", "Commitment", "Custom"},
+				},
 			},
 		},
 		{
@@ -260,7 +263,10 @@ func TesttoComputeInstance(t *testing.T) {
 				MachineType: "n1-standard-1",
 				Region:      "us-central1",
 				UsageType:   "Preemptible",
-				Description: {{"Preemptible", "N1"}, {"Commitment", "Custom"}},
+				Description: resources.Description{
+					[]string{"Preemptible", "N1"},
+					[]string{"Commitment", "Custom"},
+				},
 			},
 		},
 		{
@@ -272,7 +278,10 @@ func TesttoComputeInstance(t *testing.T) {
 				Zone:        "us-east1-a",
 				Region:      "us-east1",
 				UsageType:   "OnDemand",
-				Description: {{"N1"}, {"Preemptible", "Commitment", "Custom"}},
+				Description: resources.Description{
+					[]string{"N1"},
+					[]string{"Preemptible", "Commitment", "Custom"},
+				},
 			},
 		},
 		{
@@ -284,7 +293,10 @@ func TesttoComputeInstance(t *testing.T) {
 				Zone:        "us-central1-a",
 				Region:      "us-central1",
 				UsageType:   "OnDemand",
-				Description: {{"Compute"}, {"Preemptible", "Commitment", "Custom"}},
+				Description: resources.Description{
+					[]string{"Compute"},
+					[]string{"Preemptible", "Commitment", "Custom"},
+				},
 			},
 		},
 	}
@@ -325,7 +337,10 @@ func TestGetChange(t *testing.T) {
 			Region:      "us-central1",
 			Zone:        "us-central1-a",
 			UsageType:   "OnDemand",
-			Description: {{"N1"}, {"Preemptible", "Commitment", "Custom"}},
+			Description: resources.Description{
+				[]string{"N1"},
+				[]string{"Preemptible", "Commitment", "Custom"},
+			},
 		},
 		Action: "create",
 	}
@@ -365,7 +380,10 @@ func TestGetResources(t *testing.T) {
 				Region:      "us-central1",
 				Zone:        "us-central1-a",
 				UsageType:   "OnDemand",
-				Description: {{"N1"}, {"Preemptible", "Commitment", "Custom"}},
+				Description: resources.Description{
+					[]string{"N1"},
+					[]string{"Preemptible", "Commitment", "Custom"},
+				},
 			},
 			After: &resources.ComputeInstance{
 				ID:          "5889159656940809264",
@@ -374,7 +392,10 @@ func TestGetResources(t *testing.T) {
 				Region:      "us-central1",
 				Zone:        "us-central1-a",
 				UsageType:   "OnDemand",
-				Description: {{"N1"}, {"Preemptible", "Commitment", "Custom"}},
+				Description: resources.Description{
+					[]string{"N1"},
+					[]string{"Preemptible", "Commitment", "Custom"},
+				},
 			},
 			Action: "update",
 		},
