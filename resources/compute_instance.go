@@ -8,6 +8,7 @@ import (
 
 	billing "github.com/googleinterns/terraform-cost-estimation/billing"
 	conv "github.com/googleinterns/terraform-cost-estimation/memconverter"
+	cd "github.com/googleinterns/terraform-cost-estimation/resources/classdetail"
 	billingpb "google.golang.org/genproto/googleapis/cloud/billing/v1"
 )
 
@@ -180,6 +181,11 @@ func NewComputeInstance(id, name, machineType, zone, usageType string) (*Compute
 
 	instance.UsageType = usageType
 	err := instance.Description.fill(machineType, usageType)
+	if err != nil {
+		return nil, err
+	}
+
+	instance.Cores.Number, instance.Memory.AmountGB, err = cd.GetMachineDetails(machineType)
 	if err != nil {
 		return nil, err
 	}
