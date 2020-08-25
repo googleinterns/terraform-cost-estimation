@@ -75,9 +75,11 @@ func toComputeInstance(resource interface{}) (*resources.ComputeInstance, error)
 	if len(r.Scheduling) >= 1 && r.Scheduling[0].IsPreemptible {
 		usageType = "Preemptible"
 	}
-	//TODO add to mem/core info resourceGroup depending on MachineType.
 	return resources.NewComputeInstance(r.InstanceID, r.Name, r.MachineType, r.Zone, r.usageType)
 }
+
+// TODO pass the function f, for ComputeInstance it will be f = toComputeInstance():
+// func GetChange(change *tfjson.Change, f func(interface{})(*resources.Resource, error)) (*resources.ResourceState, error) {
 
 // GetChange returns the pointer to the struct with states of the
 // certain resource of ComputeInstance type.
@@ -126,6 +128,7 @@ func GetResources(plan *tfjson.Plan) []*resources.ComputeInstanceState {
 	var resources []*resources.ComputeInstanceState
 	for _, resourceChange := range plan.ResourceChanges {
 		if ComputeInstanceType == resourceChange.Type {
+			// if resource, err := GetChange(resourceChange.Change, toComputeInstance()); resource != nil && err == nil {
 			if resource, err := GetChange(resourceChange.Change); resource != nil && err == nil {
 				resources = append(resources, resource)
 			}
