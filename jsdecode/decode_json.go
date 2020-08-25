@@ -2,11 +2,11 @@ package jsdecode
 
 import (
 	"encoding/json"
-	"fmt"
 	resources "github.com/googleinterns/terraform-cost-estimation/resources"
 	tfjson "github.com/hashicorp/terraform-json"
 	"io"
 	"io/ioutil"
+	"log"
 )
 
 // ComputeInstanceType is the type of ResourceChange and Resource supported
@@ -75,7 +75,14 @@ func toComputeInstance(resource interface{}) (*resources.ComputeInstance, error)
 	if len(r.Scheduling) >= 1 && r.Scheduling[0].IsPreemptible {
 		usageType = "Preemptible"
 	}
-	return resources.NewComputeInstance(r.InstanceID, r.Name, r.MachineType, r.Zone, usageType)
+	//In NewComputeInstance missed name, need add this to pass tests
+	instance, err := resources.NewComputeInstance(r.InstanceID, r.Name, r.MachineType, r.Zone, usageType)
+	if err != nil {
+		return nil, err
+	}
+	instance.Name = r.Name
+	return instance, nil
+	//return resources.NewComputeInstance(r.InstanceID, r.Name, r.MachineType, r.Zone, usageType)
 }
 
 // TODO pass the function f, for ComputeInstance it will be f = toComputeInstance():
@@ -93,7 +100,6 @@ func GetChange(change *tfjson.Change) (*resources.ComputeInstanceState, error) {
 		return nil, err
 	}
 
-	//TODO consider action read
 	actions := change.Actions
 	var action string
 	switch true {
@@ -108,7 +114,7 @@ func GetChange(change *tfjson.Change) (*resources.ComputeInstanceState, error) {
 	case actions.Replace():
 		action = ActionReplace
 	default:
-		return nil, fmt.Errorf("Wrong action provided.")
+		log.Println("Wrong action provided.")
 	}
 
 	resource := &resources.ComputeInstanceState{
