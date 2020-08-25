@@ -221,11 +221,6 @@ var (
 	mem3  = mem1
 )
 
-const (
-	nano    = float64(1000 * 1000 * 1000)
-	epsilon = 1e-10
-)
-
 func mapToDescription(skus []*billingpb.Sku) (mapped []string) {
 	for _, sku := range skus {
 		mapped = append(mapped, sku.Description)
