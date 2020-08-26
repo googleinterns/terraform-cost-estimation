@@ -8,6 +8,7 @@ import (
 
 	billing "github.com/googleinterns/terraform-cost-estimation/billing"
 	conv "github.com/googleinterns/terraform-cost-estimation/memconverter"
+	cd "github.com/googleinterns/terraform-cost-estimation/resources/classdetail"
 	billingpb "google.golang.org/genproto/googleapis/cloud/billing/v1"
 )
 
@@ -19,11 +20,65 @@ type PricingInfo struct {
 	CurrencyUnit    string
 }
 
-// Description holds information about additional information the SKU
-// description contains/omits (Preemptible, Custom, Predefined etc.).
+// Description holds information about information the SKU
+// description contains/omits (Preemptible, Custom, Type etc.).
 type Description struct {
 	Contains []string
 	Omits    []string
+}
+
+func (d *Description) fill(machineType, usageType string) error {
+	anythingButN1 := []string{"N2", "N2D", "E2", "Compute", "Memory", "Sole Tenancy"}
+
+	if usageType == "Preemptible" {
+		d.Contains = append(d.Contains, "Preemptible")
+	} else {
+		d.Omits = append(d.Omits, "Preemptible")
+	}
+
+	if strings.HasPrefix(usageType, "Commit") {
+		d.Contains = append(d.Contains, "Commitment")
+		if strings.Contains(machineType, "n1") {
+			d.Omits = append(d.Omits, "N1")
+			d.Omits = append(d.Omits, anythingButN1...)
+		}
+	} else {
+		d.Omits = append(d.Omits, "Commitment")
+	}
+
+	if strings.Contains(machineType, "custom") {
+		d.Contains = append(d.Contains, "Custom")
+	} else {
+		d.Omits = append(d.Omits, "Custom")
+	}
+
+	if strings.HasPrefix(machineType, "custom") {
+		d.Omits = append(d.Omits, "N1")
+		d.Omits = append(d.Omits, anythingButN1...)
+	} else {
+
+		switch {
+		case strings.HasPrefix(machineType, "c2-"):
+			d.Contains = append(d.Contains, "Compute")
+		case strings.HasPrefix(machineType, "m1-") || strings.HasPrefix(machineType, "m2-"):
+			d.Contains = append(d.Contains, "Memory")
+		case strings.HasPrefix(machineType, "n1-mega") || strings.HasPrefix(machineType, "n1-ultra"):
+			d.Contains = append(d.Contains, "Memory")
+		case strings.HasPrefix(machineType, "n1-"):
+			if !strings.HasPrefix(usageType, "Commit") {
+				d.Contains = append(d.Contains, "N1")
+			}
+		default:
+			i := strings.Index(machineType, "-")
+			if i < 0 {
+				return fmt.Errorf("wrong machine type format")
+			}
+
+			d.Contains = append(d.Contains, strings.ToUpper(machineType[:i]))
+		}
+	}
+
+	return nil
 }
 
 // CoreInfo stores CPU core details.
@@ -38,7 +93,7 @@ func (core *CoreInfo) getPricingInfo() PricingInfo {
 }
 
 func (core *CoreInfo) isMatch(sku *billingpb.Sku) bool {
-	return core.ResourceGroup == sku.Category.ResourceGroup
+	return core.ResourceGroup == sku.Category.ResourceGroup && !strings.Contains(sku.Description, "Ram")
 }
 
 func (core *CoreInfo) completePricingInfo(skus []*billingpb.Sku) error {
@@ -54,7 +109,6 @@ func (core *CoreInfo) completePricingInfo(skus []*billingpb.Sku) error {
 }
 
 func (core *CoreInfo) getTotalPrice() float64 {
-	nano := float64(1000 * 1000 * 1000)
 	return float64(core.UnitPricing.HourlyUnitPrice*int64(core.Number)) / nano
 }
 
@@ -70,7 +124,7 @@ func (mem *MemoryInfo) getPricingInfo() PricingInfo {
 }
 
 func (mem *MemoryInfo) isMatch(sku *billingpb.Sku) bool {
-	return mem.ResourceGroup == sku.Category.ResourceGroup
+	return mem.ResourceGroup == sku.Category.ResourceGroup && !strings.Contains(sku.Description, "Core")
 }
 
 func (mem *MemoryInfo) completePricingInfo(skus []*billingpb.Sku) error {
@@ -86,7 +140,6 @@ func (mem *MemoryInfo) completePricingInfo(skus []*billingpb.Sku) error {
 }
 
 func (mem *MemoryInfo) getTotalPrice() (float64, error) {
-	nano := float64(1000 * 1000 * 1000)
 	unitType := strings.Split(mem.UnitPricing.UsageUnit, " ")[0]
 	unitsNum, err := conv.Convert("gb", mem.AmountGB, unitType)
 
@@ -104,9 +157,40 @@ type ComputeInstance struct {
 	MachineType string
 	Description Description
 	Region      string
+	Zone        string
 	UsageType   string
 	Memory      MemoryInfo
 	Cores       CoreInfo
+}
+
+// NewComputeInstance builds a compute instance with the specified fields
+// and fills the other resource details.
+// Returns a pointer to a ComputeInstance structure.
+func NewComputeInstance(id, name, machineType, zone, usageType string) (*ComputeInstance, error) {
+	instance := new(ComputeInstance)
+
+	instance.ID = id
+	instance.MachineType = machineType
+	instance.Zone = zone
+
+	i := strings.LastIndex(zone, "-")
+	if i < 0 {
+		return nil, fmt.Errorf("invalid zone format")
+	}
+	instance.Region = zone[:i]
+
+	instance.UsageType = usageType
+	err := instance.Description.fill(machineType, usageType)
+	if err != nil {
+		return nil, err
+	}
+
+	instance.Cores.Number, instance.Memory.AmountGB, err = cd.GetMachineDetails(machineType)
+	if err != nil {
+		return nil, err
+	}
+
+	return instance, nil
 }
 
 // CompletePricingInfo fills the pricing information fields.
