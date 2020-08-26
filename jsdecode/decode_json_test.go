@@ -1,15 +1,5 @@
 package jsdecode
 
-import (
-	"encoding/json"
-	"github.com/davecgh/go-spew/spew"
-	resources "github.com/googleinterns/terraform-cost-estimation/resources"
-	tfjson "github.com/hashicorp/terraform-json"
-	"os"
-	"reflect"
-	"testing"
-)
-
 var (
 	str1 = `
 		{
@@ -229,7 +219,7 @@ var (
 		`
 )
 
-func TesttoComputeInstance(t *testing.T) {
+/*func TesttoComputeInstance(t *testing.T) {
 	var res1, res2, res3, res4 interface{}
 	json.Unmarshal([]byte(str1), &res1)
 	json.Unmarshal([]byte(str2), &res2)
@@ -406,3 +396,4 @@ func TestGetResources(t *testing.T) {
 		t.Errorf("expected:\n\n%s\n\ngot:\n\n%s", spew.Sdump(expected), spew.Sdump(actual))
 	}
 }
+*/
