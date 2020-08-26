@@ -75,7 +75,13 @@ func toComputeInstance(resource interface{}) (*resources.ComputeInstance, error)
 	if len(r.Scheduling) >= 1 && r.Scheduling[0].IsPreemptible {
 		usageType = "Preemptible"
 	}
-	return resources.NewComputeInstance(r.InstanceID, r.Name, r.MachineType, r.Zone, usageType)
+	instance, err := resources.NewComputeInstance(r.InstanceID, r.Name, r.MachineType, r.Zone, usageType)
+	if err != nil {
+		return instance, err
+	}
+	instance.Name = r.Name
+	return instance, nil
+	// return resources.NewComputeInstance(r.InstanceID, r.Name, r.MachineType, r.Zone, usageType)
 }
 
 // TODO pass the function f, for ComputeInstance it will be f = toComputeInstance():
