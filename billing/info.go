@@ -10,8 +10,7 @@ import (
 	billingpb "google.golang.org/genproto/googleapis/cloud/billing/v1"
 )
 
-// FitsDescription checks if an SKU description fits the requirements.
-func FitsDescription(sku *billingpb.Sku, contains, omits []string) bool {
+func fitsDescription(sku *billingpb.Sku, contains, omits []string) bool {
 	if contains != nil {
 		for _, d := range contains {
 			if !strings.Contains(sku.Description, d) {
@@ -31,16 +30,14 @@ func FitsDescription(sku *billingpb.Sku, contains, omits []string) bool {
 	return true
 }
 
-// FitsCategory checks if an SKU has the requested category attributes.
-func FitsCategory(sku *billingpb.Sku, serviceDisplayName, resourceFamily, resourceGroup, usageType string) bool {
+func fitsCategory(sku *billingpb.Sku, serviceDisplayName, resourceFamily, usageType string) bool {
 	c := sku.Category
 	cond1 := c.ServiceDisplayName == serviceDisplayName && c.ResourceFamily == resourceFamily
-	cond2 := c.ResourceGroup == resourceGroup && c.UsageType == usageType
+	cond2 := c.UsageType == usageType
 	return cond1 && cond2
 }
 
-// FitsRegion checks if the SKU is available in a specific region.
-func FitsRegion(sku *billingpb.Sku, region string) bool {
+func fitsRegion(sku *billingpb.Sku, region string) bool {
 	if sku.ServiceRegions != nil {
 		for _, r := range sku.ServiceRegions {
 			if r == region {
@@ -89,6 +86,49 @@ func GetSKUs(ctx context.Context) ([]*billingpb.Sku, error) {
 	return skus, nil
 }
 
+// DescriptionFilter returns the SKUs that meet the description requirements.
+func DescriptionFilter(skus []*billingpb.Sku, contains, omits []string) ([]*billingpb.Sku, error) {
+	if skus == nil || len(skus) == 0 {
+		return nil, fmt.Errorf("SKU list must not be empty")
+	}
+
+	filtered := []*billingpb.Sku{}
+
+	for _, sku := range skus {
+		if fitsDescription(sku, contains, omits) {
+			filtered = append(filtered, sku)
+		}
+	}
+
+	if filtered == nil || len(filtered) == 0 {
+		return nil, fmt.Errorf("no SKU with the specified description")
+	}
+
+	return filtered, nil
+}
+
+// CategoryFilter returns the SKUs with the specified category attributes.
+func CategoryFilter(skus []*billingpb.Sku, serviceDisplayName,
+	resourceFamily, usageType string) ([]*billingpb.Sku, error) {
+	if skus == nil || len(skus) == 0 {
+		return nil, fmt.Errorf("SKU list must not be empty")
+	}
+
+	filtered := []*billingpb.Sku{}
+
+	for _, sku := range skus {
+		if fitsCategory(sku, serviceDisplayName, resourceFamily, usageType) {
+			filtered = append(filtered, sku)
+		}
+	}
+
+	if filtered == nil || len(filtered) == 0 {
+		return nil, fmt.Errorf("no SKU from the specified category")
+	}
+
+	return filtered, nil
+}
+
 // RegionFilter returns the SKUs from the specified region.
 func RegionFilter(skus []*billingpb.Sku, region string) ([]*billingpb.Sku, error) {
 	if skus == nil || len(skus) == 0 {
@@ -98,7 +138,7 @@ func RegionFilter(skus []*billingpb.Sku, region string) ([]*billingpb.Sku, error
 	filtered := []*billingpb.Sku{}
 
 	for _, sku := range skus {
-		if FitsRegion(sku, region) {
+		if fitsRegion(sku, region) {
 			filtered = append(filtered, sku)
 		}
 	}
