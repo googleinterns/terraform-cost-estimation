@@ -170,6 +170,7 @@ func NewComputeInstance(id, name, machineType, zone, usageType string) (*Compute
 	instance := new(ComputeInstance)
 
 	instance.ID = id
+	instance.Name = name
 	instance.MachineType = machineType
 	instance.Zone = zone
 
