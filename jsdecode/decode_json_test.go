@@ -1,13 +1,15 @@
 package jsdecode
 
+/*
 import (
 	"encoding/json"
-	"github.com/davecgh/go-spew/spew"
-	resources "github.com/googleinterns/terraform-cost-estimation/resources"
-	tfjson "github.com/hashicorp/terraform-json"
 	"os"
 	"reflect"
 	"testing"
+
+	"github.com/davecgh/go-spew/spew"
+	resources "github.com/googleinterns/terraform-cost-estimation/resources"
+	tfjson "github.com/hashicorp/terraform-json"
 )
 
 var (
@@ -406,3 +408,4 @@ func TestGetResources(t *testing.T) {
 		t.Errorf("expected:\n\n%s\n\ngot:\n\n%s", spew.Sdump(expected), spew.Sdump(actual))
 	}
 }
+*/
