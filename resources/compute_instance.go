@@ -47,7 +47,9 @@ func (d *Description) fill(machineType, usageType string) error {
 	}
 
 	if strings.Contains(machineType, "custom") {
-		d.Contains = append(d.Contains, "Custom")
+		if !strings.HasPrefix(machineType, "e2") {
+			d.Contains = append(d.Contains, "Custom")
+		}
 	} else {
 		d.Omits = append(d.Omits, "Custom")
 	}
