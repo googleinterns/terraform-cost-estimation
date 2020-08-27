@@ -213,12 +213,6 @@ var (
 		]
 	}
 	`
-	core1 = CoreInfo{"CPU", 4, PricingInfo{}}
-	core2 = CoreInfo{"CPU", 8, PricingInfo{}}
-	core3 = core1
-	mem1  = MemoryInfo{"RAM", 100, PricingInfo{}}
-	mem2  = MemoryInfo{"N1Standard", 150, PricingInfo{}}
-	mem3  = mem1
 )
 
 func mapToDescription(skus []*billingpb.Sku) (mapped []string) {
@@ -240,6 +234,13 @@ func TestCompletePricingInfo(t *testing.T) {
 	jsonpb.UnmarshalString(str3, sku3)
 	jsonpb.UnmarshalString(str4, sku4)
 	jsonpb.UnmarshalString(str5, sku5)
+
+	core1 := CoreInfo{ResourceGroup: "CPU", Number: 4, UnitPricing: PricingInfo{}}
+	core2 := CoreInfo{ResourceGroup: "CPU", Number: 8, UnitPricing: PricingInfo{}}
+	core3 := core1
+	mem1 := MemoryInfo{ResourceGroup: "RAM", AmountGiB: 100, UnitPricing: PricingInfo{}}
+	mem2 := MemoryInfo{ResourceGroup: "N1Standard", AmountGiB: 150, UnitPricing: PricingInfo{}}
+	mem3 := mem1
 
 	tests := []struct {
 		skuObj  skuObject
@@ -293,26 +294,24 @@ func TestCoreGetTotalPrice(t *testing.T) {
 }
 
 func TestMemGetTotalPrice(t *testing.T) {
-	m1 := MemoryInfo{AmountGB: 100, UnitPricing: PricingInfo{HourlyUnitPrice: 6980000, UsageUnit: "gigabyte hour"}}
-	m2 := MemoryInfo{AmountGB: 50, UnitPricing: PricingInfo{HourlyUnitPrice: 44856000, UsageUnit: "pebibyte hour"}}
-	m3 := MemoryInfo{AmountGB: 320, UnitPricing: PricingInfo{HourlyUnitPrice: 1121733, UsageUnit: "tebibyte hour"}}
-	m4 := MemoryInfo{AmountGB: 16, UnitPricing: PricingInfo{HourlyUnitPrice: 2701000, UsageUnit: "gibibyte hour"}}
-	m5 := MemoryInfo{AmountGB: 160, UnitPricing: PricingInfo{HourlyUnitPrice: 2701000, UsageUnit: "giBibyte hour"}}
+	m1 := MemoryInfo{AmountGiB: 100, UnitPricing: PricingInfo{HourlyUnitPrice: 6980000, UsageUnit: "gigabyte hour"}}
+	m2 := MemoryInfo{AmountGiB: 50, UnitPricing: PricingInfo{HourlyUnitPrice: 44856000, UsageUnit: "pebibyte hour"}}
+	m3 := MemoryInfo{AmountGiB: 320, UnitPricing: PricingInfo{HourlyUnitPrice: 1121733, UsageUnit: "tebibyte hour"}}
+	m4 := MemoryInfo{AmountGiB: 16, UnitPricing: PricingInfo{HourlyUnitPrice: 2701000, UsageUnit: "gibibyte hour"}}
+	m5 := MemoryInfo{AmountGiB: 160, UnitPricing: PricingInfo{HourlyUnitPrice: 2701000, UsageUnit: "giBibyte hour"}}
 
 	gb := float64(1000 * 1000 * 1000)
 	gib := float64(1024 * 1024 * 1024)
-	tib := gib * float64(1024)
-	pib := tib * float64(1024)
 
 	tests := []struct {
 		mem   MemoryInfo
 		price float64
 		err   error
 	}{
-		{m1, float64(6980000) / nano * 100, nil},
-		{m2, float64(44856000) / nano * 50 * gb / pib, nil},
-		{m3, float64(1121733) / nano * 320 * gb / tib, nil},
-		{m4, float64(2701000) / nano * 16 * gb / gib, nil},
+		{m1, float64(6980000) / nano * 100 * gib / gb, nil},
+		{m2, float64(44856000) / nano * 50 / (1024 * 1024), nil},
+		{m3, float64(1121733) / nano * 320 / 1024, nil},
+		{m4, float64(2701000) / nano * 16, nil},
 		{m5, 0, fmt.Errorf("unknown final unit giBibyte")},
 	}
 
@@ -328,23 +327,23 @@ func TestMemGetTotalPrice(t *testing.T) {
 
 func TestGetDelta(t *testing.T) {
 	core1 := CoreInfo{Number: 4, UnitPricing: PricingInfo{HourlyUnitPrice: 12345}}
-	mem1 := MemoryInfo{AmountGB: 1000, UnitPricing: PricingInfo{HourlyUnitPrice: 23455, UsageUnit: "gigabyte hour"}}
+	mem1 := MemoryInfo{AmountGiB: 1000, UnitPricing: PricingInfo{HourlyUnitPrice: 23455, UsageUnit: "gibibyte hour"}}
 	instance1 := ComputeInstance{Cores: core1, Memory: mem1}
 
 	core2 := CoreInfo{Number: 16, UnitPricing: PricingInfo{HourlyUnitPrice: 12345}}
-	mem2 := MemoryInfo{AmountGB: 500, UnitPricing: PricingInfo{HourlyUnitPrice: 23455, UsageUnit: "gigabyte hour"}}
+	mem2 := MemoryInfo{AmountGiB: 500, UnitPricing: PricingInfo{HourlyUnitPrice: 23455, UsageUnit: "gibibyte hour"}}
 	instance2 := ComputeInstance{Cores: core2, Memory: mem2}
 
 	core3 := CoreInfo{Number: 8, UnitPricing: PricingInfo{HourlyUnitPrice: 67458}}
-	mem3 := MemoryInfo{AmountGB: 100, UnitPricing: PricingInfo{HourlyUnitPrice: 78996, UsageUnit: "gigabyte hour"}}
+	mem3 := MemoryInfo{AmountGiB: 100, UnitPricing: PricingInfo{HourlyUnitPrice: 78996, UsageUnit: "gibibyte hour"}}
 	instance3 := ComputeInstance{Cores: core3, Memory: mem3}
 
 	core4 := CoreInfo{Number: 32, UnitPricing: PricingInfo{HourlyUnitPrice: 785678}}
-	mem4 := MemoryInfo{AmountGB: 2000, UnitPricing: PricingInfo{HourlyUnitPrice: 235977, UsageUnit: "gigabyte hour"}}
+	mem4 := MemoryInfo{AmountGiB: 2000, UnitPricing: PricingInfo{HourlyUnitPrice: 235977, UsageUnit: "gibibyte hour"}}
 	instance4 := ComputeInstance{Cores: core4, Memory: mem4}
 
 	badCore := CoreInfo{Number: 32, UnitPricing: PricingInfo{HourlyUnitPrice: 785678}}
-	badMem := MemoryInfo{AmountGB: 2000, UnitPricing: PricingInfo{HourlyUnitPrice: 235977, UsageUnit: "gigbyte hour"}}
+	badMem := MemoryInfo{AmountGiB: 2000, UnitPricing: PricingInfo{HourlyUnitPrice: 235977, UsageUnit: "gigbyte hour"}}
 	badInstance := ComputeInstance{Cores: badCore, Memory: badMem}
 
 	tests := []struct {
