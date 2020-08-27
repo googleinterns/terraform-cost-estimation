@@ -117,7 +117,8 @@ func (core *CoreInfo) getTotalPrice() float64 {
 // MemoryInfo stores memory details.
 type MemoryInfo struct {
 	ResourceGroup string
-	AmountGB      float64
+	AmountGiB     float64
+	Extended      bool
 	UnitPricing   PricingInfo
 }
 
@@ -126,7 +127,8 @@ func (mem *MemoryInfo) getPricingInfo() PricingInfo {
 }
 
 func (mem *MemoryInfo) isMatch(sku *billingpb.Sku) bool {
-	return mem.ResourceGroup == sku.Category.ResourceGroup && !strings.Contains(sku.Description, "Core")
+	return mem.ResourceGroup == sku.Category.ResourceGroup && !strings.Contains(sku.Description, "Core") &&
+		strings.Contains(sku.Description, "Extended") == mem.Extended
 }
 
 func (mem *MemoryInfo) completePricingInfo(skus []*billingpb.Sku) error {
@@ -143,7 +145,7 @@ func (mem *MemoryInfo) completePricingInfo(skus []*billingpb.Sku) error {
 
 func (mem *MemoryInfo) getTotalPrice() (float64, error) {
 	unitType := strings.Split(mem.UnitPricing.UsageUnit, " ")[0]
-	unitsNum, err := conv.Convert("gb", mem.AmountGB, unitType)
+	unitsNum, err := conv.Convert("gib", mem.AmountGiB, unitType)
 
 	if err != nil {
 		return 0, err
@@ -188,10 +190,12 @@ func NewComputeInstance(id, name, machineType, zone, usageType string) (*Compute
 		return nil, err
 	}
 
-	instance.Cores.Number, instance.Memory.AmountGB, err = cd.GetMachineDetails(machineType)
+	instance.Cores.Number, instance.Memory.AmountGiB, err = cd.GetMachineDetails(machineType)
 	if err != nil {
 		return nil, err
 	}
+
+	instance.Memory.Extended = strings.Contains(machineType, "custom") && strings.HasSuffix(machineType, "-ext")
 
 	return instance, nil
 }
