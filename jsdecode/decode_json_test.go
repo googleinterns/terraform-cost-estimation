@@ -238,68 +238,30 @@ func TesttoComputeInstance(t *testing.T) {
 	json.Unmarshal([]byte(str3), &res3)
 	json.Unmarshal([]byte(str4), &res4)
 
+	out1, _ := resources.NewComputeInstance("", "test", "n1-standard-1", "us-central1-a", "OnDemand")
+	out2, _ := resources.NewComputeInstance("5889159656940809264", "test", "n1-standard-1", "us-central1-a", "Preemptible")
+	out3, _ := resources.NewComputeInstance("", "test-us-east1-a-1", "n1-standard-1", "us-east1-a", "OnDemand")
+	out4, _ := resources.NewComputeInstance("", "test-c2-standard-8", "c2-standard-8", "us-central1-a", "OnDemand")
+
 	tests := []struct {
 		in       interface{}
 		expected *resources.ComputeInstance
 	}{
 		{
 			res1,
-			&resources.ComputeInstance{
-				ID:          "",
-				Name:        "test",
-				MachineType: "n1-standard-1",
-				Region:      "us-central1",
-				Zone:        "us-central1-a",
-				UsageType:   "OnDemand",
-				Description: resources.Description{
-					[]string{"N1"},
-					[]string{"Preemptible", "Commitment", "Custom"},
-				},
-			},
+			out1,
 		},
 		{
 			res2,
-			&resources.ComputeInstance{
-				ID:          "5889159656940809264",
-				Name:        "test",
-				MachineType: "n1-standard-1",
-				Region:      "us-central1",
-				UsageType:   "Preemptible",
-				Description: resources.Description{
-					[]string{"Preemptible", "N1"},
-					[]string{"Commitment", "Custom"},
-				},
-			},
+			out2,
 		},
 		{
 			res3,
-			&resources.ComputeInstance{
-				ID:          "",
-				Name:        "test-us-east1-a-1",
-				MachineType: "n1-standard-1",
-				Zone:        "us-east1-a",
-				Region:      "us-east1",
-				UsageType:   "OnDemand",
-				Description: resources.Description{
-					[]string{"N1"},
-					[]string{"Preemptible", "Commitment", "Custom"},
-				},
-			},
+			out3,
 		},
 		{
 			res4,
-			&resources.ComputeInstance{
-				ID:          "",
-				Name:        "test-c2-standard-8",
-				MachineType: "c2-standard-8",
-				Zone:        "us-central1-a",
-				Region:      "us-central1",
-				UsageType:   "OnDemand",
-				Description: resources.Description{
-					[]string{"Compute"},
-					[]string{"Preemptible", "Commitment", "Custom"},
-				},
-			},
+			out4,
 		},
 	}
 
@@ -331,19 +293,10 @@ func TestGetChange(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	after, _ := resources.NewComputeInstance("", "test", "n1-standard-1", "us-central1-a", "OnDemand")
 	expected := &resources.ComputeInstanceState{
 		Before: nil,
-		After: &resources.ComputeInstance{
-			Name:        "test",
-			MachineType: "n1-standard-1",
-			Region:      "us-central1",
-			Zone:        "us-central1-a",
-			UsageType:   "OnDemand",
-			Description: resources.Description{
-				[]string{"N1"},
-				[]string{"Preemptible", "Commitment", "Custom"},
-			},
-		},
+		After:  after,
 		Action: "create",
 	}
 
@@ -373,32 +326,12 @@ func TestGetResources(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	before, _ := resources.NewComputeInstance("5889159656940809264", "test", "n1-standard-1", "us-central1-a", "OnDemand")
+	after, _ := resources.NewComputeInstance("5889159656940809264", "test", "n1-standard-2", "us-central1-a", "OnDemand")
 	expected := []*resources.ComputeInstanceState{
 		&resources.ComputeInstanceState{
-			Before: &resources.ComputeInstance{
-				ID:          "5889159656940809264",
-				Name:        "test",
-				MachineType: "n1-standard-1",
-				Region:      "us-central1",
-				Zone:        "us-central1-a",
-				UsageType:   "OnDemand",
-				Description: resources.Description{
-					[]string{"N1"},
-					[]string{"Preemptible", "Commitment", "Custom"},
-				},
-			},
-			After: &resources.ComputeInstance{
-				ID:          "5889159656940809264",
-				Name:        "test",
-				MachineType: "n1-standard-2",
-				Region:      "us-central1",
-				Zone:        "us-central1-a",
-				UsageType:   "OnDemand",
-				Description: resources.Description{
-					[]string{"N1"},
-					[]string{"Preemptible", "Commitment", "Custom"},
-				},
-			},
+			Before: before,
+			After:  after,
 			Action: "update",
 		},
 	}
