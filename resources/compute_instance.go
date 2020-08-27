@@ -47,7 +47,9 @@ func (d *Description) fill(machineType, usageType string) error {
 	}
 
 	if strings.Contains(machineType, "custom") {
-		d.Contains = append(d.Contains, "Custom")
+		if !strings.HasPrefix(machineType, "e2") {
+			d.Contains = append(d.Contains, "Custom")
+		}
 	} else {
 		d.Omits = append(d.Omits, "Custom")
 	}
@@ -170,6 +172,7 @@ func NewComputeInstance(id, name, machineType, zone, usageType string) (*Compute
 	instance := new(ComputeInstance)
 
 	instance.ID = id
+	instance.Name = name
 	instance.MachineType = machineType
 	instance.Zone = zone
 

@@ -25,6 +25,11 @@ func TestGetMachineDetails(t *testing.T) {
 		{"n2-standard-3", 0, 0, fmt.Errorf("machine type not supported")},
 		{"n1-highm-16", 0, 0, fmt.Errorf("machine type not supported")},
 		{"e2-nano", 0, 0, fmt.Errorf("machine type not supported")},
+		{"custom-2-1024", 2, 1, nil},
+		{"e2-custom-4-2048", 4, 2, nil},
+		{"n2d-custom-2-1280", 2, 1.25, nil},
+		{"custom-2-1024-ext", 2, 1, nil},
+		{"custom-2", 0, 0, fmt.Errorf("invalid custom machine type format")},
 	}
 
 	for _, test := range tests {
