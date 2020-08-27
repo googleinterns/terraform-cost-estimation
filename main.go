@@ -1,9 +1,12 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"os"
+
+	"github.com/googleinterns/terraform-cost-estimation/jsdecode"
 )
 
 var out = flag.String("out", "stdout", `Write the cost estimation to a given file path. If set to 'stdout',
@@ -37,14 +40,40 @@ func main() {
 		os.Exit(1)
 	}
 
-	// TODO: use jsdecode package to get resources
+	plan, err := jsdecode.ExtractPlanStruct(fin)
+	if err != nil {
+		fmt.Fprint(os.Stderr, "Error:"+err.Error()+"\n")
+		os.Exit(2)
+	}
 
 	if errFin = fin.Close(); errFin != nil {
 		fmt.Fprintf(os.Stderr, "Error: "+errFin.Error()+"\n")
 		os.Exit(1)
 	}
 
-	// TODO: get pricing info
+	resources := jsdecode.GetResources(plan)
+
+	var fout *os.File
+	var errFout error
+	if *out == "stdout" {
+		fout = os.Stdout
+	} else {
+		fout, errFout = os.Open(*out)
+		if errFout != nil {
+			fmt.Fprintf(os.Stderr, "Error: "+errFout.Error()+"\n")
+			os.Exit(3)
+		}
+	}
+
+	for _, r := range resources {
+		r.CompletePricingInfo(context.Background())
+		r.PrintPricingInfo(fout)
+	}
+
+	if errFout = fout.Close(); errFout != nil {
+		fmt.Fprintf(os.Stderr, "Error: "+errFout.Error()+"\n")
+		os.Exit(1)
+	}
 
 	// TODO: print output
 }
