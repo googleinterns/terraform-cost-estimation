@@ -197,6 +197,14 @@ func NewComputeInstance(id, name, machineType, zone, usageType string) (*Compute
 
 	instance.Memory.Extended = strings.Contains(machineType, "custom") && strings.HasSuffix(machineType, "-ext")
 
+	if (strings.HasPrefix(machineType, "n1-standard") || strings.HasPrefix(machineType, "n1-high")) && !strings.HasPrefix(usageType, "Commit") {
+		instance.Memory.ResourceGroup = "N1Standard"
+		instance.Cores.ResourceGroup = "N1Standard"
+	} else {
+		instance.Memory.ResourceGroup = "RAM"
+		instance.Cores.ResourceGroup = "CPU"
+	}
+
 	return instance, nil
 }
 
@@ -218,7 +226,7 @@ func (instance *ComputeInstance) CompletePricingInfo(ctx context.Context) error 
 		return err
 	}
 
-	filtered, err = billing.CategoryFilter(filtered, "Compute Instance", "Compute", instance.UsageType)
+	filtered, err = billing.CategoryFilter(filtered, "Compute Engine", "Compute", instance.UsageType)
 	if err != nil {
 		return err
 	}
@@ -246,14 +254,18 @@ type ComputeInstanceState struct {
 
 // CompletePricingInfo completes pricing information of both before and after states.
 func (state *ComputeInstanceState) CompletePricingInfo(ctx context.Context) error {
-	err1 := state.Before.CompletePricingInfo(ctx)
-	if err1 != nil {
-		return err1
+	if state.Before != nil {
+		err1 := state.Before.CompletePricingInfo(ctx)
+		if err1 != nil {
+			return err1
+		}
 	}
 
-	err2 := state.After.CompletePricingInfo(ctx)
-	if err2 != nil {
-		return err2
+	if state.After != nil {
+		err2 := state.After.CompletePricingInfo(ctx)
+		if err2 != nil {
+			return err2
+		}
 	}
 	return nil
 }
