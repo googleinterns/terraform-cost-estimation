@@ -3,12 +3,13 @@ package jsdecode
 /*
 import (
 	"encoding/json"
-	"github.com/davecgh/go-spew/spew"
-	resources "github.com/googleinterns/terraform-cost-estimation/resources"
-	tfjson "github.com/hashicorp/terraform-json"
 	"os"
 	"reflect"
 	"testing"
+
+	"github.com/davecgh/go-spew/spew"
+	resources "github.com/googleinterns/terraform-cost-estimation/resources"
+	tfjson "github.com/hashicorp/terraform-json"
 )
 
 var (
