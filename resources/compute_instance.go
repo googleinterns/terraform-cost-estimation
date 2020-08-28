@@ -89,6 +89,7 @@ func (d *Description) fill(machineType, usageType string) error {
 type CoreInfo struct {
 	ResourceGroup string
 	Number        int
+	Fractional    float64
 	UnitPricing   PricingInfo
 }
 
@@ -113,7 +114,7 @@ func (core *CoreInfo) completePricingInfo(skus []*billingpb.Sku) error {
 }
 
 func (core *CoreInfo) getTotalPrice() float64 {
-	return float64(core.UnitPricing.HourlyUnitPrice*int64(core.Number)) / nano
+	return float64(core.UnitPricing.HourlyUnitPrice*int64(core.Number)) / nano * core.Fractional
 }
 
 // MemoryInfo stores memory details.
@@ -206,6 +207,8 @@ func NewComputeInstance(id, name, machineType, zone, usageType string) (*Compute
 		instance.Memory.ResourceGroup = "RAM"
 		instance.Cores.ResourceGroup = "CPU"
 	}
+
+	instance.Cores.Fractional = cd.GetMachineFractionalCore(machineType)
 
 	return instance, nil
 }
@@ -307,5 +310,8 @@ func (state *ComputeInstanceState) getDelta() (DCore, DMem float64, err error) {
 
 // PrintPricingInfo outputs the pricing estimation in a file/terminal.
 func (state *ComputeInstanceState) PrintPricingInfo(f *os.File) {
-
+	a := state.After
+	c := a.Cores.getTotalPrice()
+	m, _ := a.Memory.getTotalPrice()
+	fmt.Printf("%s -> Cores: %+v, Memory: %+v, Total: %+v\n\n", a.MachineType, c, m, c+m)
 }
