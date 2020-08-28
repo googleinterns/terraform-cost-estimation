@@ -9,13 +9,15 @@ import (
 
 type computeEngineCatalog struct {
 	service       string
-	coreInstances []*billingpb.Sku
-	RAMInstances  []*billingpb.Sku
+	coreInstances map[string][]*billingpb.Sku
+	RAMInstances  map[string][]*billingpb.Sku
 }
 
 func newComputeEngineCatalog() *computeEngineCatalog {
 	c := new(computeEngineCatalog)
 	c.service = "services/6F81-5844-456A"
+	c.coreInstances = map[string][]*billingpb.Sku{}
+	c.RAMInstances = map[string][]*billingpb.Sku{}
 	return c
 }
 
@@ -26,18 +28,24 @@ func (catalog *computeEngineCatalog) assignSKUCategories(skus []*billingpb.Sku) 
 		c := sku.Category
 		if c.ServiceDisplayName == "Compute Engine" && c.ResourceFamily == "Compute" {
 			if c.ResourceGroup == "CPU" || (c.ResourceGroup == "N1Standard" && !strings.Contains(sku.Description, "Ram")) {
-				catalog.coreInstances = append(catalog.coreInstances, sku)
+				if _, ok := catalog.coreInstances[c.UsageType]; !ok {
+					catalog.coreInstances[c.UsageType] = nil
+				}
+				catalog.coreInstances[c.UsageType] = append(catalog.coreInstances[c.UsageType], sku)
 			}
 
 			if c.ResourceGroup == "RAM" || (c.ResourceGroup == "N1Standard" && !strings.Contains(sku.Description, "Core")) {
-				catalog.RAMInstances = append(catalog.RAMInstances, sku)
+				if _, ok := catalog.RAMInstances[c.UsageType]; !ok {
+					catalog.RAMInstances[c.UsageType] = nil
+				}
+				catalog.RAMInstances[c.UsageType] = append(catalog.RAMInstances[c.UsageType], sku)
 			}
 		}
 	}
 }
 
 // GetCoreSKUs returns the Core Instance SKUs from the billing API.
-func GetCoreSKUs(ctx context.Context) ([]*billingpb.Sku, error) {
+func GetCoreSKUs(ctx context.Context, usageType string) ([]*billingpb.Sku, error) {
 	if computeEngineCatalogPtr == nil {
 		computeEngineCatalogPtr = newComputeEngineCatalog()
 	}
@@ -49,11 +57,11 @@ func GetCoreSKUs(ctx context.Context) ([]*billingpb.Sku, error) {
 		}
 		computeEngineCatalogPtr.assignSKUCategories(skus)
 	}
-	return computeEngineCatalogPtr.coreInstances, nil
+	return computeEngineCatalogPtr.coreInstances[usageType], nil
 }
 
 // GetRAMSKUs returns the Ram Instance SKUs from the billing API.
-func GetRAMSKUs(ctx context.Context) ([]*billingpb.Sku, error) {
+func GetRAMSKUs(ctx context.Context, usageType string) ([]*billingpb.Sku, error) {
 	if computeEngineCatalogPtr == nil {
 		computeEngineCatalogPtr = newComputeEngineCatalog()
 	}
@@ -65,5 +73,5 @@ func GetRAMSKUs(ctx context.Context) ([]*billingpb.Sku, error) {
 		}
 		computeEngineCatalogPtr.assignSKUCategories(skus)
 	}
-	return computeEngineCatalogPtr.RAMInstances, nil
+	return computeEngineCatalogPtr.RAMInstances[usageType], nil
 }

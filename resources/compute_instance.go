@@ -64,8 +64,10 @@ func (d *Description) fill(machineType, usageType string) error {
 			d.Contains = append(d.Contains, "Compute")
 		case strings.HasPrefix(machineType, "m1-") || strings.HasPrefix(machineType, "m2-"):
 			d.Contains = append(d.Contains, "Memory")
+			d.Omits = append(d.Omits, "Upgrade")
 		case strings.HasPrefix(machineType, "n1-mega") || strings.HasPrefix(machineType, "n1-ultra"):
 			d.Contains = append(d.Contains, "Memory")
+			d.Omits = append(d.Omits, "Upgrade")
 		case strings.HasPrefix(machineType, "n1-"):
 			if !strings.HasPrefix(usageType, "Commit") {
 				d.Contains = append(d.Contains, "N1")
@@ -76,7 +78,7 @@ func (d *Description) fill(machineType, usageType string) error {
 				return fmt.Errorf("wrong machine type format")
 			}
 
-			d.Contains = append(d.Contains, strings.ToUpper(machineType[:i]))
+			d.Contains = append(d.Contains, strings.ToUpper(machineType[:i])+" ")
 		}
 	}
 
@@ -223,12 +225,12 @@ func (instance *ComputeInstance) filterSKUs(skus []*billingpb.Sku) ([]*billingpb
 
 // CompletePricingInfo fills the pricing information fields.
 func (instance *ComputeInstance) CompletePricingInfo(ctx context.Context) error {
-	cores, err1 := billing.GetCoreSKUs(ctx)
+	cores, err1 := billing.GetCoreSKUs(ctx, instance.UsageType)
 	if err1 != nil {
 		return err1
 	}
 
-	mem, err2 := billing.GetRAMSKUs(ctx)
+	mem, err2 := billing.GetRAMSKUs(ctx, instance.UsageType)
 	if err2 != nil {
 		return err2
 	}

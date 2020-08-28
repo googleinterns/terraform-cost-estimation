@@ -1,6 +1,7 @@
 package billing
 
 import (
+	"reflect"
 	"testing"
 
 	"github.com/golang/protobuf/jsonpb"
@@ -142,17 +143,23 @@ var (
 		}`
 )
 
-func equal(v1, v2 []*billingpb.Sku) bool {
-	if len(v1) != len(v2) {
-		return false
-	}
-
-	for i := range v1 {
-		if v1[i].SkuId != v2[i].SkuId {
-			return false
+func show(c *computeEngineCatalog) (s string) {
+	s = "Cores:"
+	for k, v := range c.coreInstances {
+		s += "\n" + k + ": "
+		for _, sku := range v {
+			s += sku.Description + "; "
 		}
 	}
-	return true
+
+	s += "RAM:"
+	for k, v := range c.RAMInstances {
+		s += "\n" + k + ": "
+		for _, sku := range v {
+			s += sku.Description + "; "
+		}
+	}
+	return
 }
 
 func TestAssignSKUCategories(t *testing.T) {
@@ -180,25 +187,40 @@ func TestAssignSKUCategories(t *testing.T) {
 	jsonpb.UnmarshalString(skuStr10, sku10)
 	jsonpb.UnmarshalString(skuStr11, sku11)
 
+	c1 := newComputeEngineCatalog()
+	c2 := newComputeEngineCatalog()
+	c3 := newComputeEngineCatalog()
+	c4 := newComputeEngineCatalog()
+
+	c2.coreInstances["Preemptible"] = []*billingpb.Sku{sku11}
+	c2.RAMInstances["OnDemand"] = []*billingpb.Sku{sku1, sku10}
+
+	c3.coreInstances["Commit1Yr"] = []*billingpb.Sku{sku5}
+	c3.coreInstances["Preemptible"] = []*billingpb.Sku{sku9}
+	c3.RAMInstances["Preemptible"] = []*billingpb.Sku{sku2}
+	c3.RAMInstances["OnDemand"] = []*billingpb.Sku{sku6}
+
+	c4.coreInstances["Commit1Yr"] = []*billingpb.Sku{sku5}
+	c4.coreInstances["Preemptible"] = []*billingpb.Sku{sku9, sku11}
+	c4.RAMInstances["OnDemand"] = []*billingpb.Sku{sku1, sku6, sku10}
+	c4.RAMInstances["Preemptible"] = []*billingpb.Sku{sku2}
+
 	tests := []struct {
-		skus  []*billingpb.Sku
-		cores []*billingpb.Sku
-		ram   []*billingpb.Sku
+		skus    []*billingpb.Sku
+		catalog *computeEngineCatalog
 	}{
-		{[]*billingpb.Sku{sku3, sku4, sku7, sku8}, nil, nil},
-		{[]*billingpb.Sku{sku1, sku10, sku11}, []*billingpb.Sku{sku11}, []*billingpb.Sku{sku1, sku10}},
-		{[]*billingpb.Sku{sku2, sku5, sku6, sku9}, []*billingpb.Sku{sku5, sku9}, []*billingpb.Sku{sku2, sku6}},
-		{[]*billingpb.Sku{sku1, sku2, sku3, sku4, sku5, sku6, sku7, sku8, sku9, sku10, sku11},
-			[]*billingpb.Sku{sku5, sku9, sku11}, []*billingpb.Sku{sku1, sku2, sku6, sku10}},
+		{[]*billingpb.Sku{sku3, sku4, sku7, sku8}, c1},
+		{[]*billingpb.Sku{sku1, sku10, sku11}, c2},
+		{[]*billingpb.Sku{sku2, sku5, sku6, sku9}, c3},
+		{[]*billingpb.Sku{sku1, sku2, sku3, sku4, sku5, sku6, sku7, sku8, sku9, sku10, sku11}, c4},
 	}
 
-	for _, test := range tests {
+	for i, test := range tests {
 		catalog := newComputeEngineCatalog()
 		catalog.assignSKUCategories(test.skus)
 
-		if !equal(test.cores, catalog.coreInstances) || !equal(test.ram, catalog.RAMInstances) {
-			t.Errorf("catalog.assignSKUCategories(%+v) -> %+v, %+v ; want %+v, %+v",
-				test.skus, catalog.coreInstances, catalog.RAMInstances, test.cores, test.ram)
+		if !reflect.DeepEqual(*catalog, *test.catalog) {
+			t.Errorf("test%+v: catalog.assignSKUCategories(skus) -> \n%+v,;\n want\n %+v", i, show(catalog), show(test.catalog))
 		}
 	}
 }
