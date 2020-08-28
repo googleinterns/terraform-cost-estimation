@@ -30,13 +30,6 @@ func fitsDescription(sku *billingpb.Sku, contains, omits []string) bool {
 	return true
 }
 
-func fitsCategory(sku *billingpb.Sku, serviceDisplayName, resourceFamily, usageType string) bool {
-	c := sku.Category
-	cond1 := c.ServiceDisplayName == serviceDisplayName && c.ResourceFamily == resourceFamily
-	cond2 := c.UsageType == usageType
-	return cond1 && cond2
-}
-
 func fitsRegion(sku *billingpb.Sku, region string) bool {
 	if sku.ServiceRegions != nil {
 		for _, r := range sku.ServiceRegions {
@@ -59,8 +52,8 @@ func GetPricingInfo(sku *billingpb.Sku) (usageUnit string, hourlyUnitPrice int64
 	return
 }
 
-// GetSKUs returns the SKUs from the Compute Engine billing API or an error.
-func GetSKUs(ctx context.Context) ([]*billingpb.Sku, error) {
+// GetSKUs returns the SKUs from the billing API for the specific service or an error.
+func GetSKUs(ctx context.Context, service string) ([]*billingpb.Sku, error) {
 	var skus []*billingpb.Sku
 
 	c, err := billing.NewCloudCatalogClient(ctx)
@@ -69,7 +62,7 @@ func GetSKUs(ctx context.Context) ([]*billingpb.Sku, error) {
 	}
 
 	req := &billingpb.ListSkusRequest{
-		Parent: "services/6F81-5844-456A",
+		Parent: service,
 	}
 
 	it := c.ListSkus(ctx, req)
@@ -102,28 +95,6 @@ func DescriptionFilter(skus []*billingpb.Sku, contains, omits []string) ([]*bill
 
 	if filtered == nil || len(filtered) == 0 {
 		return nil, fmt.Errorf("no SKU with the specified description")
-	}
-
-	return filtered, nil
-}
-
-// CategoryFilter returns the SKUs with the specified category attributes.
-func CategoryFilter(skus []*billingpb.Sku, serviceDisplayName,
-	resourceFamily, usageType string) ([]*billingpb.Sku, error) {
-	if skus == nil || len(skus) == 0 {
-		return nil, fmt.Errorf("SKU list must not be empty")
-	}
-
-	filtered := []*billingpb.Sku{}
-
-	for _, sku := range skus {
-		if fitsCategory(sku, serviceDisplayName, resourceFamily, usageType) {
-			filtered = append(filtered, sku)
-		}
-	}
-
-	if filtered == nil || len(filtered) == 0 {
-		return nil, fmt.Errorf("no SKU from the specified category")
 	}
 
 	return filtered, nil

@@ -196,35 +196,47 @@ func NewComputeInstance(id, name, machineType, zone, usageType string) (*Compute
 	return instance, nil
 }
 
-// CompletePricingInfo fills the pricing information fields.
-func (instance *ComputeInstance) CompletePricingInfo(ctx context.Context) error {
-
-	skus, err := billing.GetSKUs(ctx)
-	if err != nil {
-		return fmt.Errorf("an error occurred while looking for pricing information")
-	}
-
+func (instance *ComputeInstance) filterSKUs(skus []*billingpb.Sku) ([]*billingpb.Sku, error) {
 	filtered, err := billing.RegionFilter(skus, instance.Region)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	filtered, err = billing.DescriptionFilter(filtered, instance.Description.Contains, instance.Description.Omits)
 	if err != nil {
-		return err
+		return nil, err
 	}
+	return filtered, nil
+}
 
-	filtered, err = billing.CategoryFilter(filtered, "Compute Instance", "Compute", instance.UsageType)
-	if err != nil {
-		return err
-	}
-
-	err1 := instance.Cores.completePricingInfo(filtered)
+// CompletePricingInfo fills the pricing information fields.
+func (instance *ComputeInstance) CompletePricingInfo(ctx context.Context) error {
+	cores, err1 := billing.GetCoreSKUs(ctx)
 	if err1 != nil {
 		return err1
 	}
 
-	err2 := instance.Memory.completePricingInfo(filtered)
+	mem, err2 := billing.GetRAMSKUs(ctx)
+	if err2 != nil {
+		return err2
+	}
+
+	filteredCores, err1 := instance.filterSKUs(cores)
+	if err1 != nil {
+		return err1
+	}
+
+	filteredRAM, err2 := instance.filterSKUs(mem)
+	if err2 != nil {
+		return err2
+	}
+
+	err1 = instance.Cores.completePricingInfo(filteredCores)
+	if err1 != nil {
+		return err1
+	}
+
+	err2 = instance.Memory.completePricingInfo(filteredRAM)
 	if err2 != nil {
 		return err2
 	}
