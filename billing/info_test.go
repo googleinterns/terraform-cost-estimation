@@ -203,37 +203,6 @@ func TestFitsDescription(t *testing.T) {
 	}
 }
 
-func TestFitsCategory(t *testing.T) {
-	var sku1, sku2, sku3, sku4 billingpb.Sku
-	jsonpb.UnmarshalString(str1, &sku1)
-	jsonpb.UnmarshalString(str2, &sku2)
-	jsonpb.UnmarshalString(str3, &sku3)
-	jsonpb.UnmarshalString(str4, &sku4)
-
-	tests := []struct {
-		sku                *billingpb.Sku
-		serviceDisplayName string
-		resourceFamily     string
-		usageType          string
-		ok                 bool
-	}{
-		{&sku1, "Compute Engine", "Compute", "Preemptible", true},
-		{&sku2, "VPN", "Compute", "OnDemand", false},
-		{&sku3, "Compute Engine", "Compute Engine", "Preemptible", false},
-		{&sku4, "Compute Engine", "Compute Engine", "OnDemand", false},
-		{&sku4, "Compute Engine", "Compute Engine", "Preemptible", false},
-		{&sku4, "Compute Engine", "Compute", "OnDemand", true},
-	}
-
-	for _, test := range tests {
-		actual := fitsCategory(test.sku, test.serviceDisplayName, test.resourceFamily, test.usageType)
-		if actual != test.ok {
-			t.Errorf("sku.Description = %s, fitsCategory(sku, %s, %s, %s) = %t; want %t", test.sku.Description,
-				test.serviceDisplayName, test.resourceFamily, test.usageType, actual, test.ok)
-		}
-	}
-}
-
 func TestFitsRegion(t *testing.T) {
 	var sku1, sku2, sku3, sku4 billingpb.Sku
 	jsonpb.UnmarshalString(str1, &sku1)

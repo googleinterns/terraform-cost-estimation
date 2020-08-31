@@ -19,6 +19,14 @@ type computeInstance struct {
 
 var machineTypes map[string]computeInstance
 
+var sharedCoreDiscounts = map[string]float64{
+	"e2-micro":  0.125,
+	"e2-small":  0.25,
+	"e2-medium": 0.5,
+	"f1-micro":  0.2,
+	"g1-small":  0.5,
+}
+
 func getMachineTypes() (map[string]computeInstance, error) {
 	_, callerFile, _, _ := runtime.Caller(0)
 	inputPath := filepath.Dir(callerFile) + "/machine_types.json"
@@ -88,4 +96,13 @@ func GetMachineDetails(machineType string) (coreNum int, memGB float64, err erro
 		return 0, 0, fmt.Errorf("machine type not supported")
 	}
 	return d.CoreNumber, d.MemoryGB, nil
+}
+
+// GetMachineFractionalCore returns fractional vCPU of the machine type.
+// For non-shared-core machines, the return value is 1.
+func GetMachineFractionalCore(machineType string) float64 {
+	if d, ok := sharedCoreDiscounts[machineType]; ok {
+		return d
+	}
+	return 1
 }
