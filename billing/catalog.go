@@ -2,28 +2,44 @@ package billing
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
 	billingpb "google.golang.org/genproto/googleapis/cloud/billing/v1"
 )
 
-type computeEngineCatalog struct {
+// ComputeEngineCatalog holds the information from the billing catalog for Compute Engine SKUs.
+type ComputeEngineCatalog struct {
 	service       string
 	coreInstances map[string][]*billingpb.Sku
-	RAMInstances  map[string][]*billingpb.Sku
+	ramInstances  map[string][]*billingpb.Sku
 }
 
-func newComputeEngineCatalog() *computeEngineCatalog {
-	c := new(computeEngineCatalog)
+// NewComputeEngineCatalog creates a catalog instance, calls the billing API and stores its response by category and usage type.
+func NewComputeEngineCatalog(ctx context.Context) (*ComputeEngineCatalog, error) {
+	c := new(ComputeEngineCatalog)
 	c.service = "services/6F81-5844-456A"
 	c.coreInstances = map[string][]*billingpb.Sku{}
-	c.RAMInstances = map[string][]*billingpb.Sku{}
+	c.ramInstances = map[string][]*billingpb.Sku{}
+
+	skus, err := GetSKUs(ctx, c.service)
+	if err != nil {
+		return nil, err
+	}
+	c.assignSKUCategories(skus)
+
+	return c, nil
+}
+
+func emptyComputeEngineCatalog() *ComputeEngineCatalog {
+	c := new(ComputeEngineCatalog)
+	c.service = "services/6F81-5844-456A"
+	c.coreInstances = map[string][]*billingpb.Sku{}
+	c.ramInstances = map[string][]*billingpb.Sku{}
 	return c
 }
 
-var computeEngineCatalogPtr *computeEngineCatalog
-
-func (catalog *computeEngineCatalog) assignSKUCategories(skus []*billingpb.Sku) {
+func (catalog *ComputeEngineCatalog) assignSKUCategories(skus []*billingpb.Sku) {
 	for _, sku := range skus {
 		c := sku.Category
 		if c.ServiceDisplayName == "Compute Engine" && c.ResourceFamily == "Compute" {
@@ -35,43 +51,29 @@ func (catalog *computeEngineCatalog) assignSKUCategories(skus []*billingpb.Sku) 
 			}
 
 			if c.ResourceGroup == "RAM" || (c.ResourceGroup == "N1Standard" && !strings.Contains(sku.Description, "Core")) {
-				if _, ok := catalog.RAMInstances[c.UsageType]; !ok {
-					catalog.RAMInstances[c.UsageType] = nil
+				if _, ok := catalog.ramInstances[c.UsageType]; !ok {
+					catalog.ramInstances[c.UsageType] = nil
 				}
-				catalog.RAMInstances[c.UsageType] = append(catalog.RAMInstances[c.UsageType], sku)
+				catalog.ramInstances[c.UsageType] = append(catalog.ramInstances[c.UsageType], sku)
 			}
 		}
 	}
 }
 
 // GetCoreSKUs returns the Core Instance SKUs from the billing API.
-func GetCoreSKUs(ctx context.Context, usageType string) ([]*billingpb.Sku, error) {
-	if computeEngineCatalogPtr == nil {
-		computeEngineCatalogPtr = newComputeEngineCatalog()
+func (catalog *ComputeEngineCatalog) GetCoreSKUs(usageType string) ([]*billingpb.Sku, error) {
+	skus, ok := catalog.coreInstances[usageType]
+	if !ok {
+		return nil, fmt.Errorf("found no core SKU of this usage type")
 	}
-
-	if computeEngineCatalogPtr.coreInstances == nil || len(computeEngineCatalogPtr.coreInstances) == 0 {
-		skus, err := GetSKUs(ctx, computeEngineCatalogPtr.service)
-		if err != nil {
-			return nil, err
-		}
-		computeEngineCatalogPtr.assignSKUCategories(skus)
-	}
-	return computeEngineCatalogPtr.coreInstances[usageType], nil
+	return skus, nil
 }
 
 // GetRAMSKUs returns the Ram Instance SKUs from the billing API.
-func GetRAMSKUs(ctx context.Context, usageType string) ([]*billingpb.Sku, error) {
-	if computeEngineCatalogPtr == nil {
-		computeEngineCatalogPtr = newComputeEngineCatalog()
+func (catalog *ComputeEngineCatalog) GetRAMSKUs(usageType string) ([]*billingpb.Sku, error) {
+	skus, ok := catalog.ramInstances[usageType]
+	if !ok {
+		return nil, fmt.Errorf("found no RAM SKU of this usage type")
 	}
-
-	if computeEngineCatalogPtr.RAMInstances == nil || len(computeEngineCatalogPtr.RAMInstances) == 0 {
-		skus, err := GetSKUs(ctx, computeEngineCatalogPtr.service)
-		if err != nil {
-			return nil, err
-		}
-		computeEngineCatalogPtr.assignSKUCategories(skus)
-	}
-	return computeEngineCatalogPtr.RAMInstances[usageType], nil
+	return skus, nil
 }

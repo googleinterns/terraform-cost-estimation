@@ -143,7 +143,7 @@ var (
 		}`
 )
 
-func show(c *computeEngineCatalog) (s string) {
+func show(c *ComputeEngineCatalog) (s string) {
 	s = "Cores:"
 	for k, v := range c.coreInstances {
 		s += "\n" + k + ": "
@@ -153,7 +153,7 @@ func show(c *computeEngineCatalog) (s string) {
 	}
 
 	s += "RAM:"
-	for k, v := range c.RAMInstances {
+	for k, v := range c.ramInstances {
 		s += "\n" + k + ": "
 		for _, sku := range v {
 			s += sku.Description + "; "
@@ -187,27 +187,27 @@ func TestAssignSKUCategories(t *testing.T) {
 	jsonpb.UnmarshalString(skuStr10, sku10)
 	jsonpb.UnmarshalString(skuStr11, sku11)
 
-	c1 := newComputeEngineCatalog()
-	c2 := newComputeEngineCatalog()
-	c3 := newComputeEngineCatalog()
-	c4 := newComputeEngineCatalog()
+	c1 := emptyComputeEngineCatalog()
+	c2 := emptyComputeEngineCatalog()
+	c3 := emptyComputeEngineCatalog()
+	c4 := emptyComputeEngineCatalog()
 
 	c2.coreInstances["Preemptible"] = []*billingpb.Sku{sku11}
-	c2.RAMInstances["OnDemand"] = []*billingpb.Sku{sku1, sku10}
+	c2.ramInstances["OnDemand"] = []*billingpb.Sku{sku1, sku10}
 
 	c3.coreInstances["Commit1Yr"] = []*billingpb.Sku{sku5}
 	c3.coreInstances["Preemptible"] = []*billingpb.Sku{sku9}
-	c3.RAMInstances["Preemptible"] = []*billingpb.Sku{sku2}
-	c3.RAMInstances["OnDemand"] = []*billingpb.Sku{sku6}
+	c3.ramInstances["Preemptible"] = []*billingpb.Sku{sku2}
+	c3.ramInstances["OnDemand"] = []*billingpb.Sku{sku6}
 
 	c4.coreInstances["Commit1Yr"] = []*billingpb.Sku{sku5}
 	c4.coreInstances["Preemptible"] = []*billingpb.Sku{sku9, sku11}
-	c4.RAMInstances["OnDemand"] = []*billingpb.Sku{sku1, sku6, sku10}
-	c4.RAMInstances["Preemptible"] = []*billingpb.Sku{sku2}
+	c4.ramInstances["OnDemand"] = []*billingpb.Sku{sku1, sku6, sku10}
+	c4.ramInstances["Preemptible"] = []*billingpb.Sku{sku2}
 
 	tests := []struct {
 		skus    []*billingpb.Sku
-		catalog *computeEngineCatalog
+		catalog *ComputeEngineCatalog
 	}{
 		{[]*billingpb.Sku{sku3, sku4, sku7, sku8}, c1},
 		{[]*billingpb.Sku{sku1, sku10, sku11}, c2},
@@ -216,7 +216,7 @@ func TestAssignSKUCategories(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		catalog := newComputeEngineCatalog()
+		catalog := emptyComputeEngineCatalog()
 		catalog.assignSKUCategories(test.skus)
 
 		if !reflect.DeepEqual(*catalog, *test.catalog) {

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/googleinterns/terraform-cost-estimation/billing"
 	"github.com/googleinterns/terraform-cost-estimation/jsdecode"
 )
 
@@ -53,6 +54,12 @@ func main() {
 
 	resources := jsdecode.GetResources(plan)
 
+	computeEngineCatalog, catalogErr := billing.NewComputeEngineCatalog(context.Background())
+	if catalogErr != nil {
+		fmt.Fprintf(os.Stderr, "Error: "+catalogErr.Error())
+		os.Exit(4)
+	}
+
 	var fout *os.File
 	var errFout error
 	if *out == "stdout" {
@@ -66,7 +73,7 @@ func main() {
 	}
 
 	for _, r := range resources {
-		r.CompletePricingInfo(context.Background())
+		r.CompletePricingInfo(computeEngineCatalog)
 		r.PrintPricingInfo(fout)
 	}
 

@@ -1,7 +1,6 @@
 package resources
 
 import (
-	"context"
 	"fmt"
 	"os"
 	"strings"
@@ -227,13 +226,13 @@ func (instance *ComputeInstance) filterSKUs(skus []*billingpb.Sku) ([]*billingpb
 }
 
 // CompletePricingInfo fills the pricing information fields.
-func (instance *ComputeInstance) CompletePricingInfo(ctx context.Context) error {
-	cores, err1 := billing.GetCoreSKUs(ctx, instance.UsageType)
+func (instance *ComputeInstance) CompletePricingInfo(catalog *billing.ComputeEngineCatalog) error {
+	cores, err1 := catalog.GetCoreSKUs(instance.UsageType)
 	if err1 != nil {
 		return err1
 	}
 
-	mem, err2 := billing.GetRAMSKUs(ctx, instance.UsageType)
+	mem, err2 := catalog.GetRAMSKUs(instance.UsageType)
 	if err2 != nil {
 		return err2
 	}
@@ -270,16 +269,16 @@ type ComputeInstanceState struct {
 }
 
 // CompletePricingInfo completes pricing information of both before and after states.
-func (state *ComputeInstanceState) CompletePricingInfo(ctx context.Context) error {
+func (state *ComputeInstanceState) CompletePricingInfo(catalog *billing.ComputeEngineCatalog) error {
 	if state.Before != nil {
-		err1 := state.Before.CompletePricingInfo(ctx)
+		err1 := state.Before.CompletePricingInfo(catalog)
 		if err1 != nil {
 			return err1
 		}
 	}
 
 	if state.After != nil {
-		err2 := state.After.CompletePricingInfo(ctx)
+		err2 := state.After.CompletePricingInfo(catalog)
 		if err2 != nil {
 			return err2
 		}
