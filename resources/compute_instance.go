@@ -1,7 +1,6 @@
 package resources
 
 import (
-	"context"
 	"fmt"
 	"os"
 	"strings"
@@ -64,8 +63,10 @@ func (d *Description) fill(machineType, usageType string) error {
 			d.Contains = append(d.Contains, "Compute")
 		case strings.HasPrefix(machineType, "m1-") || strings.HasPrefix(machineType, "m2-"):
 			d.Contains = append(d.Contains, "Memory")
+			d.Omits = append(d.Omits, "Upgrade")
 		case strings.HasPrefix(machineType, "n1-mega") || strings.HasPrefix(machineType, "n1-ultra"):
 			d.Contains = append(d.Contains, "Memory")
+			d.Omits = append(d.Omits, "Upgrade")
 		case strings.HasPrefix(machineType, "n1-"):
 			if !strings.HasPrefix(usageType, "Commit") {
 				d.Contains = append(d.Contains, "N1")
@@ -76,7 +77,7 @@ func (d *Description) fill(machineType, usageType string) error {
 				return fmt.Errorf("wrong machine type format")
 			}
 
-			d.Contains = append(d.Contains, strings.ToUpper(machineType[:i]))
+			d.Contains = append(d.Contains, strings.ToUpper(machineType[:i])+" ")
 		}
 	}
 
@@ -87,6 +88,7 @@ func (d *Description) fill(machineType, usageType string) error {
 type CoreInfo struct {
 	ResourceGroup string
 	Number        int
+	Fractional    float64
 	UnitPricing   PricingInfo
 }
 
@@ -111,7 +113,7 @@ func (core *CoreInfo) completePricingInfo(skus []*billingpb.Sku) error {
 }
 
 func (core *CoreInfo) getTotalPrice() float64 {
-	return float64(core.UnitPricing.HourlyUnitPrice*int64(core.Number)) / nano
+	return float64(core.UnitPricing.HourlyUnitPrice*int64(core.Number)) / nano * core.Fractional
 }
 
 // MemoryInfo stores memory details.
@@ -205,38 +207,52 @@ func NewComputeInstance(id, name, machineType, zone, usageType string) (*Compute
 		instance.Cores.ResourceGroup = "CPU"
 	}
 
+	instance.Cores.Fractional = cd.GetMachineFractionalCore(machineType)
+
 	return instance, nil
 }
 
-// CompletePricingInfo fills the pricing information fields.
-func (instance *ComputeInstance) CompletePricingInfo(ctx context.Context) error {
-
-	skus, err := billing.GetSKUs(ctx)
-	if err != nil {
-		return fmt.Errorf("an error occurred while looking for pricing information")
-	}
-
+func (instance *ComputeInstance) filterSKUs(skus []*billingpb.Sku) ([]*billingpb.Sku, error) {
 	filtered, err := billing.RegionFilter(skus, instance.Region)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	filtered, err = billing.DescriptionFilter(filtered, instance.Description.Contains, instance.Description.Omits)
 	if err != nil {
-		return err
+		return nil, err
 	}
+	return filtered, nil
+}
 
-	filtered, err = billing.CategoryFilter(filtered, "Compute Engine", "Compute", instance.UsageType)
-	if err != nil {
-		return err
-	}
-
-	err1 := instance.Cores.completePricingInfo(filtered)
+// CompletePricingInfo fills the pricing information fields.
+func (instance *ComputeInstance) CompletePricingInfo(catalog *billing.ComputeEngineCatalog) error {
+	cores, err1 := catalog.GetCoreSKUs(instance.UsageType)
 	if err1 != nil {
 		return err1
 	}
 
-	err2 := instance.Memory.completePricingInfo(filtered)
+	mem, err2 := catalog.GetRAMSKUs(instance.UsageType)
+	if err2 != nil {
+		return err2
+	}
+
+	filteredCores, err1 := instance.filterSKUs(cores)
+	if err1 != nil {
+		return err1
+	}
+
+	filteredRAM, err2 := instance.filterSKUs(mem)
+	if err2 != nil {
+		return err2
+	}
+
+	err1 = instance.Cores.completePricingInfo(filteredCores)
+	if err1 != nil {
+		return err1
+	}
+
+	err2 = instance.Memory.completePricingInfo(filteredRAM)
 	if err2 != nil {
 		return err2
 	}
@@ -253,16 +269,16 @@ type ComputeInstanceState struct {
 }
 
 // CompletePricingInfo completes pricing information of both before and after states.
-func (state *ComputeInstanceState) CompletePricingInfo(ctx context.Context) error {
+func (state *ComputeInstanceState) CompletePricingInfo(catalog *billing.ComputeEngineCatalog) error {
 	if state.Before != nil {
-		err1 := state.Before.CompletePricingInfo(ctx)
+		err1 := state.Before.CompletePricingInfo(catalog)
 		if err1 != nil {
 			return err1
 		}
 	}
 
 	if state.After != nil {
-		err2 := state.After.CompletePricingInfo(ctx)
+		err2 := state.After.CompletePricingInfo(catalog)
 		if err2 != nil {
 			return err2
 		}
@@ -293,5 +309,8 @@ func (state *ComputeInstanceState) getDelta() (DCore, DMem float64, err error) {
 
 // PrintPricingInfo outputs the pricing estimation in a file/terminal.
 func (state *ComputeInstanceState) PrintPricingInfo(f *os.File) {
-
+	a := state.After
+	c := a.Cores.getTotalPrice()
+	m, _ := a.Memory.getTotalPrice()
+	fmt.Printf("%s -> Cores: %+v, Memory: %+v, Total: %+v\n\n", a.MachineType, c, m, c+m)
 }
