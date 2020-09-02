@@ -67,7 +67,7 @@ func (d *Description) fill(machineType, usageType string) error {
 		case strings.HasPrefix(machineType, "n1-mega") || strings.HasPrefix(machineType, "n1-ultra"):
 			d.Contains = append(d.Contains, "Memory")
 			d.Omits = append(d.Omits, "Upgrade")
-		case strings.HasPrefix(machineType, "n1-"):
+		case strings.HasPrefix(machineType, "n1-") || strings.HasPrefix(machineType, "f1-") || strings.HasPrefix(machineType, "g1-"):
 			if !strings.HasPrefix(usageType, "Commit") {
 				d.Contains = append(d.Contains, "N1")
 			}
@@ -199,7 +199,9 @@ func NewComputeInstance(id, name, machineType, zone, usageType string) (*Compute
 
 	instance.Memory.Extended = strings.Contains(machineType, "custom") && strings.HasSuffix(machineType, "-ext")
 
-	if (strings.HasPrefix(machineType, "n1-standard") || strings.HasPrefix(machineType, "n1-high")) && !strings.HasPrefix(usageType, "Commit") {
+	if (strings.HasPrefix(machineType, "n1-standard") || strings.HasPrefix(machineType, "n1-high") ||
+		strings.HasPrefix(machineType, "f1-") || strings.HasPrefix(machineType, "g1-")) &&
+		!strings.HasPrefix(usageType, "Commit") {
 		instance.Memory.ResourceGroup = "N1Standard"
 		instance.Cores.ResourceGroup = "N1Standard"
 	} else {
