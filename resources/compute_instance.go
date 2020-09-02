@@ -67,7 +67,7 @@ func (d *Description) fill(machineType, usageType string) error {
 		case strings.HasPrefix(machineType, "n1-mega") || strings.HasPrefix(machineType, "n1-ultra"):
 			d.Contains = append(d.Contains, "Memory")
 			d.Omits = append(d.Omits, "Upgrade")
-		case strings.HasPrefix(machineType, "n1-"):
+		case strings.HasPrefix(machineType, "n1-") || strings.HasPrefix(machineType, "f1-") || strings.HasPrefix(machineType, "g1-"):
 			if !strings.HasPrefix(usageType, "Commit") {
 				d.Contains = append(d.Contains, "N1")
 			}
@@ -199,7 +199,9 @@ func NewComputeInstance(id, name, machineType, zone, usageType string) (*Compute
 
 	instance.Memory.Extended = strings.Contains(machineType, "custom") && strings.HasSuffix(machineType, "-ext")
 
-	if (strings.HasPrefix(machineType, "n1-standard") || strings.HasPrefix(machineType, "n1-high")) && !strings.HasPrefix(usageType, "Commit") {
+	if (strings.HasPrefix(machineType, "n1-standard") || strings.HasPrefix(machineType, "n1-high") ||
+		strings.HasPrefix(machineType, "f1-") || strings.HasPrefix(machineType, "g1-")) &&
+		!strings.HasPrefix(usageType, "Commit") {
 		instance.Memory.ResourceGroup = "N1Standard"
 		instance.Cores.ResourceGroup = "N1Standard"
 	} else {
@@ -273,14 +275,14 @@ func (state *ComputeInstanceState) CompletePricingInfo(catalog *billing.ComputeE
 	if state.Before != nil {
 		err1 := state.Before.CompletePricingInfo(catalog)
 		if err1 != nil {
-			return err1
+			return fmt.Errorf(state.Before.Name + "(" + state.After.MachineType + ")" + ": " + err1.Error())
 		}
 	}
 
 	if state.After != nil {
 		err2 := state.After.CompletePricingInfo(catalog)
 		if err2 != nil {
-			return err2
+			return fmt.Errorf(state.After.Name + "(" + state.After.MachineType + ")" + ": " + err2.Error())
 		}
 	}
 	return nil
@@ -292,7 +294,7 @@ func (state *ComputeInstanceState) getDelta() (DCore, DMem float64, err error) {
 		core1 = state.Before.Cores.getTotalPrice()
 		mem1, err = state.Before.Memory.getTotalPrice()
 		if err != nil {
-			return 0, 0, err
+			return 0, 0, fmt.Errorf(state.Before.Name + "(" + state.After.MachineType + ")" + ": " + err.Error())
 		}
 	}
 
@@ -300,7 +302,7 @@ func (state *ComputeInstanceState) getDelta() (DCore, DMem float64, err error) {
 		core2 = state.After.Cores.getTotalPrice()
 		mem2, err = state.After.Memory.getTotalPrice()
 		if err != nil {
-			return 0, 0, err
+			return 0, 0, fmt.Errorf(state.After.Name + "(" + state.After.MachineType + ")" + ": " + err.Error())
 		}
 	}
 
@@ -312,5 +314,37 @@ func (state *ComputeInstanceState) PrintPricingInfo(f *os.File) {
 	a := state.After
 	c := a.Cores.getTotalPrice()
 	m, _ := a.Memory.getTotalPrice()
-	fmt.Printf("%s -> Cores: %+v, Memory: %+v, Total: %+v\n\n", a.MachineType, c, m, c+m)
+	f.Write([]byte(fmt.Sprintf("%s -> Cores: %+v, Memory: %+v, Total: %+v\n\n", a.MachineType, c, m, c+m)))
+}
+
+// GetSummary returns a summary of the cost change for a compute instance state.
+func (state *ComputeInstanceState) GetSummary() string {
+	format := "Name: %s, Machine Type: %s, Action: %s, Total Cost: %f USD/hour, %s by %f USD/hour\n"
+	var instance *ComputeInstance
+	var change string
+
+	dCore, dMem, err := state.getDelta()
+	if err != nil {
+		if state.After == nil {
+			return "Could not make summary for compute instance initially named " + state.Before.Name + "\n"
+		}
+		return "Could not make summary for compute instance finally named " + state.After.Name + "\n"
+	}
+
+	if dCore+dMem < 0 {
+		change = "Down"
+	} else {
+		change = "Up"
+	}
+
+	if state.After == nil {
+		instance = state.Before
+	} else {
+		instance = state.After
+	}
+
+	c := instance.Cores.getTotalPrice()
+	m, _ := instance.Memory.getTotalPrice()
+
+	return fmt.Sprintf(format, instance.Name, instance.MachineType, state.Action, c+m, change, dCore+dMem)
 }
