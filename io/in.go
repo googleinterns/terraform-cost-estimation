@@ -15,13 +15,10 @@ func GetPlan(inputName string) (*tfjson.Plan, error) {
 		return nil, err
 	}
 
+	defer fin.Close()
+
 	plan, err := jsdecode.ExtractPlanStruct(fin)
 	if err != nil {
-		fin.Close()
-		return nil, err
-	}
-
-	if err = fin.Close(); err != nil {
 		return nil, err
 	}
 
