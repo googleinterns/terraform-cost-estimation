@@ -14,6 +14,7 @@ const (
 type ResourceState interface {
 	CompletePricingInfo(catalog *billing.ComputeEngineCatalog) error
 	PrintPricingInfo()
+	GetSummary() string
 }
 
 // skuObject is the interface for SKU types (core, memory etc.)

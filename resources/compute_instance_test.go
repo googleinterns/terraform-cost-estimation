@@ -344,7 +344,7 @@ func TestGetDelta(t *testing.T) {
 
 	badCore := CoreInfo{Number: 32, Fractional: 1, UnitPricing: PricingInfo{HourlyUnitPrice: 785678}}
 	badMem := MemoryInfo{AmountGiB: 2000, UnitPricing: PricingInfo{HourlyUnitPrice: 235977, UsageUnit: "gigbyte hour"}}
-	badInstance := ComputeInstance{Cores: badCore, Memory: badMem}
+	badInstance := ComputeInstance{Name: "test", MachineType: "n1-standard-1", Cores: badCore, Memory: badMem}
 
 	tests := []struct {
 		state ComputeInstanceState
@@ -356,7 +356,7 @@ func TestGetDelta(t *testing.T) {
 		{ComputeInstanceState{Before: &instance2, After: &instance3, Action: "test2"}, 8*67458 - 16*12345, 100*78996 - 500*23455, nil},
 		{ComputeInstanceState{Before: &instance3, After: &instance4, Action: "test3"}, 32*785678 - 8*67458, 2000*235977 - 100*78996, nil},
 		{ComputeInstanceState{Before: &instance2, After: &instance2, Action: "test4"}, 0, 0, nil},
-		{ComputeInstanceState{Before: &instance1, After: &badInstance, Action: "test6"}, 0, 0, fmt.Errorf("unknown final unit gigbyte")},
+		{ComputeInstanceState{Before: &instance1, After: &badInstance, Action: "test6"}, 0, 0, fmt.Errorf("test(n1-standard-1): unknown final unit gigbyte")},
 	}
 
 	for _, test := range tests {
