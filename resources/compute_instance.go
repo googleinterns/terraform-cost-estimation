@@ -86,6 +86,7 @@ func (d *Description) fill(machineType, usageType string) error {
 
 // CoreInfo stores CPU core details.
 type CoreInfo struct {
+	Type          string
 	ResourceGroup string
 	Number        int
 	Fractional    float64
@@ -109,6 +110,7 @@ func (core *CoreInfo) completePricingInfo(skus []*billingpb.Sku) error {
 
 	usageUnit, hourlyUnitPrice, currencyType, currencyUnit := billing.GetPricingInfo(sku)
 	core.UnitPricing = PricingInfo{usageUnit, hourlyUnitPrice, currencyType, currencyUnit}
+	core.Type = sku.Description
 	return nil
 }
 
@@ -118,6 +120,7 @@ func (core *CoreInfo) getTotalPrice() float64 {
 
 // MemoryInfo stores memory details.
 type MemoryInfo struct {
+	Type          string
 	ResourceGroup string
 	AmountGiB     float64
 	Extended      bool
@@ -142,6 +145,7 @@ func (mem *MemoryInfo) completePricingInfo(skus []*billingpb.Sku) error {
 
 	usageUnit, hourlyUnitPrice, currencyType, currencyUnit := billing.GetPricingInfo(sku)
 	mem.UnitPricing = PricingInfo{usageUnit, hourlyUnitPrice, currencyType, currencyUnit}
+	mem.Type = sku.Description
 	return nil
 }
 
@@ -309,8 +313,11 @@ func (state *ComputeInstanceState) getDelta() (DCore, DMem float64, err error) {
 	return core2 - core1, mem2 - mem1, nil
 }
 
-// PrintPricingInfo outputs the pricing estimation in a file/terminal.
-func (state *ComputeInstanceState) PrintPricingInfo(f *os.File) {
+// WritePricingInfo outputs the pricing estimation in a file/terminal.
+func (state *ComputeInstanceState) WritePricingInfo(f *os.File) {
+	if f == nil {
+		return
+	}
 	a := state.After
 	c := a.Cores.getTotalPrice()
 	m, _ := a.Memory.getTotalPrice()
@@ -347,4 +354,168 @@ func (state *ComputeInstanceState) GetSummary() string {
 	m, _ := instance.Memory.getTotalPrice()
 
 	return fmt.Sprintf(format, instance.Name, instance.MachineType, state.Action, c+m, change, dCore+dMem)
+}
+
+func (state *ComputeInstanceState) getGeneralChanges() (name, ID, action, cpuType, memType string) {
+	action = state.Action
+
+	switch {
+	case state.Before == nil:
+		name = state.After.Name
+
+		if state.After.ID == "" {
+			ID = "unknown"
+		}
+		cpuType = state.After.Cores.Type
+		memType = state.After.Memory.Type
+
+	case state.After == nil:
+		name = state.Before.Name
+
+		if state.Before.ID == "" {
+			ID = "unknown"
+		}
+		cpuType = state.Before.Cores.Type
+		memType = state.Before.Memory.Type
+
+	default:
+		name = state.Before.Name + " -> " + state.After.Name
+		if state.After.ID == "" {
+			ID = "unknown"
+		}
+
+		if state.Before.Cores.Type != state.After.Cores.Type {
+			cpuType = state.Before.Cores.Type + " -> " + state.After.Cores.Type
+			memType = state.Before.Memory.Type + " -> " + state.After.Memory.Type
+		} else {
+			cpuType = state.Before.Cores.Type
+			memType = state.Before.Memory.Type
+		}
+	}
+	return
+}
+
+func (state *ComputeInstanceState) getCostChanges() (cpuCostPerUnit1, cpuCostPerUnit2 float64,
+	cpuUnits1, cpuUnits2 int, memCostPerUnit1, memCostPerUnit2, memUnits1, memUnits2 float64) {
+
+	if state.Before != nil {
+		cpuCostPerUnit1 = float64(state.Before.Cores.UnitPricing.HourlyUnitPrice) / nano
+		cpuUnits1 = state.Before.Cores.Number
+		memCostPerUnit1 = float64(state.Before.Memory.UnitPricing.HourlyUnitPrice) / nano
+		memUnits1, _ = conv.Convert("gib", state.Before.Memory.AmountGiB, state.Before.Memory.UnitPricing.UsageUnit)
+	}
+
+	if state.After != nil {
+		cpuCostPerUnit2 = float64(state.After.Cores.UnitPricing.HourlyUnitPrice) / nano
+		cpuUnits2 = state.After.Cores.Number
+		memCostPerUnit2 = float64(state.After.Memory.UnitPricing.HourlyUnitPrice) / nano
+		memUnits2, _ = conv.Convert("gib", state.After.Memory.AmountGiB, strings.Split(state.After.Memory.UnitPricing.UsageUnit, " ")[0])
+	}
+
+	return
+}
+
+// GetWebTables returns html pricing information table strings to be displayed in a web page.
+func (state *ComputeInstanceState) GetWebTables(stateNum int) (hourly, monthly, yearly string) {
+	name, ID, action, cpuType, memType := state.getGeneralChanges()
+	cpuCostPerUnit1, cpuCostPerUnit2, cpuUnits1, cpuUnits2, memCostPerUnit1,
+		memCostPerUnit2, memUnits1, memUnits2 := state.getCostChanges()
+
+	format := `
+		<table class="table table-bordered" style="table-layout: fixed;">
+            <thead class="table-info">
+                <tr style="cursor: pointer;" data-toggle="collapse" data-target="#table_%+v_%s">
+					<th colspan="1" style="width: 12.5%%;">Name</th>
+					<th colspan="7" style="width:87.5%%;">%s</th></td>
+                </tr>
+            </thead>
+            <tbody class="hide-table-padding collapse" id="table_%+v_%s">
+				<tr>
+                    <td colspan="1">Instance ID</td>
+                    <td colspan="7">%s</td>
+                </tr>
+                <tr>
+                    <td colspan="1">Action</td>
+                    <td colspan="7">%s</td>
+                </tr>
+                <tr>
+                    <td colspan="1">CPU type</td>
+                    <td colspan="7">%s</td>
+                </tr>
+                <tr>
+                    <td colspan="1">RAM Type</td>
+                    <td colspan="7">%s</td>
+                </tr>
+                <tr>
+                    <td colspan="8">Pricing information</td>
+                </tr>
+                <tr>
+                    <td colspan="1"></td>
+                    <td colspan="3">Before</td>
+                    <td colspan="3">After</td>
+                    <td colspan="1">Delta</td>
+                </tr>
+                <tr>
+                    <td colspan="1"></td>
+                    <td colspan="1">Cost per Unit</td>
+                    <td colspan="1">Number of units</td>
+                    <td colspan="1">Cost of units</td>
+                    <td colspan="1">Cost per Unit</td>
+                    <td colspan="1">Number of units</td>
+                    <td colspan="1">Cost per Unit</td>
+                    <td colspan="1">Cost of units</td>
+                </tr>
+                <tr>
+                    <td colspan="1">CPU</td>
+                    <td colspan="1"> %+v USD </td>
+                    <td colspan="1"> %+v </td>
+                    <td colspan="1"> %+v USD </td>
+                    <td colspan="1"> %+v USD </td>
+                    <td colspan="1"> %+v </td>
+                    <td colspan="1"> %+v USD </td>
+                    <td colspan="1"> %+v USD </td>
+                </tr>        
+                <tr>
+                    <td colspan="1">RAM</td>
+                    <td colspan="1"> %+v USD </td>
+                    <td colspan="1"> %+v </td>
+                    <td colspan="1"> %+v USD </td>
+                    <td colspan="1"> %+v USD </td>
+                    <td colspan="1"> %+v </td>
+                    <td colspan="1"> %+v USD </td>
+                    <td colspan="1"> %+v USD </td>
+                </tr>
+                <tr>
+                    <td colspan="1">Total Cost</td>
+                    <td colspan="3"> %+v USD </td>
+                    <td colspan="3"> %+v USD </td>
+                    <td colspan="1"> %+v USD </td>
+
+                </tr>
+            </tbody>
+        </table>
+	`
+	cpuTotal1 := cpuCostPerUnit1 * float64(cpuUnits1)
+	cpuTotal2 := cpuCostPerUnit2 * float64(cpuUnits2)
+	memTotal1 := memCostPerUnit1 * memUnits1
+	memTotal2 := memCostPerUnit2 * memUnits2
+
+	hourlyToMonthly := float64(24 * 30)
+	hourlyToYearly := float64(24 * 365)
+
+	hourly = fmt.Sprintf(format, stateNum, "hourly", name, stateNum, "hourly", ID, action, cpuType, memType,
+		cpuCostPerUnit1, cpuUnits1, cpuTotal1, cpuCostPerUnit2, cpuUnits2, cpuTotal2, cpuTotal2-cpuTotal1,
+		memCostPerUnit1, memUnits1, memTotal1, memCostPerUnit2, memUnits2, memTotal2, memTotal2-memTotal1,
+		cpuTotal1+memTotal1, cpuTotal2+memTotal2, cpuTotal2-cpuTotal1+memTotal2-memTotal1)
+
+	monthly = fmt.Sprintf(format, stateNum, "monthly", name, stateNum, "monthly", ID, action, cpuType, memType,
+		cpuCostPerUnit1*hourlyToMonthly, cpuUnits1, cpuTotal1*hourlyToMonthly, cpuCostPerUnit2*hourlyToMonthly, cpuUnits2, cpuTotal2*hourlyToMonthly, (cpuTotal2-cpuTotal1)*hourlyToMonthly,
+		memCostPerUnit1*hourlyToMonthly, memUnits1, memTotal1*hourlyToMonthly, memCostPerUnit2*hourlyToMonthly, memUnits2, memTotal2*hourlyToMonthly, (memTotal2-memTotal1)*hourlyToMonthly,
+		(cpuTotal1+memTotal1)*hourlyToMonthly, (cpuTotal2+memTotal2)*hourlyToMonthly, (cpuTotal2-cpuTotal1+memTotal2-memTotal1)*hourlyToMonthly)
+
+	yearly = fmt.Sprintf(format, stateNum, "yearly", name, stateNum, "yearly", ID, action, cpuType, memType,
+		cpuCostPerUnit1*hourlyToYearly, cpuUnits1, cpuTotal1*hourlyToYearly, cpuCostPerUnit2*hourlyToYearly, cpuUnits2, cpuTotal2*hourlyToYearly, (cpuTotal2-cpuTotal1)*hourlyToYearly,
+		memCostPerUnit1*hourlyToYearly, memUnits1, memTotal1*hourlyToYearly, memCostPerUnit2*hourlyToYearly, memUnits2, memTotal2*hourlyToYearly, (memTotal2-memTotal1)*hourlyToYearly,
+		(cpuTotal1+memTotal1)*hourlyToYearly, (cpuTotal2+memTotal2)*hourlyToYearly, (cpuTotal2-cpuTotal1+memTotal2-memTotal1)*hourlyToYearly)
+	return
 }
