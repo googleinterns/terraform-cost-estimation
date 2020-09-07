@@ -1,0 +1,4123 @@
+[
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "region": "us-central1",
+      "selfLink": "us-central1/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "region": "us-central1",
+      "selfLink": "us-central1/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "region": "us-central1",
+      "selfLink": "us-central1/diskTypes/pd-standard",
+      "validDiskSize": "200GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "region": "us-central2",
+      "selfLink": "us-central2/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "region": "us-central2",
+      "selfLink": "us-central2/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "region": "us-central2",
+      "selfLink": "us-central2/diskTypes/pd-standard",
+      "validDiskSize": "200GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "region": "europe-west1",
+      "selfLink": "europe-west1/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "region": "europe-west1",
+      "selfLink": "europe-west1/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "region": "europe-west1",
+      "selfLink": "europe-west1/diskTypes/pd-standard",
+      "validDiskSize": "200GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "region": "us-west1",
+      "selfLink": "us-west1/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "region": "us-west1",
+      "selfLink": "us-west1/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "region": "us-west1",
+      "selfLink": "us-west1/diskTypes/pd-standard",
+      "validDiskSize": "200GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "region": "asia-east1",
+      "selfLink": "asia-east1/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "region": "asia-east1",
+      "selfLink": "asia-east1/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "region": "asia-east1",
+      "selfLink": "asia-east1/diskTypes/pd-standard",
+      "validDiskSize": "200GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "region": "us-east1",
+      "selfLink": "us-east1/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "region": "us-east1",
+      "selfLink": "us-east1/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "region": "us-east1",
+      "selfLink": "us-east1/diskTypes/pd-standard",
+      "validDiskSize": "200GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "region": "us-east2",
+      "selfLink": "us-east2/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "region": "us-east2",
+      "selfLink": "us-east2/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "region": "us-east2",
+      "selfLink": "us-east2/diskTypes/pd-standard",
+      "validDiskSize": "200GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "region": "asia-northeast1",
+      "selfLink": "asia-northeast1/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "region": "asia-northeast1",
+      "selfLink": "asia-northeast1/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "region": "asia-northeast1",
+      "selfLink": "asia-northeast1/diskTypes/pd-standard",
+      "validDiskSize": "200GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "region": "asia-southeast1",
+      "selfLink": "asia-southeast1/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "region": "asia-southeast1",
+      "selfLink": "asia-southeast1/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "region": "asia-southeast1",
+      "selfLink": "asia-southeast1/diskTypes/pd-standard",
+      "validDiskSize": "200GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "region": "us-east4",
+      "selfLink": "us-east4/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "region": "us-east4",
+      "selfLink": "us-east4/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "region": "us-east4",
+      "selfLink": "us-east4/diskTypes/pd-standard",
+      "validDiskSize": "200GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "region": "australia-southeast1",
+      "selfLink": "australia-southeast1/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "region": "australia-southeast1",
+      "selfLink": "australia-southeast1/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "region": "australia-southeast1",
+      "selfLink": "australia-southeast1/diskTypes/pd-standard",
+      "validDiskSize": "200GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "region": "europe-west2",
+      "selfLink": "europe-west2/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "region": "europe-west2",
+      "selfLink": "europe-west2/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "region": "europe-west2",
+      "selfLink": "europe-west2/diskTypes/pd-standard",
+      "validDiskSize": "200GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "region": "europe-west3",
+      "selfLink": "europe-west3/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "region": "europe-west3",
+      "selfLink": "europe-west3/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "region": "europe-west3",
+      "selfLink": "europe-west3/diskTypes/pd-standard",
+      "validDiskSize": "200GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "region": "southamerica-east1",
+      "selfLink": "southamerica-east1/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "region": "southamerica-east1",
+      "selfLink": "southamerica-east1/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "region": "southamerica-east1",
+      "selfLink": "southamerica-east1/diskTypes/pd-standard",
+      "validDiskSize": "200GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "region": "asia-south1",
+      "selfLink": "asia-south1/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "region": "asia-south1",
+      "selfLink": "asia-south1/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "region": "asia-south1",
+      "selfLink": "asia-south1/diskTypes/pd-standard",
+      "validDiskSize": "200GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "region": "northamerica-northeast1",
+      "selfLink": "northamerica-northeast1/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "region": "northamerica-northeast1",
+      "selfLink": "northamerica-northeast1/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "region": "northamerica-northeast1",
+      "selfLink": "northamerica-northeast1/diskTypes/pd-standard",
+      "validDiskSize": "200GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "region": "europe-west4",
+      "selfLink": "europe-west4/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "region": "europe-west4",
+      "selfLink": "europe-west4/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "region": "europe-west4",
+      "selfLink": "europe-west4/diskTypes/pd-standard",
+      "validDiskSize": "200GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "region": "europe-north1",
+      "selfLink": "europe-north1/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "region": "europe-north1",
+      "selfLink": "europe-north1/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "region": "europe-north1",
+      "selfLink": "europe-north1/diskTypes/pd-standard",
+      "validDiskSize": "200GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "region": "us-west2",
+      "selfLink": "us-west2/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "region": "us-west2",
+      "selfLink": "us-west2/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "region": "us-west2",
+      "selfLink": "us-west2/diskTypes/pd-standard",
+      "validDiskSize": "200GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "region": "asia-east2",
+      "selfLink": "asia-east2/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "region": "asia-east2",
+      "selfLink": "asia-east2/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "region": "asia-east2",
+      "selfLink": "asia-east2/diskTypes/pd-standard",
+      "validDiskSize": "200GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "region": "europe-west6",
+      "selfLink": "europe-west6/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "region": "europe-west6",
+      "selfLink": "europe-west6/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "region": "europe-west6",
+      "selfLink": "europe-west6/diskTypes/pd-standard",
+      "validDiskSize": "200GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "region": "asia-northeast2",
+      "selfLink": "asia-northeast2/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "region": "asia-northeast2",
+      "selfLink": "asia-northeast2/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "region": "asia-northeast2",
+      "selfLink": "asia-northeast2/diskTypes/pd-standard",
+      "validDiskSize": "200GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "region": "europe-west5",
+      "selfLink": "europe-west5/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "region": "europe-west5",
+      "selfLink": "europe-west5/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "region": "europe-west5",
+      "selfLink": "europe-west5/diskTypes/pd-standard",
+      "validDiskSize": "200GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "region": "asia-northeast3",
+      "selfLink": "asia-northeast3/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "region": "asia-northeast3",
+      "selfLink": "asia-northeast3/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "region": "asia-northeast3",
+      "selfLink": "asia-northeast3/diskTypes/pd-standard",
+      "validDiskSize": "200GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "region": "us-west3",
+      "selfLink": "us-west3/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "region": "us-west3",
+      "selfLink": "us-west3/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "region": "us-west3",
+      "selfLink": "us-west3/diskTypes/pd-standard",
+      "validDiskSize": "200GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "region": "us-west4",
+      "selfLink": "us-west4/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "region": "us-west4",
+      "selfLink": "us-west4/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "region": "us-west4",
+      "selfLink": "us-west4/diskTypes/pd-standard",
+      "validDiskSize": "200GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "region": "asia-southeast2",
+      "selfLink": "asia-southeast2/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "region": "asia-southeast2",
+      "selfLink": "asia-southeast2/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "region": "asia-southeast2",
+      "selfLink": "asia-southeast2/diskTypes/pd-standard",
+      "validDiskSize": "200GB-65536GB"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "us-central1-a/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "us-central1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "us-central1-a/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-central1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "us-central1-a/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-central1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "us-central1-a/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-central1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "us-central1-b/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "us-central1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "us-central1-b/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-central1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "us-central1-b/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-central1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "us-central1-b/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-central1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "us-central1-c/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "us-central1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "us-central1-c/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-central1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "us-central1-c/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-central1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "us-central1-c/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-central1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "us-central1-f/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "us-central1-f"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "us-central1-f/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-central1-f"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "us-central1-f/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-central1-f"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "us-central1-f/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-central1-f"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "us-central1-d/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "us-central1-d"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "us-central1-d/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-central1-d"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "us-central1-d/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-central1-d"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "us-central1-d/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-central1-d"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "us-central2-b/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "us-central2-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "us-central2-b/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-central2-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "us-central2-b/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-central2-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "us-central2-b/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-central2-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "us-central2-a/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "us-central2-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "us-central2-a/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-central2-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "us-central2-a/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-central2-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "us-central2-a/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-central2-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "us-central2-c/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "us-central2-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "us-central2-c/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-central2-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "us-central2-c/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-central2-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "us-central2-c/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-central2-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "us-central2-d/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "us-central2-d"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "us-central2-d/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-central2-d"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "us-central2-d/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-central2-d"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "us-central2-d/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-central2-d"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "europe-west1-b/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "europe-west1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "europe-west1-b/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "europe-west1-b/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "europe-west1-b/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "europe-west1-c/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "europe-west1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "europe-west1-c/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "europe-west1-c/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "europe-west1-c/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "europe-west1-d/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "europe-west1-d"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "europe-west1-d/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west1-d"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "europe-west1-d/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west1-d"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "europe-west1-d/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west1-d"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "us-west1-a/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "us-west1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "us-west1-a/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-west1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "us-west1-a/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-west1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "us-west1-a/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-west1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "us-west1-b/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "us-west1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "us-west1-b/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-west1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "us-west1-b/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-west1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "us-west1-b/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-west1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "us-west1-c/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "us-west1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "us-west1-c/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-west1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "us-west1-c/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-west1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "us-west1-c/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-west1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "asia-east1-a/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "asia-east1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "asia-east1-a/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-east1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "asia-east1-a/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-east1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "asia-east1-a/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-east1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "asia-east1-b/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "asia-east1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "asia-east1-b/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-east1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "asia-east1-b/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-east1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "asia-east1-b/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-east1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "asia-east1-c/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "asia-east1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "asia-east1-c/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-east1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "asia-east1-c/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-east1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "asia-east1-c/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-east1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "us-east1-a/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "us-east1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "us-east1-a/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-east1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "us-east1-a/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-east1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "us-east1-a/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-east1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "us-east1-b/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "us-east1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "us-east1-b/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-east1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "us-east1-b/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-east1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "us-east1-b/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-east1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "us-east1-c/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "us-east1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "us-east1-c/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-east1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "us-east1-c/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-east1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "us-east1-c/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-east1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "us-east1-d/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "us-east1-d"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "us-east1-d/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-east1-d"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "us-east1-d/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-east1-d"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "us-east1-d/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-east1-d"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "us-east2-a/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-east2-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "us-east2-a/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-east2-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "us-east2-a/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-east2-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "asia-northeast1-a/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "asia-northeast1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "asia-northeast1-a/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-northeast1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "asia-northeast1-a/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-northeast1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "asia-northeast1-a/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-northeast1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "asia-northeast1-b/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "asia-northeast1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "asia-northeast1-b/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-northeast1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "asia-northeast1-b/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-northeast1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "asia-northeast1-b/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-northeast1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "asia-northeast1-c/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "asia-northeast1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "asia-northeast1-c/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-northeast1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "asia-northeast1-c/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-northeast1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "asia-northeast1-c/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-northeast1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "asia-southeast1-a/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "asia-southeast1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "asia-southeast1-a/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-southeast1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "asia-southeast1-a/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-southeast1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "asia-southeast1-a/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-southeast1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "asia-southeast1-b/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "asia-southeast1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "asia-southeast1-b/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-southeast1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "asia-southeast1-b/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-southeast1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "asia-southeast1-b/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-southeast1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "asia-southeast1-c/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "asia-southeast1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "asia-southeast1-c/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-southeast1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "asia-southeast1-c/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-southeast1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "asia-southeast1-c/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-southeast1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "us-east4-a/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "us-east4-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "us-east4-a/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-east4-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "us-east4-a/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-east4-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "us-east4-a/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-east4-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "us-east4-b/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "us-east4-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "us-east4-b/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-east4-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "us-east4-b/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-east4-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "us-east4-b/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-east4-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "us-east4-c/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "us-east4-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "us-east4-c/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-east4-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "us-east4-c/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-east4-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "us-east4-c/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-east4-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "australia-southeast1-c/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "australia-southeast1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "australia-southeast1-c/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "australia-southeast1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "australia-southeast1-c/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "australia-southeast1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "australia-southeast1-c/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "australia-southeast1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "australia-southeast1-a/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "australia-southeast1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "australia-southeast1-a/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "australia-southeast1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "australia-southeast1-a/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "australia-southeast1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "australia-southeast1-a/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "australia-southeast1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "australia-southeast1-b/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "australia-southeast1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "australia-southeast1-b/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "australia-southeast1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "australia-southeast1-b/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "australia-southeast1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "australia-southeast1-b/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "australia-southeast1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "europe-west2-a/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "europe-west2-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "europe-west2-a/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west2-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "europe-west2-a/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west2-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "europe-west2-a/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west2-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "europe-west2-b/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "europe-west2-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "europe-west2-b/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west2-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "europe-west2-b/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west2-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "europe-west2-b/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west2-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "europe-west2-c/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "europe-west2-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "europe-west2-c/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west2-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "europe-west2-c/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west2-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "europe-west2-c/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west2-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "europe-west3-c/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "europe-west3-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "europe-west3-c/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west3-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "europe-west3-c/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west3-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "europe-west3-c/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west3-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "europe-west3-a/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "europe-west3-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "europe-west3-a/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west3-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "europe-west3-a/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west3-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "europe-west3-a/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west3-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "europe-west3-b/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "europe-west3-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "europe-west3-b/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west3-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "europe-west3-b/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west3-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "europe-west3-b/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west3-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "southamerica-east1-a/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "southamerica-east1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "southamerica-east1-a/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "southamerica-east1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "southamerica-east1-a/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "southamerica-east1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "southamerica-east1-a/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "southamerica-east1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "southamerica-east1-b/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "southamerica-east1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "southamerica-east1-b/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "southamerica-east1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "southamerica-east1-b/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "southamerica-east1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "southamerica-east1-b/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "southamerica-east1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "southamerica-east1-c/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "southamerica-east1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "southamerica-east1-c/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "southamerica-east1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "southamerica-east1-c/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "southamerica-east1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "southamerica-east1-c/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "southamerica-east1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "asia-south1-b/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "asia-south1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "asia-south1-b/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-south1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "asia-south1-b/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-south1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "asia-south1-b/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-south1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "asia-south1-a/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "asia-south1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "asia-south1-a/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-south1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "asia-south1-a/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-south1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "asia-south1-a/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-south1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "asia-south1-c/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "asia-south1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "asia-south1-c/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-south1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "asia-south1-c/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-south1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "asia-south1-c/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-south1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "northamerica-northeast1-a/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "northamerica-northeast1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "northamerica-northeast1-a/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "northamerica-northeast1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "northamerica-northeast1-a/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "northamerica-northeast1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "northamerica-northeast1-a/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "northamerica-northeast1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "northamerica-northeast1-b/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "northamerica-northeast1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "northamerica-northeast1-b/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "northamerica-northeast1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "northamerica-northeast1-b/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "northamerica-northeast1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "northamerica-northeast1-b/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "northamerica-northeast1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "northamerica-northeast1-c/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "northamerica-northeast1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "northamerica-northeast1-c/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "northamerica-northeast1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "northamerica-northeast1-c/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "northamerica-northeast1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "northamerica-northeast1-c/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "northamerica-northeast1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "europe-west4-c/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "europe-west4-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "europe-west4-c/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west4-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "europe-west4-c/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west4-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "europe-west4-c/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west4-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "europe-west4-b/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "europe-west4-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "europe-west4-b/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west4-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "europe-west4-b/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west4-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "europe-west4-b/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west4-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "europe-west4-a/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "europe-west4-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "europe-west4-a/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west4-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "europe-west4-a/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west4-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "europe-west4-a/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west4-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "europe-north1-b/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "europe-north1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "europe-north1-b/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-north1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "europe-north1-b/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-north1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "europe-north1-b/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-north1-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "europe-north1-c/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "europe-north1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "europe-north1-c/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-north1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "europe-north1-c/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-north1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "europe-north1-c/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-north1-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "europe-north1-a/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "europe-north1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "europe-north1-a/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-north1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "europe-north1-a/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-north1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "europe-north1-a/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-north1-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "us-west2-c/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "us-west2-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "us-west2-c/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-west2-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "us-west2-c/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-west2-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "us-west2-c/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-west2-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "us-west2-b/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "us-west2-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "us-west2-b/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-west2-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "us-west2-b/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-west2-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "us-west2-b/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-west2-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "us-west2-a/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "us-west2-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "us-west2-a/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-west2-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "us-west2-a/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-west2-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "us-west2-a/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-west2-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "asia-east2-c/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "asia-east2-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "asia-east2-c/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-east2-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "asia-east2-c/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-east2-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "asia-east2-c/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-east2-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "asia-east2-b/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "asia-east2-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "asia-east2-b/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-east2-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "asia-east2-b/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-east2-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "asia-east2-b/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-east2-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "asia-east2-a/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "asia-east2-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "asia-east2-a/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-east2-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "asia-east2-a/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-east2-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "asia-east2-a/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-east2-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "europe-west6-b/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "europe-west6-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "europe-west6-b/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west6-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "europe-west6-b/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west6-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "europe-west6-b/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west6-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "europe-west6-c/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "europe-west6-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "europe-west6-c/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west6-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "europe-west6-c/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west6-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "europe-west6-c/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west6-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "europe-west6-a/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "europe-west6-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "europe-west6-a/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west6-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "europe-west6-a/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west6-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "europe-west6-a/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west6-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "asia-northeast2-b/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "asia-northeast2-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "asia-northeast2-b/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-northeast2-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "asia-northeast2-b/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-northeast2-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "asia-northeast2-b/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-northeast2-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "asia-northeast2-c/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "asia-northeast2-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "asia-northeast2-c/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-northeast2-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "asia-northeast2-c/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-northeast2-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "asia-northeast2-c/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-northeast2-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "asia-northeast2-a/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "asia-northeast2-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "asia-northeast2-a/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-northeast2-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "asia-northeast2-a/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-northeast2-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "asia-northeast2-a/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-northeast2-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "europe-west5-c/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "europe-west5-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "europe-west5-c/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west5-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "europe-west5-c/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west5-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "europe-west5-c/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west5-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "europe-west5-b/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "europe-west5-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "europe-west5-b/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west5-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "europe-west5-b/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west5-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "europe-west5-b/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west5-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "europe-west5-a/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "europe-west5-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "europe-west5-a/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west5-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "europe-west5-a/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west5-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "europe-west5-a/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "europe-west5-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "asia-northeast3-a/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "asia-northeast3-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "asia-northeast3-a/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-northeast3-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "asia-northeast3-a/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-northeast3-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "asia-northeast3-a/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-northeast3-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "asia-northeast3-c/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "asia-northeast3-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "asia-northeast3-c/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-northeast3-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "asia-northeast3-c/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-northeast3-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "asia-northeast3-c/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-northeast3-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "asia-northeast3-b/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "asia-northeast3-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "asia-northeast3-b/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-northeast3-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "asia-northeast3-b/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-northeast3-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "asia-northeast3-b/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-northeast3-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "us-west3-a/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "us-west3-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "us-west3-a/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-west3-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "us-west3-a/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-west3-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "us-west3-a/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-west3-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "us-west3-b/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "us-west3-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "us-west3-b/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-west3-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "us-west3-b/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-west3-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "us-west3-b/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-west3-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "us-west3-c/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "us-west3-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "us-west3-c/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-west3-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "us-west3-c/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-west3-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "us-west3-c/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-west3-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "us-west4-c/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "us-west4-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "us-west4-c/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-west4-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "us-west4-c/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-west4-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "us-west4-c/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-west4-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "us-west4-a/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "us-west4-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "us-west4-a/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-west4-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "us-west4-a/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-west4-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "us-west4-a/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-west4-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "us-west4-b/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "us-west4-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "us-west4-b/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-west4-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "us-west4-b/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-west4-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "us-west4-b/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "us-west4-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "asia-southeast2-a/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "asia-southeast2-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "asia-southeast2-a/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-southeast2-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "asia-southeast2-a/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-southeast2-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "asia-southeast2-a/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-southeast2-a"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "asia-southeast2-c/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "asia-southeast2-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "asia-southeast2-c/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-southeast2-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "asia-southeast2-c/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-southeast2-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "asia-southeast2-c/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-southeast2-c"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "375",
+      "description": "Local SSD",
+      "kind": "compute#diskType",
+      "name": "local-ssd",
+      "selfLink": "asia-southeast2-b/diskTypes/local-ssd",
+      "validDiskSize": "375GB-375GB",
+      "zone": "asia-southeast2-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "Balanced Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-balanced",
+      "selfLink": "asia-southeast2-b/diskTypes/pd-balanced",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-southeast2-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "100",
+      "description": "SSD Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-ssd",
+      "selfLink": "asia-southeast2-b/diskTypes/pd-ssd",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-southeast2-b"
+    },
+    {
+      "creationTimestamp": "1969-12-31T16:00:00.000-08:00",
+      "defaultDiskSizeGb": "500",
+      "description": "Standard Persistent Disk",
+      "kind": "compute#diskType",
+      "name": "pd-standard",
+      "selfLink": "asia-southeast2-b/diskTypes/pd-standard",
+      "validDiskSize": "10GB-65536GB",
+      "zone": "asia-southeast2-b"
+    }
+  ]
+  
