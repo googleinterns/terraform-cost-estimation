@@ -356,7 +356,8 @@ func (state *ComputeInstanceState) GetSummary() string {
 	return fmt.Sprintf(format, instance.Name, instance.MachineType, state.Action, c+m, change, dCore+dMem)
 }
 
-func (state *ComputeInstanceState) getGeneralChanges() (name, ID, action, cpuType, memType string) {
+func (state *ComputeInstanceState) getGeneralChanges() (name, ID, action,
+	machineType, zone, cpuType, memType string) {
 	action = state.Action
 
 	switch {
@@ -366,6 +367,8 @@ func (state *ComputeInstanceState) getGeneralChanges() (name, ID, action, cpuTyp
 		if state.After.ID == "" {
 			ID = "unknown"
 		}
+		machineType = state.After.MachineType
+		zone = state.After.Zone
 		cpuType = state.After.Cores.Type
 		memType = state.After.Memory.Type
 
@@ -375,6 +378,8 @@ func (state *ComputeInstanceState) getGeneralChanges() (name, ID, action, cpuTyp
 		if state.Before.ID == "" {
 			ID = "unknown"
 		}
+		machineType = state.Before.MachineType
+		zone = state.Before.Zone
 		cpuType = state.Before.Cores.Type
 		memType = state.Before.Memory.Type
 
@@ -382,6 +387,18 @@ func (state *ComputeInstanceState) getGeneralChanges() (name, ID, action, cpuTyp
 		name = state.Before.Name + " -> " + state.After.Name
 		if state.After.ID == "" {
 			ID = "unknown"
+		}
+
+		if state.Before.MachineType != state.After.MachineType {
+			machineType = state.Before.MachineType + " -> " + state.After.MachineType
+		} else {
+			machineType = state.Before.MachineType
+		}
+
+		if state.Before.Zone != state.After.Zone {
+			zone = state.Before.Zone + " -> " + state.After.Zone
+		} else {
+			zone = state.Before.Zone
 		}
 
 		if state.Before.Cores.Type != state.After.Cores.Type {
@@ -417,7 +434,7 @@ func (state *ComputeInstanceState) getCostChanges() (cpuCostPerUnit1, cpuCostPer
 
 // GetWebTables returns html pricing information table strings to be displayed in a web page.
 func (state *ComputeInstanceState) GetWebTables(stateNum int) (hourly, monthly, yearly string) {
-	name, ID, action, cpuType, memType := state.getGeneralChanges()
+	name, ID, action, machineType, zone, cpuType, memType := state.getGeneralChanges()
 	cpuCostPerUnit1, cpuCostPerUnit2, cpuUnits1, cpuUnits2, memCostPerUnit1,
 		memCostPerUnit2, memUnits1, memUnits2 := state.getCostChanges()
 
@@ -436,6 +453,14 @@ func (state *ComputeInstanceState) GetWebTables(stateNum int) (hourly, monthly, 
                 </tr>
                 <tr>
                     <td colspan="1">Action</td>
+                    <td colspan="7">%s</td>
+				</tr>
+				<tr>
+                    <td colspan="1">Machine Type</td>
+                    <td colspan="7">%s</td>
+				</tr>
+				<tr>
+                    <td colspan="1">Zone</td>
                     <td colspan="7">%s</td>
                 </tr>
                 <tr>
@@ -503,19 +528,30 @@ func (state *ComputeInstanceState) GetWebTables(stateNum int) (hourly, monthly, 
 	hourlyToMonthly := float64(24 * 30)
 	hourlyToYearly := float64(24 * 365)
 
-	hourly = fmt.Sprintf(format, stateNum, "hourly", name, stateNum, "hourly", ID, action, cpuType, memType,
-		cpuCostPerUnit1, cpuUnits1, cpuTotal1, cpuCostPerUnit2, cpuUnits2, cpuTotal2, cpuTotal2-cpuTotal1,
-		memCostPerUnit1, memUnits1, memTotal1, memCostPerUnit2, memUnits2, memTotal2, memTotal2-memTotal1,
-		cpuTotal1+memTotal1, cpuTotal2+memTotal2, cpuTotal2-cpuTotal1+memTotal2-memTotal1)
+	dTotalCPU := cpuTotal2 - cpuTotal1
+	dTotalMem := memTotal2 - memTotal1
 
-	monthly = fmt.Sprintf(format, stateNum, "monthly", name, stateNum, "monthly", ID, action, cpuType, memType,
-		cpuCostPerUnit1*hourlyToMonthly, cpuUnits1, cpuTotal1*hourlyToMonthly, cpuCostPerUnit2*hourlyToMonthly, cpuUnits2, cpuTotal2*hourlyToMonthly, (cpuTotal2-cpuTotal1)*hourlyToMonthly,
-		memCostPerUnit1*hourlyToMonthly, memUnits1, memTotal1*hourlyToMonthly, memCostPerUnit2*hourlyToMonthly, memUnits2, memTotal2*hourlyToMonthly, (memTotal2-memTotal1)*hourlyToMonthly,
-		(cpuTotal1+memTotal1)*hourlyToMonthly, (cpuTotal2+memTotal2)*hourlyToMonthly, (cpuTotal2-cpuTotal1+memTotal2-memTotal1)*hourlyToMonthly)
+	beforeTotal := memTotal1 + cpuTotal1
+	afterTotal := memTotal2 + cpuTotal2
+	delta := dTotalMem + dTotalCPU
 
-	yearly = fmt.Sprintf(format, stateNum, "yearly", name, stateNum, "yearly", ID, action, cpuType, memType,
-		cpuCostPerUnit1*hourlyToYearly, cpuUnits1, cpuTotal1*hourlyToYearly, cpuCostPerUnit2*hourlyToYearly, cpuUnits2, cpuTotal2*hourlyToYearly, (cpuTotal2-cpuTotal1)*hourlyToYearly,
-		memCostPerUnit1*hourlyToYearly, memUnits1, memTotal1*hourlyToYearly, memCostPerUnit2*hourlyToYearly, memUnits2, memTotal2*hourlyToYearly, (memTotal2-memTotal1)*hourlyToYearly,
-		(cpuTotal1+memTotal1)*hourlyToYearly, (cpuTotal2+memTotal2)*hourlyToYearly, (cpuTotal2-cpuTotal1+memTotal2-memTotal1)*hourlyToYearly)
+	hourly = fmt.Sprintf(format, stateNum, "hourly", name, stateNum, "hourly", ID, action, machineType, zone,
+		cpuType, memType, cpuCostPerUnit1, cpuUnits1, cpuTotal1, cpuCostPerUnit2, cpuUnits2, cpuTotal2, dTotalCPU,
+		memCostPerUnit1, memUnits1, memTotal1, memCostPerUnit2, memUnits2, memTotal2, dTotalMem,
+		beforeTotal, afterTotal, delta)
+
+	monthly = fmt.Sprintf(format, stateNum, "hourly", name, stateNum, "hourly", ID, action, machineType, zone,
+		cpuType, memType, cpuCostPerUnit1*hourlyToMonthly, cpuUnits1, cpuTotal1*hourlyToMonthly,
+		cpuCostPerUnit2*hourlyToMonthly, cpuUnits2, cpuTotal2*hourlyToMonthly, dTotalCPU*hourlyToMonthly,
+		memCostPerUnit1*hourlyToMonthly, memUnits1, memTotal1*hourlyToMonthly,
+		memCostPerUnit2*hourlyToMonthly, memUnits2, memTotal2*hourlyToMonthly, dTotalMem*hourlyToMonthly,
+		beforeTotal*hourlyToMonthly, afterTotal*hourlyToMonthly, delta*hourlyToMonthly)
+
+	yearly = fmt.Sprintf(format, stateNum, "hourly", name, stateNum, "hourly", ID, action, machineType, zone,
+		cpuType, memType, cpuCostPerUnit1*hourlyToYearly, cpuUnits1, cpuTotal1*hourlyToYearly,
+		cpuCostPerUnit2*hourlyToYearly, cpuUnits2, cpuTotal2*hourlyToYearly, dTotalCPU*hourlyToYearly,
+		memCostPerUnit1*hourlyToYearly, memUnits1, memTotal1*hourlyToYearly,
+		memCostPerUnit2*hourlyToYearly, memUnits2, memTotal2*hourlyToYearly, dTotalMem*hourlyToYearly,
+		beforeTotal*hourlyToYearly, afterTotal*hourlyToYearly, delta*hourlyToYearly)
 	return
 }
