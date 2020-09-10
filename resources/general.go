@@ -1,6 +1,8 @@
 package resources
 
 import (
+	"os"
+
 	billing "github.com/googleinterns/terraform-cost-estimation/billing"
 	billingpb "google.golang.org/genproto/googleapis/cloud/billing/v1"
 )
@@ -13,7 +15,8 @@ const (
 //ResourceState is the interface of a general before/after resource state(ComputeInstance,...).
 type ResourceState interface {
 	CompletePricingInfo(catalog *billing.ComputeEngineCatalog) error
-	PrintPricingInfo()
+	WritePricingInfo(f *os.File)
+	GetWebTables(stateNum int) (hourly, monthly, yearly string)
 	GetSummary() string
 }
 

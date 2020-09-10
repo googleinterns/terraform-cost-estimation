@@ -68,9 +68,12 @@ func main() {
 
 		resources := jsdecode.GetResources(plan)
 
-		fout, err := io.GetOutputWriter(outputFileNames[minInt(i, len(outputFileNames)-1)])
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error: "+err.Error()+"\n\n")
+		var fout *os.File
+		if *format != "html" {
+			fout, err = io.GetOutputWriter(outputFileNames[minInt(i, len(outputFileNames)-1)])
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Error: "+err.Error()+"\n\n")
+			}
 		}
 
 		fout.Write([]byte(fmt.Sprintf("Pricing information for %s:\n\n", flag.Arg(i))))
@@ -81,8 +84,15 @@ func main() {
 				fmt.Fprintf(os.Stderr, "Error: "+err.Error()+"\n\n")
 				continue
 			}
-			r.PrintPricingInfo(fout)
+			r.WritePricingInfo(fout)
 			summary += r.GetSummary() + "\n"
+		}
+
+		if *format == "html" && outputFileNames[minInt(i, len(outputFileNames)-1)] != "stdout" {
+			err = io.GenerateWebPage(outputFileNames[minInt(i, len(outputFileNames)-1)], resources)
+			if err != nil {
+				fmt.Fprintln(os.Stderr, "Error: "+err.Error())
+			}
 		}
 
 		fout.Write([]byte("\n\nSummary:\n\n" + summary))
