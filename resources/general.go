@@ -12,6 +12,22 @@ const (
 	epsilon = 1e-10
 )
 
+// PricingInfo stores the information from the billing API.
+type PricingInfo struct {
+	UsageUnit       string
+	HourlyUnitPrice int64
+	CurrencyType    string
+	CurrencyUnit    string
+}
+
+func (p *PricingInfo) fillInfo(sku *billingpb.Sku) {
+	usageUnit, hourlyUnitPrice, currencyType, currencyUnit := billing.GetPricingInfo(sku)
+	p.UsageUnit = usageUnit
+	p.HourlyUnitPrice = hourlyUnitPrice
+	p.CurrencyType = currencyType
+	p.CurrencyUnit = currencyUnit
+}
+
 //ResourceState is the interface of a general before/after resource state(ComputeInstance,...).
 type ResourceState interface {
 	CompletePricingInfo(catalog *billing.ComputeEngineCatalog) error
@@ -28,7 +44,7 @@ type skuObject interface {
 	getPricingInfo() PricingInfo
 }
 
-func getSKU(skuObj skuObject, skus []*billingpb.Sku) *billingpb.Sku {
+func findMatchingSKU(skuObj skuObject, skus []*billingpb.Sku) *billingpb.Sku {
 	for _, sku := range skus {
 		if skuObj.isMatch(sku) {
 			return sku

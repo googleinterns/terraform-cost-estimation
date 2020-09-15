@@ -1,0 +1,47 @@
+{
+    "name": "services/6F81-5844-456A/skus/0026-A923-AA09",
+    "skuId": "0026-A923-AA09",
+    "description": "Sole Tenancy Instance Ram running in Jakarta",
+    "category": {
+      "serviceDisplayName": "Compute Engine",
+      "resourceFamily": "Compute",
+      "resourceGroup": "RAM",
+      "usageType": "OnDemand"
+    },
+    "serviceRegions": [
+      "asia-southeast2"
+    ],
+    "pricingInfo": [
+      {
+        "summary": "",
+        "pricingExpression": {
+          "usageUnit": "GiBy.h",
+          "usageUnitDescription": "gibibyte hour",
+          "baseUnit": "By.s",
+          "baseUnitDescription": "byte second",
+          "baseUnitConversionFactor": 3865470566400,
+          "displayQuantity": 1,
+          "tieredRates": [
+            {
+              "startUsageAmount": 0,
+              "unitPrice": {
+                "currencyCode": "USD",
+                "units": "0",
+                "nanos": 5696340
+              }
+            },
+            {
+                "startUsageAmount": 0,
+                "unitPrice": {
+                  "currencyCode": "USD",
+                  "units": "0",
+                  "nanos": 5226000
+                }
+              }
+          ]
+        },
+        "currencyConversionRate": 1,
+        "effectiveTime": "2020-08-05T01:48:54.819Z"
+      }
+    ]
+}

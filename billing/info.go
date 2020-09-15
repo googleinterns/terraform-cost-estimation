@@ -31,11 +31,17 @@ func fitsDescription(sku *billingpb.Sku, contains, omits []string) bool {
 }
 
 func fitsRegion(sku *billingpb.Sku, region string) bool {
-	if sku.ServiceRegions != nil {
-		for _, r := range sku.ServiceRegions {
-			if r == region {
-				return true
-			}
+	if len(sku.ServiceRegions) == 0 {
+		return false
+	}
+
+	if sku.ServiceRegions[0] == "global" {
+		return true
+	}
+
+	for _, r := range sku.ServiceRegions {
+		if r == region {
+			return true
 		}
 	}
 	return false
@@ -43,12 +49,17 @@ func fitsRegion(sku *billingpb.Sku, region string) bool {
 
 // GetPricingInfo returns the pricing information of an SKU.
 func GetPricingInfo(sku *billingpb.Sku) (usageUnit string, hourlyUnitPrice int64, currencyType, currencyUnit string) {
+	currencyUnit = "nano"
 	pExpr := sku.PricingInfo[0].PricingExpression
 	usageUnit = pExpr.UsageUnitDescription
+
+	if pExpr.TieredRates == nil || len(pExpr.TieredRates) == 0 {
+		return
+	}
+
 	unitPrice := pExpr.TieredRates[0].UnitPrice
 	hourlyUnitPrice = int64(unitPrice.Nanos)
 	currencyType = unitPrice.CurrencyCode
-	currencyUnit = "nano"
 	return
 }
 
@@ -81,7 +92,7 @@ func GetSKUs(ctx context.Context, service string) ([]*billingpb.Sku, error) {
 
 // DescriptionFilter returns the SKUs that meet the description requirements.
 func DescriptionFilter(skus []*billingpb.Sku, contains, omits []string) ([]*billingpb.Sku, error) {
-	if skus == nil || len(skus) == 0 {
+	if len(skus) == 0 {
 		return nil, fmt.Errorf("SKU list must not be empty")
 	}
 
@@ -93,7 +104,7 @@ func DescriptionFilter(skus []*billingpb.Sku, contains, omits []string) ([]*bill
 		}
 	}
 
-	if filtered == nil || len(filtered) == 0 {
+	if len(filtered) == 0 {
 		return nil, fmt.Errorf("no SKU with the specified description")
 	}
 
@@ -102,7 +113,7 @@ func DescriptionFilter(skus []*billingpb.Sku, contains, omits []string) ([]*bill
 
 // RegionFilter returns the SKUs from the specified region.
 func RegionFilter(skus []*billingpb.Sku, region string) ([]*billingpb.Sku, error) {
-	if skus == nil || len(skus) == 0 {
+	if len(skus) == 0 {
 		return nil, fmt.Errorf("SKU list must not be empty")
 	}
 
@@ -114,7 +125,7 @@ func RegionFilter(skus []*billingpb.Sku, region string) ([]*billingpb.Sku, error
 		}
 	}
 
-	if filtered == nil || len(filtered) == 0 {
+	if len(filtered) == 0 {
 		return nil, fmt.Errorf("region '" + region + "' is invalid")
 	}
 

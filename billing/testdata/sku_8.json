@@ -1,0 +1,39 @@
+{
+    "name": "services/6F81-5844-456A/skus/0048-21CE-74C3",
+    "skuId": "0048-21CE-74C3",
+    "description": "Preemptible N2 Custom Instance Core running in Sao Paulo",
+    "category": {
+      "serviceDisplayName": "Compute Engine",
+      "resourceFamily": "Compute",
+      "resourceGroup": "CPU",
+      "usageType": "Preemptible"
+    },
+    "serviceRegions": [
+      "southamerica-east1"
+    ],
+    "pricingInfo": [
+      {
+        "summary": "",
+        "pricingExpression": {
+          "usageUnit": "h",
+          "usageUnitDescription": "hour",
+          "baseUnit": "s",
+          "baseUnitDescription": "second",
+          "baseUnitConversionFactor": 3600,
+          "displayQuantity": 1,
+          "tieredRates": [
+            {
+              "startUsageAmount": 0,
+              "unitPrice": {
+                "currencyCode": "USD",
+                "units": "0",
+                "nanos": 11538000
+              }
+            }
+          ]
+        },
+        "currencyConversionRate": 1,
+        "effectiveTime": "2020-08-05T01:48:54.819Z"
+      }
+    ]
+}

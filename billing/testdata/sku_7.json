@@ -1,0 +1,39 @@
+{
+    "name": "services/6F81-5844-456A/skus/0031-0209-F39B",
+    "skuId": "0031-0209-F39B",
+    "description": "Network Vpn Inter Region Ingress from Hong Kong to Sydney",
+    "category": {
+      "serviceDisplayName": "Compute Engine",
+      "resourceFamily": "Network",
+      "resourceGroup": "VPNInterregionIngress",
+      "usageType": "OnDemand"
+    },
+    "serviceRegions": [
+      "australia-southeast1"
+    ],
+    "pricingInfo": [
+      {
+        "summary": "",
+        "pricingExpression": {
+          "usageUnit": "GiBy",
+          "usageUnitDescription": "gibibyte",
+          "baseUnit": "By",
+          "baseUnitDescription": "byte",
+          "baseUnitConversionFactor": 1073741824,
+          "displayQuantity": 1,
+          "tieredRates": [
+            {
+              "startUsageAmount": 0,
+              "unitPrice": {
+                "currencyCode": "USD",
+                "units": "0",
+                "nanos": 0
+              }
+            }
+          ]
+        },
+        "currencyConversionRate": 1,
+        "effectiveTime": "2020-08-05T01:48:54.819Z"
+      }
+    ]
+}
