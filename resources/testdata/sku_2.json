@@ -1,0 +1,37 @@
+{
+    "description": "Preemptible N2 Custom Instance Ram running in Sao Paulo",
+    "category": {
+        "serviceDisplayName": "Compute Engine",
+        "resourceFamily": "Compute",
+        "resourceGroup": "RAM",
+        "usageType": "Preemptible"
+    },
+    "serviceRegions": [
+        "southamerica-east1"
+    ],
+    "pricingInfo": [
+    {
+      "summary": "",
+      "pricingExpression": {
+        "usageUnit": "GiBy.h",
+        "usageUnitDescription": "gibibyte hour",
+        "baseUnit": "By.s",
+        "baseUnitDescription": "byte second",
+        "baseUnitConversionFactor": 3865470566400,
+        "displayQuantity": 1,
+        "tieredRates": [
+          {
+            "startUsageAmount": 0,
+            "unitPrice": {
+              "currencyCode": "USD",
+              "units": "0",
+              "nanos": 1121733
+            }
+          }
+        ]
+      },
+      "currencyConversionRate": 1,
+      "effectiveTime": "2020-08-05T01:48:54.819Z"
+    }
+  ]
+}

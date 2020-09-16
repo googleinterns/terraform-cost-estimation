@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	billing "github.com/googleinterns/terraform-cost-estimation/billing"
+	"github.com/googleinterns/terraform-cost-estimation/io/web"
 	conv "github.com/googleinterns/terraform-cost-estimation/memconverter"
 	cd "github.com/googleinterns/terraform-cost-estimation/resources/classdetail"
 	billingpb "google.golang.org/genproto/googleapis/cloud/billing/v1"
@@ -218,7 +219,7 @@ func (state *ComputeInstanceState) getDelta() (DCore, DMem float64, err error) {
 		core1 = state.Before.Cores.getTotalPrice()
 		mem1, err = state.Before.Memory.getTotalPrice()
 		if err != nil {
-			return 0, 0, fmt.Errorf(state.Before.Name + "(" + state.After.MachineType + ")" + ": " + err.Error())
+			return 0, 0, fmt.Errorf(state.Before.Name + "(" + state.Before.MachineType + ")" + ": " + err.Error())
 		}
 	}
 
@@ -332,19 +333,19 @@ func (state *ComputeInstanceState) getGeneralChanges() (name, ID, action,
 	return
 }
 
-func (state *ComputeInstanceState) getCostChanges() (cpuCostPerUnit1, cpuCostPerUnit2 float64,
-	cpuUnits1, cpuUnits2 int, memCostPerUnit1, memCostPerUnit2, memUnits1, memUnits2 float64) {
+func (state *ComputeInstanceState) getCostChanges() (cpuCostPerUnit1, cpuCostPerUnit2, cpuUnits1, cpuUnits2,
+	memCostPerUnit1, memCostPerUnit2, memUnits1, memUnits2 float64) {
 
 	if state.Before != nil {
 		cpuCostPerUnit1 = float64(state.Before.Cores.UnitPricing.HourlyUnitPrice) / nano
-		cpuUnits1 = state.Before.Cores.Number
+		cpuUnits1 = float64(state.Before.Cores.Number)
 		memCostPerUnit1 = float64(state.Before.Memory.UnitPricing.HourlyUnitPrice) / nano
 		memUnits1, _ = conv.Convert("gib", state.Before.Memory.AmountGiB, state.Before.Memory.UnitPricing.UsageUnit)
 	}
 
 	if state.After != nil {
 		cpuCostPerUnit2 = float64(state.After.Cores.UnitPricing.HourlyUnitPrice) / nano
-		cpuUnits2 = state.After.Cores.Number
+		cpuUnits2 = float64(state.After.Cores.Number)
 		memCostPerUnit2 = float64(state.After.Memory.UnitPricing.HourlyUnitPrice) / nano
 		memUnits2, _ = conv.Convert("gib", state.After.Memory.AmountGiB, strings.Split(state.After.Memory.UnitPricing.UsageUnit, " ")[0])
 	}
@@ -353,125 +354,28 @@ func (state *ComputeInstanceState) getCostChanges() (cpuCostPerUnit1, cpuCostPer
 }
 
 // GetWebTables returns html pricing information table strings to be displayed in a web page.
-func (state *ComputeInstanceState) GetWebTables(stateNum int) (hourly, monthly, yearly string) {
+func (state *ComputeInstanceState) GetWebTables(stateNum int) *web.PricingTypeTables {
 	name, ID, action, machineType, zone, cpuType, memType := state.getGeneralChanges()
-	cpuCostPerUnit1, cpuCostPerUnit2, cpuUnits1, cpuUnits2, memCostPerUnit1,
-		memCostPerUnit2, memUnits1, memUnits2 := state.getCostChanges()
-
-	format := `
-		<table class="table table-bordered" style="table-layout: fixed;">
-            <thead class="table-info">
-                <tr style="cursor: pointer;" data-toggle="collapse" data-target="#table_%+v_%s">
-					<th colspan="1" style="width: 12.5%%;">Name</th>
-					<th colspan="7" style="width:87.5%%;">%s</th></td>
-                </tr>
-            </thead>
-            <tbody class="hide-table-padding collapse" id="table_%+v_%s">
-				<tr>
-                    <td colspan="1">Instance ID</td>
-                    <td colspan="7">%s</td>
-                </tr>
-                <tr>
-                    <td colspan="1">Action</td>
-                    <td colspan="7">%s</td>
-				</tr>
-				<tr>
-                    <td colspan="1">Machine Type</td>
-                    <td colspan="7">%s</td>
-				</tr>
-				<tr>
-                    <td colspan="1">Zone</td>
-                    <td colspan="7">%s</td>
-                </tr>
-                <tr>
-                    <td colspan="1">CPU type</td>
-                    <td colspan="7">%s</td>
-                </tr>
-                <tr>
-                    <td colspan="1">RAM Type</td>
-                    <td colspan="7">%s</td>
-                </tr>
-                <tr>
-                    <td colspan="8">Pricing information</td>
-                </tr>
-                <tr>
-                    <td colspan="1"></td>
-                    <td colspan="3">Before</td>
-                    <td colspan="3">After</td>
-                    <td colspan="1">Delta</td>
-                </tr>
-                <tr>
-                    <td colspan="1"></td>
-                    <td colspan="1">Cost per Unit</td>
-                    <td colspan="1">Number of units</td>
-                    <td colspan="1">Cost of units</td>
-                    <td colspan="1">Cost per Unit</td>
-                    <td colspan="1">Number of units</td>
-                    <td colspan="1">Cost per Unit</td>
-                    <td colspan="1">Cost of units</td>
-                </tr>
-                <tr>
-                    <td colspan="1">CPU</td>
-                    <td colspan="1"> %+v USD </td>
-                    <td colspan="1"> %+v </td>
-                    <td colspan="1"> %+v USD </td>
-                    <td colspan="1"> %+v USD </td>
-                    <td colspan="1"> %+v </td>
-                    <td colspan="1"> %+v USD </td>
-                    <td colspan="1"> %+v USD </td>
-                </tr>        
-                <tr>
-                    <td colspan="1">RAM</td>
-                    <td colspan="1"> %+v USD </td>
-                    <td colspan="1"> %+v </td>
-                    <td colspan="1"> %+v USD </td>
-                    <td colspan="1"> %+v USD </td>
-                    <td colspan="1"> %+v </td>
-                    <td colspan="1"> %+v USD </td>
-                    <td colspan="1"> %+v USD </td>
-                </tr>
-                <tr>
-                    <td colspan="1">Total Cost</td>
-                    <td colspan="3"> %+v USD </td>
-                    <td colspan="3"> %+v USD </td>
-                    <td colspan="1"> %+v USD </td>
-
-                </tr>
-            </tbody>
-        </table>
-	`
-	cpuTotal1 := cpuCostPerUnit1 * float64(cpuUnits1)
-	cpuTotal2 := cpuCostPerUnit2 * float64(cpuUnits2)
-	memTotal1 := memCostPerUnit1 * memUnits1
-	memTotal2 := memCostPerUnit2 * memUnits2
+	cpuCostPerUnit1, cpuCostPerUnit2, cpuUnits1, cpuUnits2,
+		memCostPerUnit1, memCostPerUnit2, memUnits1, memUnits2 := state.getCostChanges()
 
 	hourlyToMonthly := float64(24 * 30)
 	hourlyToYearly := float64(24 * 365)
 
-	dTotalCPU := cpuTotal2 - cpuTotal1
-	dTotalMem := memTotal2 - memTotal1
+	h := web.Table{Index: stateNum, Type: "hourly"}
+	h.AddComputeInstanceGeneralInfo(name, ID, action, machineType, zone, cpuType, memType)
+	h.AddComputeInstancePricing(cpuCostPerUnit1, cpuCostPerUnit2, cpuUnits1, cpuUnits2,
+		memCostPerUnit1, memCostPerUnit2, memUnits1, memUnits2)
 
-	beforeTotal := memTotal1 + cpuTotal1
-	afterTotal := memTotal2 + cpuTotal2
-	delta := dTotalMem + dTotalCPU
+	m := web.Table{Index: stateNum, Type: "monthly"}
+	m.AddComputeInstanceGeneralInfo(name, ID, action, machineType, zone, cpuType, memType)
+	m.AddComputeInstancePricing(cpuCostPerUnit1*hourlyToMonthly, cpuCostPerUnit2*hourlyToMonthly, cpuUnits1, cpuUnits2,
+		memCostPerUnit1*hourlyToMonthly, memCostPerUnit2*hourlyToMonthly, memUnits1, memUnits2)
 
-	hourly = fmt.Sprintf(format, stateNum, "hourly", name, stateNum, "hourly", ID, action, machineType, zone,
-		cpuType, memType, cpuCostPerUnit1, cpuUnits1, cpuTotal1, cpuCostPerUnit2, cpuUnits2, cpuTotal2, dTotalCPU,
-		memCostPerUnit1, memUnits1, memTotal1, memCostPerUnit2, memUnits2, memTotal2, dTotalMem,
-		beforeTotal, afterTotal, delta)
+	y := web.Table{Index: stateNum, Type: "yearly"}
+	y.AddComputeInstanceGeneralInfo(name, ID, action, machineType, zone, cpuType, memType)
+	y.AddComputeInstancePricing(cpuCostPerUnit1*hourlyToYearly, cpuCostPerUnit2*hourlyToYearly, cpuUnits1, cpuUnits2,
+		memCostPerUnit1*hourlyToYearly, memCostPerUnit2*hourlyToYearly, memUnits1, memUnits2)
 
-	monthly = fmt.Sprintf(format, stateNum, "hourly", name, stateNum, "hourly", ID, action, machineType, zone,
-		cpuType, memType, cpuCostPerUnit1*hourlyToMonthly, cpuUnits1, cpuTotal1*hourlyToMonthly,
-		cpuCostPerUnit2*hourlyToMonthly, cpuUnits2, cpuTotal2*hourlyToMonthly, dTotalCPU*hourlyToMonthly,
-		memCostPerUnit1*hourlyToMonthly, memUnits1, memTotal1*hourlyToMonthly,
-		memCostPerUnit2*hourlyToMonthly, memUnits2, memTotal2*hourlyToMonthly, dTotalMem*hourlyToMonthly,
-		beforeTotal*hourlyToMonthly, afterTotal*hourlyToMonthly, delta*hourlyToMonthly)
-
-	yearly = fmt.Sprintf(format, stateNum, "hourly", name, stateNum, "hourly", ID, action, machineType, zone,
-		cpuType, memType, cpuCostPerUnit1*hourlyToYearly, cpuUnits1, cpuTotal1*hourlyToYearly,
-		cpuCostPerUnit2*hourlyToYearly, cpuUnits2, cpuTotal2*hourlyToYearly, dTotalCPU*hourlyToYearly,
-		memCostPerUnit1*hourlyToYearly, memUnits1, memTotal1*hourlyToYearly,
-		memCostPerUnit2*hourlyToYearly, memUnits2, memTotal2*hourlyToYearly, dTotalMem*hourlyToYearly,
-		beforeTotal*hourlyToYearly, afterTotal*hourlyToYearly, delta*hourlyToYearly)
-	return
+	return &web.PricingTypeTables{Hourly: h, Monthly: m, Yearly: y}
 }

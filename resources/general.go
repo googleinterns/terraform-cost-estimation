@@ -4,6 +4,7 @@ import (
 	"os"
 
 	billing "github.com/googleinterns/terraform-cost-estimation/billing"
+	"github.com/googleinterns/terraform-cost-estimation/io/web"
 	billingpb "google.golang.org/genproto/googleapis/cloud/billing/v1"
 )
 
@@ -32,7 +33,7 @@ func (p *PricingInfo) fillInfo(sku *billingpb.Sku) {
 type ResourceState interface {
 	CompletePricingInfo(catalog *billing.ComputeEngineCatalog) error
 	WritePricingInfo(f *os.File)
-	GetWebTables(stateNum int) (hourly, monthly, yearly string)
+	GetWebTables(stateNum int) *web.PricingTypeTables
 	GetSummary() string
 }
 
