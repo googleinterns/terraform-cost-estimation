@@ -14,7 +14,7 @@ import (
 
 type computeInstance struct {
 	CoreNumber int
-	MemoryGB   float64
+	MemoryGiB  float64
 }
 
 var machineTypes map[string]computeInstance
@@ -27,7 +27,7 @@ var sharedCoreDiscounts = map[string]float64{
 	"g1-small":  0.5,
 }
 
-func getMachineTypes() (map[string]computeInstance, error) {
+func readMachineTypes() (map[string]computeInstance, error) {
 	_, callerFile, _, _ := runtime.Caller(0)
 	inputPath := filepath.Dir(callerFile) + "/machine_types.json"
 
@@ -41,12 +41,15 @@ func getMachineTypes() (map[string]computeInstance, error) {
 	return jsonMap, nil
 }
 
+// getCustomMachineDetails looks for a cutom machine type in the format [machine_type-]custom-<core_num>-<mem_mib>[-ext] and extracts <core_num> and <mem_mib>.
 func getCustomMachineDetails(machineType string) (coreNum int, memGiB float64, err error) {
+	// Remove '-ext' if needed.
 	if strings.HasSuffix(machineType, "-ext") {
 		i := strings.LastIndex(machineType, "-")
 		machineType = machineType[:i]
 	}
 
+	// Look for <mem_mib> string.
 	i := strings.LastIndex(machineType, "-")
 	if i < 0 {
 		return 0, 0, fmt.Errorf("invalid custom machine type format")
@@ -54,12 +57,14 @@ func getCustomMachineDetails(machineType string) (coreNum int, memGiB float64, e
 	memStr := machineType[i+1:]
 	machineType = machineType[:i]
 
+	// Look for <core_num> string.
 	i = strings.LastIndex(machineType, "-")
 	if i < 0 {
 		return 0, 0, fmt.Errorf("invalid custom machine type format")
 	}
 	coresStr := machineType[i+1:]
 
+	// Convert to numbers and GiB memory unit.
 	coreNum, err = strconv.Atoi(coresStr)
 	if err != nil {
 		return 0, 0, err
@@ -78,12 +83,11 @@ func getCustomMachineDetails(machineType string) (coreNum int, memGiB float64, e
 }
 
 // GetMachineDetails returns the number of cores and GBs of memory for a specific machine type.
-func GetMachineDetails(machineType string) (coreNum int, memGB float64, err error) {
+func GetMachineDetails(machineType string) (coreNum int, memGiB float64, err error) {
 	if machineTypes == nil {
-		machineTypes, err = getMachineTypes()
+		machineTypes, err = readMachineTypes()
 		if err != nil {
 			return 0, 0, err
-
 		}
 	}
 
@@ -95,7 +99,7 @@ func GetMachineDetails(machineType string) (coreNum int, memGB float64, err erro
 	if !ok {
 		return 0, 0, fmt.Errorf("machine type not supported")
 	}
-	return d.CoreNumber, d.MemoryGB, nil
+	return d.CoreNumber, d.MemoryGiB, nil
 }
 
 // GetMachineFractionalCore returns fractional vCPU of the machine type.

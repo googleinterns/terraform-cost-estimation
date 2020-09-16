@@ -1,0 +1,39 @@
+{
+    "name": "services/6F81-5844-456A/skus/0012-B7F2-DD14",
+    "skuId": "0012-B7F2-DD14",
+    "description": "Preemptible Compute optimized Ram running in Montreal",
+    "category": {
+      "serviceDisplayName": "Compute Engine",
+      "resourceFamily": "Compute",
+      "resourceGroup": "RAM",
+      "usageType": "Preemptible"
+    },
+    "serviceRegions": [
+      "northamerica-northeast1"
+    ],
+    "pricingInfo": [
+      {
+        "summary": "",
+        "pricingExpression": {
+          "usageUnit": "GiBy.h",
+          "usageUnitDescription": "gibibyte hour",
+          "baseUnit": "By.s",
+          "baseUnitDescription": "byte second",
+          "baseUnitConversionFactor": 3865470566400,
+          "displayQuantity": 1,
+          "tieredRates": [
+            {
+              "startUsageAmount": 0,
+              "unitPrice": {
+                "currencyCode": "USD",
+                "units": "0",
+                "nanos": 1220000
+              }
+            }
+          ]
+        },
+        "currencyConversionRate": 1,
+        "effectiveTime": "2020-08-05T01:48:54.819Z"
+      }
+    ]
+}

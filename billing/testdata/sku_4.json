@@ -1,0 +1,39 @@
+{
+    "name": "services/6F81-5844-456A/skus/001D-204A-23DA",
+    "skuId": "001D-204A-23DA",
+    "description": "Commitment v1: Cpu in Montreal for 1 Year",
+    "category": {
+      "serviceDisplayName": "Compute Engine",
+      "resourceFamily": "Compute",
+      "resourceGroup": "CPU",
+      "usageType": "Commit1Yr"
+    },
+    "serviceRegions": [
+      "northamerica-northeast1"
+    ],
+    "pricingInfo": [
+      {
+        "summary": "",
+        "pricingExpression": {
+          "usageUnit": "h",
+          "usageUnitDescription": "hour",
+          "baseUnit": "s",
+          "baseUnitDescription": "second",
+          "baseUnitConversionFactor": 3600,
+          "displayQuantity": 1,
+          "tieredRates": [
+            {
+              "startUsageAmount": 0,
+              "unitPrice": {
+                "currencyCode": "USD",
+                "units": "0",
+                "nanos": 21925300
+              }
+            }
+          ]
+        },
+        "currencyConversionRate": 1,
+        "effectiveTime": "2020-08-05T01:48:54.819Z"
+      }
+    ]
+}

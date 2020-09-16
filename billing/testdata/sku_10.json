@@ -1,0 +1,39 @@
+{
+  "name": "services/6F81-5844-456A/skus/023F-CB27-DC68",
+  "skuId": "023F-CB27-DC68",
+  "description": "Preemptible N1 Predefined Instance Core running in Virginia",
+  "category": {
+    "serviceDisplayName": "Compute Engine",
+    "resourceFamily": "Compute",
+    "resourceGroup": "N1Standard",
+    "usageType": "Preemptible"
+  },
+  "serviceRegions": [
+    "us-east4"
+  ],
+  "pricingInfo": [
+    {
+      "summary": "",
+      "pricingExpression": {
+        "usageUnit": "h",
+        "usageUnitDescription": "hour",
+        "baseUnit": "s",
+        "baseUnitDescription": "second",
+        "baseUnitConversionFactor": 3600,
+        "displayQuantity": 1,
+        "tieredRates": [
+          {
+            "startUsageAmount": 0,
+            "unitPrice": {
+              "currencyCode": "USD",
+              "units": "0",
+              "nanos": 7120850
+            }
+          }
+        ]
+      },
+      "currencyConversionRate": 1,
+      "effectiveTime": "2020-08-05T01:48:54.819Z"
+    }
+  ]
+}

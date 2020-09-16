@@ -1,0 +1,30 @@
+{
+    "name": "services/6F81-5844-456A/skus/002C-E0AF-213B",
+    "skuId": "002C-E0AF-213B",
+    "description": "Licensing Fee for SQL Server 2012 SP3 Express Edition on Windows Server 2012 R2 on VM with 12 VCPU",
+    "category": {
+      "serviceDisplayName": "Compute Engine",
+      "resourceFamily": "License",
+      "resourceGroup": "Cognosys",
+      "usageType": "OnDemand"
+    },
+    "serviceRegions": [
+      "global"
+    ],
+    "pricingInfo": [
+      {
+        "summary": "Sku is not being priced by default.",
+        "pricingExpression": {
+          "usageUnit": "h",
+          "usageUnitDescription": "hour",
+          "baseUnit": "s",
+          "baseUnitDescription": "second",
+          "baseUnitConversionFactor": 3600,
+          "displayQuantity": 1,
+          "tieredRates": []
+        },
+        "currencyConversionRate": 0,
+        "effectiveTime": "2020-08-05T01:48:54.819Z"
+      }
+    ]
+}

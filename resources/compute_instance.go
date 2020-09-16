@@ -11,79 +11,6 @@ import (
 	billingpb "google.golang.org/genproto/googleapis/cloud/billing/v1"
 )
 
-// PricingInfo stores the information from the billing API.
-type PricingInfo struct {
-	UsageUnit       string
-	HourlyUnitPrice int64
-	CurrencyType    string
-	CurrencyUnit    string
-}
-
-// Description holds information about information the SKU
-// description contains/omits (Preemptible, Custom, Type etc.).
-type Description struct {
-	Contains []string
-	Omits    []string
-}
-
-func (d *Description) fill(machineType, usageType string) error {
-	anythingButN1 := []string{"N2", "N2D", "E2", "Compute", "Memory", "Sole Tenancy"}
-
-	if usageType == "Preemptible" {
-		d.Contains = append(d.Contains, "Preemptible")
-	} else {
-		d.Omits = append(d.Omits, "Preemptible")
-	}
-
-	if strings.HasPrefix(usageType, "Commit") {
-		d.Contains = append(d.Contains, "Commitment")
-		if strings.Contains(machineType, "n1") {
-			d.Omits = append(d.Omits, "N1")
-			d.Omits = append(d.Omits, anythingButN1...)
-		}
-	} else {
-		d.Omits = append(d.Omits, "Commitment")
-	}
-
-	if strings.Contains(machineType, "custom") {
-		if !strings.HasPrefix(machineType, "e2") {
-			d.Contains = append(d.Contains, "Custom")
-		}
-	} else {
-		d.Omits = append(d.Omits, "Custom")
-	}
-
-	if strings.HasPrefix(machineType, "custom") {
-		d.Omits = append(d.Omits, "N1")
-		d.Omits = append(d.Omits, anythingButN1...)
-	} else {
-
-		switch {
-		case strings.HasPrefix(machineType, "c2-"):
-			d.Contains = append(d.Contains, "Compute")
-		case strings.HasPrefix(machineType, "m1-") || strings.HasPrefix(machineType, "m2-"):
-			d.Contains = append(d.Contains, "Memory")
-			d.Omits = append(d.Omits, "Upgrade")
-		case strings.HasPrefix(machineType, "n1-mega") || strings.HasPrefix(machineType, "n1-ultra"):
-			d.Contains = append(d.Contains, "Memory")
-			d.Omits = append(d.Omits, "Upgrade")
-		case strings.HasPrefix(machineType, "n1-") || strings.HasPrefix(machineType, "f1-") || strings.HasPrefix(machineType, "g1-"):
-			if !strings.HasPrefix(usageType, "Commit") {
-				d.Contains = append(d.Contains, "N1")
-			}
-		default:
-			i := strings.Index(machineType, "-")
-			if i < 0 {
-				return fmt.Errorf("wrong machine type format")
-			}
-
-			d.Contains = append(d.Contains, strings.ToUpper(machineType[:i])+" ")
-		}
-	}
-
-	return nil
-}
-
 // CoreInfo stores CPU core details.
 type CoreInfo struct {
 	Type          string
@@ -102,14 +29,12 @@ func (core *CoreInfo) isMatch(sku *billingpb.Sku) bool {
 }
 
 func (core *CoreInfo) completePricingInfo(skus []*billingpb.Sku) error {
-	sku := getSKU(core, skus)
-
+	sku := findMatchingSKU(core, skus)
 	if sku == nil {
 		return fmt.Errorf("could not find core pricing information")
 	}
 
-	usageUnit, hourlyUnitPrice, currencyType, currencyUnit := billing.GetPricingInfo(sku)
-	core.UnitPricing = PricingInfo{usageUnit, hourlyUnitPrice, currencyType, currencyUnit}
+	core.UnitPricing.fillInfo(sku)
 	core.Type = sku.Description
 	return nil
 }
@@ -137,14 +62,12 @@ func (mem *MemoryInfo) isMatch(sku *billingpb.Sku) bool {
 }
 
 func (mem *MemoryInfo) completePricingInfo(skus []*billingpb.Sku) error {
-	sku := getSKU(mem, skus)
-
+	sku := findMatchingSKU(mem, skus)
 	if sku == nil {
 		return fmt.Errorf("could not find memory pricing information")
 	}
 
-	usageUnit, hourlyUnitPrice, currencyType, currencyUnit := billing.GetPricingInfo(sku)
-	mem.UnitPricing = PricingInfo{usageUnit, hourlyUnitPrice, currencyType, currencyUnit}
+	mem.UnitPricing.fillInfo(sku)
 	mem.Type = sku.Description
 	return nil
 }
@@ -191,7 +114,7 @@ func NewComputeInstance(id, name, machineType, zone, usageType string) (*Compute
 	instance.Region = zone[:i]
 
 	instance.UsageType = usageType
-	err := instance.Description.fill(machineType, usageType)
+	err := instance.Description.fillForComputeInstance(machineType, usageType)
 	if err != nil {
 		return nil, err
 	}
@@ -203,6 +126,7 @@ func NewComputeInstance(id, name, machineType, zone, usageType string) (*Compute
 
 	instance.Memory.Extended = strings.Contains(machineType, "custom") && strings.HasSuffix(machineType, "-ext")
 
+	// Only N1 predefined/preemptible type of cores/memory has N1Standard resource group.
 	if (strings.HasPrefix(machineType, "n1-standard") || strings.HasPrefix(machineType, "n1-high") ||
 		strings.HasPrefix(machineType, "f1-") || strings.HasPrefix(machineType, "g1-")) &&
 		!strings.HasPrefix(usageType, "Commit") {
@@ -233,34 +157,32 @@ func (instance *ComputeInstance) filterSKUs(skus []*billingpb.Sku) ([]*billingpb
 
 // CompletePricingInfo fills the pricing information fields.
 func (instance *ComputeInstance) CompletePricingInfo(catalog *billing.ComputeEngineCatalog) error {
-	cores, err1 := catalog.GetCoreSKUs(instance.UsageType)
-	if err1 != nil {
-		return err1
+	cores, err := catalog.GetCoreSKUs(instance.UsageType)
+	if err != nil {
+		return err
 	}
 
-	mem, err2 := catalog.GetRAMSKUs(instance.UsageType)
-	if err2 != nil {
-		return err2
+	mem, err := catalog.GetRAMSKUs(instance.UsageType)
+	if err != nil {
+		return err
 	}
 
-	filteredCores, err1 := instance.filterSKUs(cores)
-	if err1 != nil {
-		return err1
+	filteredCores, err := instance.filterSKUs(cores)
+	if err != nil {
+		return err
 	}
 
-	filteredRAM, err2 := instance.filterSKUs(mem)
-	if err2 != nil {
-		return err2
+	filteredRAM, err := instance.filterSKUs(mem)
+	if err != nil {
+		return err
 	}
 
-	err1 = instance.Cores.completePricingInfo(filteredCores)
-	if err1 != nil {
-		return err1
+	if err = instance.Cores.completePricingInfo(filteredCores); err != nil {
+		return err
 	}
 
-	err2 = instance.Memory.completePricingInfo(filteredRAM)
-	if err2 != nil {
-		return err2
+	if err = instance.Memory.completePricingInfo(filteredRAM); err != nil {
+		return err
 	}
 
 	return nil
@@ -277,16 +199,14 @@ type ComputeInstanceState struct {
 // CompletePricingInfo completes pricing information of both before and after states.
 func (state *ComputeInstanceState) CompletePricingInfo(catalog *billing.ComputeEngineCatalog) error {
 	if state.Before != nil {
-		err1 := state.Before.CompletePricingInfo(catalog)
-		if err1 != nil {
-			return fmt.Errorf(state.Before.Name + "(" + state.After.MachineType + ")" + ": " + err1.Error())
+		if err := state.Before.CompletePricingInfo(catalog); err != nil {
+			return fmt.Errorf(state.Before.Name + "(" + state.After.MachineType + ")" + ": " + err.Error())
 		}
 	}
 
 	if state.After != nil {
-		err2 := state.After.CompletePricingInfo(catalog)
-		if err2 != nil {
-			return fmt.Errorf(state.After.Name + "(" + state.After.MachineType + ")" + ": " + err2.Error())
+		if err := state.After.CompletePricingInfo(catalog); err != nil {
+			return fmt.Errorf(state.After.Name + "(" + state.After.MachineType + ")" + ": " + err.Error())
 		}
 	}
 	return nil
