@@ -4,12 +4,14 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 
 	"github.com/googleinterns/terraform-cost-estimation/billing"
 	"github.com/googleinterns/terraform-cost-estimation/io"
 	"github.com/googleinterns/terraform-cost-estimation/jsdecode"
+	res "github.com/googleinterns/terraform-cost-estimation/resources"
 )
 
 var (
@@ -31,7 +33,7 @@ func minInt(x, y int) int {
 func main() {
 	flag.Usage = func() {
 		fmt.Fprintf(flag.CommandLine.Output(), "Usage: go run main.go [OPTIONS] FILE\n\n")
-		fmt.Fprintf(flag.CommandLine.Output(), `  Outputs the cost estimation of Terraform resources from a JSON plan file.`)
+		fmt.Fprintf(flag.CommandLine.Output(), "Outputs the cost estimation of Terraform resources from a JSON plan file.")
 		fmt.Fprintf(flag.CommandLine.Output(), "\n\nOptions:\n")
 		flag.PrintDefaults()
 	}
@@ -39,67 +41,61 @@ func main() {
 	flag.Parse()
 
 	if len(flag.Args()) == 0 {
-		fmt.Fprintf(os.Stderr, "Error: No input file\n\n")
-		flag.Usage()
-		os.Exit(1)
+		log.Fatal("Error: No input file.")
 	}
 
-	outputFileNames := strings.Split(*output, ",")
+	outputs := strings.Split(*output, ",")
 	if *output != "stdout" {
-		if len(outputFileNames) != len(flag.Args()) {
-			fmt.Fprintf(os.Stderr, "Error: Input and output files number differ.\n\n")
-			flag.Usage()
-			os.Exit(1)
+		if len(outputs) != len(flag.Args()) {
+			log.Fatal("Error: Input and output files number differ.")
 		}
 	}
 
-	computeEngineCatalog, catalogErr := billing.NewComputeEngineCatalog(context.Background())
-	if catalogErr != nil {
-		fmt.Fprintf(os.Stderr, "Error: "+catalogErr.Error()+"\n\n")
-		os.Exit(2)
+	catalog, err := billing.NewComputeEngineCatalog(context.Background())
+	if err != nil {
+		log.Fatalf("Error: %v", err)
 	}
 
-	for i := range flag.Args() {
-		plan, err := io.GetPlan(flag.Arg(i))
+	for i, inputName := range flag.Args() {
+		plan, err := io.GetPlan(inputName)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error: "+err.Error()+"\n\n")
-			os.Exit(3)
+			log.Fatalf("Error: %v", err)
 		}
 
 		resources := jsdecode.GetResources(plan)
+		outputName := outputs[minInt(i, len(outputs)-1)]
 
 		var fout *os.File
-		if *format != "html" {
-			fout, err = io.GetOutputWriter(outputFileNames[minInt(i, len(outputFileNames)-1)])
+		if *format != "html" && *format != "json" {
+			fout, err = io.GetOutputWriter(outputName)
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "Error: "+err.Error()+"\n\n")
+				log.Fatalf("Error: %v", err)
 			}
 		}
-
-		fout.Write([]byte(fmt.Sprintf("Pricing information for %s:\n\n", flag.Arg(i))))
-		summary := ""
 
 		for _, r := range resources {
-			if err = r.CompletePricingInfo(computeEngineCatalog); err != nil {
-				fmt.Fprintf(os.Stderr, "Error: "+err.Error()+"\n\n")
+			if err = r.CompletePricingInfo(catalog); err != nil {
+				log.Printf("In file %s got error: %v", inputName, err)
 				continue
 			}
-			r.WritePricingInfo(fout)
-			summary += r.GetSummary() + "\n"
 		}
 
-		if *format == "html" && outputFileNames[minInt(i, len(outputFileNames)-1)] != "stdout" {
-			err = io.GenerateWebPage(outputFileNames[minInt(i, len(outputFileNames)-1)], resources)
-			if err != nil {
-				fmt.Fprintln(os.Stderr, "Error: "+err.Error())
+		if *format == "json" && outputName != "stdout" {
+			if err = res.GenerateJsonOut(outputName, resources); err != nil {
+				log.Printf("Error: %v", err)
 			}
 		}
 
-		fout.Write([]byte("\n\nSummary:\n\n" + summary))
+		if *format == "html" && outputName != "stdout" {
+			if err = io.GenerateWebPage(outputName, resources); err != nil {
+				log.Printf("Error: %v", err)
+			}
+		}
+
+		res.OutputPricing(resources, fout)
 
 		if err = io.FinishOutput(fout); err != nil {
-			fmt.Fprintf(os.Stderr, "Error: "+err.Error()+"\n\n")
-			os.Exit(3)
+			log.Fatalf("Error: %v", err)
 		}
 	}
 }
