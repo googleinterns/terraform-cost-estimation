@@ -1,0 +1,101 @@
+{
+   "allow_stopping_for_update":null,
+   "attached_disk":[
+      
+   ],
+   "boot_disk":[
+      {
+         "auto_delete":true,
+         "device_name":"persistent-disk-0",
+         "disk_encryption_key_raw":"",
+         "disk_encryption_key_sha256":"",
+         "initialize_params":[
+            {
+               "image":"https://www.googleapis.com/compute/v1/projects/debian-cloud/global/images/debian-9-stretch-v20200714",
+               "labels":{
+                  
+               },
+               "size":10,
+               "type":"pd-standard"
+            }
+         ],
+         "kms_key_self_link":"",
+         "mode":"READ_WRITE",
+         "source":"https://www.googleapis.com/compute/v1/projects/google.com:stschmidt/zones/us-central1-a/disks/test"
+      }
+   ],
+   "can_ip_forward":false,
+   "cpu_platform":"Intel Haswell",
+   "deletion_protection":false,
+   "description":"",
+   "disk":[
+      
+   ],
+   "enable_display":false,
+   "guest_accelerator":[
+      
+   ],
+   "hostname":"",
+   "id":"test",
+   "instance_id":"5889159656940809264",
+   "label_fingerprint":"42WmSpB8rSM=",
+   "labels":{
+      
+   },
+   "machine_type":"n1-standard-1",
+   "metadata":{
+      
+   },
+   "metadata_fingerprint":"s1ovITMUN_Y=",
+   "metadata_startup_script":"",
+   "min_cpu_platform":"",
+   "name":"test",
+   "network_interface":[
+      {
+         "access_config":[
+            {
+               "assigned_nat_ip":"",
+               "nat_-ip":"34.72.220.173",
+               "network_tier":"PREMIUM",
+               "public_ptr_domain_name":""
+            }
+         ],
+         "address":"",
+         "alias_ip_range":[
+            
+         ],
+         "name":"nic0",
+         "network":"https://www.googleapis.com/compute/v1/projects/google.com:stschmidt/global/networks/default",
+         "network_ip":"10.128.0.18",
+         "subnetwork":"https://www.googleapis.com/compute/v1/projects/google.com:stschmidt/regions/us-central1/subnetworks/default",
+         "subnetwork_project":"google.com:stschmidt"
+      }
+   ],
+   "project":"google.com:stschmidt",
+   "scheduling":[
+      {
+         "automatic_restart":true,
+         "node_affinities":[
+            
+         ],
+         "on_host_maintenance":"MIGRATE",
+         "preemptible":true
+      }
+   ],
+   "scratch_disk":[
+      
+   ],
+   "self_link":"https://www.googleapis.com/compute/v1/projects/google.com:stschmidt/zones/us-central1-a/instances/test",
+   "service_account":[
+      
+   ],
+   "shielded_instance_config":[
+      
+   ],
+   "tags":[
+      
+   ],
+   "tags_fingerprint":"42WmSpB8rSM=",
+   "timeouts":null,
+   "zone":"us-central1-a"
+}
