@@ -305,9 +305,19 @@ func (state *ComputeInstanceState) getGeneralChanges() (name, ID, action,
 		memType = state.Before.Memory.Type
 
 	default:
-		name = state.Before.Name + " -> " + state.After.Name
+		if state.Before.Name != state.After.Name {
+			name = state.Before.Name + " -> " + state.After.Name
+		} else {
+			name = state.Before.Name
+		}
 		if state.After.ID == "" {
 			ID = "unknown"
+		} else {
+			if state.Before.ID != state.After.ID {
+				ID = state.Before.ID + " -> " + state.After.ID
+			} else {
+				ID = state.Before.ID
+			}
 		}
 
 		if state.Before.MachineType != state.After.MachineType {
@@ -333,19 +343,19 @@ func (state *ComputeInstanceState) getGeneralChanges() (name, ID, action,
 	return
 }
 
-func (state *ComputeInstanceState) getCostChanges() (cpuCostPerUnit1, cpuCostPerUnit2, cpuUnits1, cpuUnits2,
+func (state *ComputeInstanceState) getCostChanges() (cpuCostPerUnit1, cpuCostPerUnit2 float64, cpuUnits1, cpuUnits2 int,
 	memCostPerUnit1, memCostPerUnit2, memUnits1, memUnits2 float64) {
 
 	if state.Before != nil {
 		cpuCostPerUnit1 = float64(state.Before.Cores.UnitPricing.HourlyUnitPrice) / nano
-		cpuUnits1 = float64(state.Before.Cores.Number)
+		cpuUnits1 = state.Before.Cores.Number
 		memCostPerUnit1 = float64(state.Before.Memory.UnitPricing.HourlyUnitPrice) / nano
-		memUnits1, _ = conv.Convert("gib", state.Before.Memory.AmountGiB, state.Before.Memory.UnitPricing.UsageUnit)
+		memUnits1, _ = conv.Convert("gib", state.Before.Memory.AmountGiB, strings.Split(state.Before.Memory.UnitPricing.UsageUnit, " ")[0])
 	}
 
 	if state.After != nil {
 		cpuCostPerUnit2 = float64(state.After.Cores.UnitPricing.HourlyUnitPrice) / nano
-		cpuUnits2 = float64(state.After.Cores.Number)
+		cpuUnits2 = state.After.Cores.Number
 		memCostPerUnit2 = float64(state.After.Memory.UnitPricing.HourlyUnitPrice) / nano
 		memUnits2, _ = conv.Convert("gib", state.After.Memory.AmountGiB, strings.Split(state.After.Memory.UnitPricing.UsageUnit, " ")[0])
 	}
@@ -364,17 +374,17 @@ func (state *ComputeInstanceState) GetWebTables(stateNum int) *web.PricingTypeTa
 
 	h := web.Table{Index: stateNum, Type: "hourly"}
 	h.AddComputeInstanceGeneralInfo(name, ID, action, machineType, zone, cpuType, memType)
-	h.AddComputeInstancePricing(cpuCostPerUnit1, cpuCostPerUnit2, cpuUnits1, cpuUnits2,
+	h.AddComputeInstancePricing("hour", cpuCostPerUnit1, cpuCostPerUnit2, cpuUnits1, cpuUnits2,
 		memCostPerUnit1, memCostPerUnit2, memUnits1, memUnits2)
 
 	m := web.Table{Index: stateNum, Type: "monthly"}
 	m.AddComputeInstanceGeneralInfo(name, ID, action, machineType, zone, cpuType, memType)
-	m.AddComputeInstancePricing(cpuCostPerUnit1*hourlyToMonthly, cpuCostPerUnit2*hourlyToMonthly, cpuUnits1, cpuUnits2,
+	m.AddComputeInstancePricing("month", cpuCostPerUnit1*hourlyToMonthly, cpuCostPerUnit2*hourlyToMonthly, cpuUnits1, cpuUnits2,
 		memCostPerUnit1*hourlyToMonthly, memCostPerUnit2*hourlyToMonthly, memUnits1, memUnits2)
 
 	y := web.Table{Index: stateNum, Type: "yearly"}
 	y.AddComputeInstanceGeneralInfo(name, ID, action, machineType, zone, cpuType, memType)
-	y.AddComputeInstancePricing(cpuCostPerUnit1*hourlyToYearly, cpuCostPerUnit2*hourlyToYearly, cpuUnits1, cpuUnits2,
+	y.AddComputeInstancePricing("year", cpuCostPerUnit1*hourlyToYearly, cpuCostPerUnit2*hourlyToYearly, cpuUnits1, cpuUnits2,
 		memCostPerUnit1*hourlyToYearly, memCostPerUnit2*hourlyToYearly, memUnits1, memUnits2)
 
 	return &web.PricingTypeTables{Hourly: h, Monthly: m, Yearly: y}
