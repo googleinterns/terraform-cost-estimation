@@ -32,25 +32,23 @@
                 <td colspan="1">Cost per Unit</td>
                 <td colspan="1">Cost of units</td>
             </tr>
-            {{$pInfo := .PricingInfo}}
-            {{range $i, $v := .PricingComponents}}
-                {{$row := index $pInfo $i}}
+            {{range $i, $row := .PricingInfo}}
                 <tr>
-                    <td colspan="1"> {{$v}} </td>
-                    <td colspan="1"> {{index $row 0}} USD </td>
-                    <td colspan="1"> {{index $row 1}} </td>
-                    <td colspan="1"> {{index $row 2}} USD </td>
-                    <td colspan="1"> {{index $row 3}} USD </td>
-                    <td colspan="1"> {{index $row 4}} </td>
-                    <td colspan="1"> {{index $row 5}} USD </td>
-                    <td colspan="1"> {{index $row 6}} USD </td>
+                    <td colspan="1"> {{index $row 0}}</td>
+                    <td colspan="1"> {{index $row 1}}</td>
+                    <td colspan="1"> {{index $row 2}}</td>
+                    <td colspan="1"> {{index $row 3}}</td>
+                    <td colspan="1"> {{index $row 4}}</td>
+                    <td colspan="1"> {{index $row 5}}</td>
+                    <td colspan="1"> {{index $row 6}}</td>
+                    <td colspan="1"> {{index $row 7}}</td>
                 </tr>   
             {{end}}
             <tr>
                 <td colspan="1">Total Cost</td>
-                <td colspan="3"> {{index .Total 0}} USD </td>
-                <td colspan="3"> {{index .Total 1}} USD </td>
-                <td colspan="1"> {{index .Total 2}} USD </td>
+                <td colspan="3"> {{index .Total 0}}</td>
+                <td colspan="3"> {{index .Total 1}}</td>
+                <td colspan="1"> {{index .Total 2}}</td>
 
             </tr> 
         </tbody>
@@ -112,7 +110,6 @@
             {{range .}}
                 {{template "table" .Hourly}}
             {{end}}
-            <h1>aa</h1>
         </div>
 
         <div class="div-table hidden" id="monthly_tables">
@@ -121,7 +118,7 @@
             {{end}}
         </div>
 
-        <div class="div-table hidden" id="monthly_tables">
+        <div class="div-table hidden" id="yearly_tables">
             {{range .}}
                 {{template "table" .Yearly}}
             {{end}}

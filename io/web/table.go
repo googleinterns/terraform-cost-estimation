@@ -1,14 +1,15 @@
 package web
 
+import "fmt"
+
 // Table holds the HTML table of pricing information for a resource.
 type Table struct {
-	Index             int
-	Type              string
-	Header            [2]string
-	GeneralRows       [][2]string
-	PricingComponents []string
-	PricingInfo       [][7]float64
-	Total             [3]float64
+	Index       int
+	Type        string
+	Header      [2]string
+	GeneralRows [][2]string
+	PricingInfo [][8]string
+	Total       [3]string
 }
 
 // PricingTypeTables holds the HTML tables of hourly, monthly and yearly pricing information for a resource.
@@ -32,20 +33,23 @@ func (t *Table) AddComputeInstanceGeneralInfo(name, ID, action, machineType, zon
 }
 
 // AddComputeInstancePricing fills the table with the pricing information section for all billing components.
-func (t *Table) AddComputeInstancePricing(cpuCostPerUnit1, cpuCostPerUnit2, cpuUnits1, cpuUnits2,
+func (t *Table) AddComputeInstancePricing(priceUnit string, cpuCostPerUnit1, cpuCostPerUnit2 float64, cpuUnits1, cpuUnits2 int,
 	memCostPerUnit1, memCostPerUnit2, memUnits1, memUnits2 float64) {
-	t.PricingComponents = []string{"CPU", "RAM"}
 
-	cpuTot1 := cpuCostPerUnit1 * cpuUnits1
-	cpuTot2 := cpuCostPerUnit2 * cpuUnits2
+	cpuTot1 := cpuCostPerUnit1 * float64(cpuUnits1)
+	cpuTot2 := cpuCostPerUnit2 * float64(cpuUnits2)
 	memTot1 := memCostPerUnit1 * memUnits1
 	memTot2 := memCostPerUnit2 * memUnits2
 	dCPU := cpuTot2 - cpuTot1
 	dMem := memTot2 - memTot1
 
-	t.PricingInfo = [][7]float64{
-		{cpuCostPerUnit1, cpuUnits1, cpuTot1, cpuCostPerUnit2, cpuUnits2, cpuTot2, dCPU},
-		{memCostPerUnit1, memUnits1, memTot1, memCostPerUnit2, memUnits2, memTot2, dMem},
+	f1 := func(x float64) string { return fmt.Sprintf("%.6f USD/%s", x, priceUnit) }
+	f2 := func(x float64) string { return fmt.Sprintf("%.2f", x) }
+	f3 := func(x int) string { return fmt.Sprintf("%d", x) }
+
+	t.PricingInfo = [][8]string{
+		{"CPU", f1(cpuCostPerUnit1), f3(cpuUnits1), f1(cpuTot1), f1(cpuCostPerUnit2), f3(cpuUnits2), f1(cpuTot2), f1(dCPU)},
+		{"RAM", f1(memCostPerUnit1), f2(memUnits1), f1(memTot1), f1(memCostPerUnit2), f2(memUnits2), f1(memTot2), f1(dMem)},
 	}
-	t.Total = [3]float64{cpuTot1 + memTot1, cpuTot2 + memTot2, dCPU + dMem}
+	t.Total = [3]string{f1(cpuTot1 + memTot1), f1(cpuTot2 + memTot2), f1(dCPU + dMem)}
 }
