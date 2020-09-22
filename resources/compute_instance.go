@@ -8,7 +8,7 @@ import (
 	billing "github.com/googleinterns/terraform-cost-estimation/billing"
 	"github.com/googleinterns/terraform-cost-estimation/io/web"
 	conv "github.com/googleinterns/terraform-cost-estimation/memconverter"
-	cd "github.com/googleinterns/terraform-cost-estimation/resources/classdetail"
+	cd "github.com/googleinterns/terraform-cost-estimation/resources/classdetail/instance"
 	billingpb "google.golang.org/genproto/googleapis/cloud/billing/v1"
 )
 
