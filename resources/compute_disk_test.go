@@ -142,9 +142,8 @@ func TestDiskStateGeneralChanges(t *testing.T) {
 }
 
 func TestDiskStateCostChanges(t *testing.T) {
-	d1 := &ComputeDisk{UnitPricing: PricingInfo{HourlyUnitPrice: 0.1, UsageUnit: "gibibite month"}}
-	d2 := &ComputeDisk{SizeGiB: 150, UnitPricing: PricingInfo{HourlyUnitPrice: 0.1, UsageUnit: "gibibyte"}}
-	d3 := &ComputeDisk{SizeGiB: 500, UnitPricing: PricingInfo{HourlyUnitPrice: 0.3, UsageUnit: "gibibyte"}}
+	d1 := &ComputeDisk{SizeGiB: 150, UnitPricing: PricingInfo{HourlyUnitPrice: 0.1, UsageUnit: "gibibyte"}}
+	d2 := &ComputeDisk{SizeGiB: 500, UnitPricing: PricingInfo{HourlyUnitPrice: 0.3, UsageUnit: "gibibyte"}}
 
 	tests := []struct {
 		name         string
@@ -154,24 +153,22 @@ func TestDiskStateCostChanges(t *testing.T) {
 		units1       int64
 		units2       int64
 		delta        float64
-		err          error
 	}{
-		{"invalid_memory_unit", &ComputeDiskState{Before: d1, After: d1}, 0, 0, 0, 0, 0, fmt.Errorf("invalid final unit gibibite")},
-		{"create", &ComputeDiskState{Before: nil, After: d2}, 0, 0.1, 0, 150, 0.1 * 150, nil},
-		{"destroy", &ComputeDiskState{Before: d2, After: nil}, 0.1, 0, 150, 0, -0.1 * 150, nil},
-		{"update", &ComputeDiskState{Before: d2, After: d3}, 0.1, 0.3, 150, 500, 0.3*500 - 0.1*150, nil},
+		{"create", &ComputeDiskState{Before: nil, After: d1}, 0, 0.1, 0, 150, 0.1 * 150},
+		{"destroy", &ComputeDiskState{Before: d1, After: nil}, 0.1, 0, 150, 0, -0.1 * 150},
+		{"update", &ComputeDiskState{Before: d1, After: d2}, 0.1, 0.3, 150, 500, 0.3*500 - 0.1*150},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			costPerUnit1, costPerUnit2, units1, units2, delta, err := test.state.costChanges()
+			costPerUnit1, costPerUnit2, units1, units2, delta := test.state.costChanges()
 			// Test fails if error or return values are different.
 			f1 := costPerUnit1 != test.costPerUnit1 || costPerUnit2 != test.costPerUnit2
 			f2 := units1 != test.units1 || units2 != test.units2 || delta != test.delta
 			if f1 || f2 {
-				t.Errorf("state.costChanges() = %f, %f, %d, %d, %f, %+v ; want %f, %f, %d, %d, %f, %+v",
-					costPerUnit1, costPerUnit2, units1, units2, delta, err,
-					test.costPerUnit1, test.costPerUnit2, test.units1, test.units2, test.delta, test.err)
+				t.Errorf("state.costChanges() = %f, %f, %d, %d, %f ; want %f, %f, %d, %d, %f",
+					costPerUnit1, costPerUnit2, units1, units2, delta,
+					test.costPerUnit1, test.costPerUnit2, test.units1, test.units2, test.delta)
 			}
 		})
 	}

@@ -10,6 +10,7 @@ import (
 	conv "github.com/googleinterns/terraform-cost-estimation/memconverter"
 	dsk "github.com/googleinterns/terraform-cost-estimation/resources/classdetail/disk"
 	img "github.com/googleinterns/terraform-cost-estimation/resources/classdetail/image"
+	billingpb "google.golang.org/genproto/googleapis/cloud/billing/v1"
 )
 
 // ComputeDisk holds information about the compute disk resource type.
@@ -94,7 +95,10 @@ func (disk *ComputeDisk) completePricingInfo(catalog *billing.ComputeEngineCatal
 		return fmt.Errorf("could not find disk pricing information")
 	}
 
-	disk.UnitPricing.fillMonthlyBase(filtered[0])
+	correctTieredRate := func(tr *billingpb.PricingExpression_TierRate) bool {
+		return int64(tr.StartUsageAmount) <= disk.SizeGiB
+	}
+	disk.UnitPricing.fillMonthlyBase(filtered[0], correctTieredRate)
 
 	return nil
 }
@@ -173,22 +177,16 @@ func (state *ComputeDiskState) generalChanges() (name, id, action, diskType, zon
 	return
 }
 
-func (state *ComputeDiskState) costChanges() (costPerUnit1, costPerUnit2 float64, units1, units2 int64, delta float64, err error) {
+func (state *ComputeDiskState) costChanges() (costPerUnit1, costPerUnit2 float64, units1, units2 int64, delta float64) {
 	if state.Before != nil {
 		costPerUnit1 = float64(state.Before.UnitPricing.HourlyUnitPrice)
-		u1, err := conv.Convert("gib", float64(state.Before.SizeGiB), strings.Split(state.Before.UnitPricing.UsageUnit, " ")[0])
-		if err != nil {
-			return 0, 0, 0, 0, 0, err
-		}
+		u1, _ := conv.Convert("gib", float64(state.Before.SizeGiB), strings.Split(state.Before.UnitPricing.UsageUnit, " ")[0])
 		units1 = int64(u1)
 	}
 
 	if state.After != nil {
 		costPerUnit2 = float64(state.After.UnitPricing.HourlyUnitPrice)
-		u2, err := conv.Convert("gib", float64(state.After.SizeGiB), strings.Split(state.After.UnitPricing.UsageUnit, " ")[0])
-		if err != nil {
-			return 0, 0, 0, 0, 0, err
-		}
+		u2, _ := conv.Convert("gib", float64(state.After.SizeGiB), strings.Split(state.After.UnitPricing.UsageUnit, " ")[0])
 		units2 = int64(u2)
 	}
 
@@ -198,12 +196,9 @@ func (state *ComputeDiskState) costChanges() (costPerUnit1, costPerUnit2 float64
 }
 
 // GetWebTables returns html pricing information table strings to be displayed in a web page.
-func (state *ComputeDiskState) GetWebTables(stateNum int) (*web.PricingTypeTables, error) {
+func (state *ComputeDiskState) GetWebTables(stateNum int) *web.PricingTypeTables {
 	name, id, action, diskType, zones, image, snapshot := state.generalChanges()
-	costPerUnit1, costPerUnit2, units1, units2, delta, err := state.costChanges()
-	if err != nil {
-		return nil, err
-	}
+	costPerUnit1, costPerUnit2, units1, units2, delta := state.costChanges()
 
 	h := web.Table{Index: stateNum, Type: "hourly"}
 	h.AddComputeDiskGeneralInfo(name, id, action, diskType, zones, image, snapshot)
@@ -217,5 +212,5 @@ func (state *ComputeDiskState) GetWebTables(stateNum int) (*web.PricingTypeTable
 	y.AddComputeDiskGeneralInfo(name, id, action, diskType, zones, image, snapshot)
 	y.AddComputeDiskPricing("year", costPerUnit1/hourlyToYearly, costPerUnit2/hourlyToYearly, units1, units2, delta/hourlyToYearly)
 
-	return &web.PricingTypeTables{Hourly: h, Monthly: m, Yearly: y}, nil
+	return &web.PricingTypeTables{Hourly: h, Monthly: m, Yearly: y}
 }
