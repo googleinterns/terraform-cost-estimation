@@ -3,37 +3,34 @@ package resources
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	conv "github.com/googleinterns/terraform-cost-estimation/memconverter"
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/jedib0t/go-pretty/v6/text"
+	"io"
+	"log"
 	"os"
 	"strings"
 )
 
-// The number of columns in output table for ComputeInstance.
-const numColumns = 5
+// header is used to hardcode table output
+const header = "Pricing Information\n(USD/h)"
 
-// ToTable creates a table.Table and fills it with the pricing information from
-// ComputeInstanceState.
+// ToTable creates a table.Table and fills it with the pricing information from ComputeInstanceState.
 func (state *ComputeInstanceState) ToTable() (*table.Table, error) {
-	t := &table.Table{}
-	autoMerge := table.RowConfig{AutoMerge: true}
 	before, after, err := syncInstances(state.Before, state.After)
 	if err != nil {
 		return nil, err
 	}
 
+	t := &table.Table{}
+	autoMerge := table.RowConfig{AutoMerge: true}
 	t.AppendRow(initRow("Name", before.Name, after.Name, false), autoMerge)
-	t.AppendRow(initRow("Instance_ID", before.ID, after.ID, true), autoMerge)
+	t.AppendRow(initRow("ID", before.ID, after.ID, true), autoMerge)
 	t.AppendRow(initRow("Zone", before.Zone, after.Zone, false), autoMerge)
 	t.AppendRow(initRow("Machine type", before.MachineType, after.MachineType, true), autoMerge)
-	t.AppendRow(initRow("Cpu type", before.Cores.Type, after.Cores.Type, false), autoMerge)
-	t.AppendRow(initRow("Memory type", before.Memory.Type, after.Memory.Type, true), autoMerge)
 	t.AppendRow(initRow("Action", state.Action, state.Action, false), autoMerge)
 
-	t.AppendRow(addHeader("Pricing\nInformation"), autoMerge)
-
+	t.AppendRow(table.Row{header, header, header, header, header}, autoMerge)
 	core1, mem1, t1, err := getMemCoreInfo(state.Before)
 	if err != nil {
 		return nil, err
@@ -42,19 +39,17 @@ func (state *ComputeInstanceState) ToTable() (*table.Table, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	t1Str := fmt.Sprintf("%f", t1)
+	t1Str := fmt.Sprintf("%.6f", t1)
 	// Add " " in the end of string to avoid unwanted auto-merging in the table package.
-	t2Str := fmt.Sprintf("%f ", t2)
-
-	t.AppendRow(table.Row{" ", " ", "Cpu", "Mem", "Total"}, autoMerge)
+	t2Str := fmt.Sprintf("%.6f ", t2)
+	t.AppendRow(table.Row{" ", " ", "CPU", "RAM", "Total"}, autoMerge)
 	t.AppendRows([]table.Row{
 		{"Before", "Cost\nper\nunit", core1[0], mem1[0], t1Str},
-		{"Before", "Number\nof\nunits", core1[1], mem1[1], t1Str},
+		{"Before", "Number\nof\nunits", core1[1] + " ", mem1[1] + " ", t1Str},
 		{"Before", "Units\ncost", core1[2], mem1[2], t1Str},
-		{"After", "Cost\nper\nunit", core2[0], mem2[0], t2Str},
+		{"After", "Cost\nper\nunit", core2[0] + " ", mem2[0] + " ", t2Str},
 		{"After", "Number\nof\nunits", core2[1], mem2[1], t2Str},
-		{"After", "Units\ncost", core2[2], mem2[2], t2Str},
+		{"After", "Units\ncost", core2[2] + " ", mem2[2] + " ", t2Str},
 	})
 
 	dCore, dMem, err := state.getDelta()
@@ -62,39 +57,39 @@ func (state *ComputeInstanceState) ToTable() (*table.Table, error) {
 		return nil, err
 	}
 
-	t.SetColumnConfigs([]table.ColumnConfig{
-		{Number: 1, AutoMerge: true},
-		{Number: 5, AutoMerge: true, ColorsFooter: text.Colors{text.FgGreen}},
-	})
+	color := text.FgGreen
 	change := "No change"
 	if dTotal := dCore + dMem; dTotal < 0 {
 		change = "Down (↓)"
-		t.SetColumnConfigs([]table.ColumnConfig{
-			{Number: 1, AutoMerge: true},
-			{Number: 5, AutoMerge: true, ColorsFooter: text.Colors{text.FgRed}},
-		})
+		color = text.FgRed
 	} else if dTotal > 0 {
 		change = "Up (↑)"
 	}
-
+	t.SetColumnConfigs([]table.ColumnConfig{
+		{Number: 1, AutoMerge: true},
+		{Number: 5, AutoMerge: true, ColorsFooter: text.Colors{color}},
+	})
 	t.AppendFooter(table.Row{"DELTA", change, dCore, dMem, dCore + dMem})
 	t.SetStyle(table.StyleLight)
 	t.Style().Options.SeparateRows = true
 	return t, nil
 }
 
-// GetTotalSummary returns the table with brief cost changes info about all
-// resources.
-func GetTotalSummary(states []*ComputeInstanceState) *table.Table {
+// GetSummaryTable returns the table with brief cost changes info about all Compute Instance resources.
+func GetSummaryTable(states []*ComputeInstanceState) *table.Table {
 	t := &table.Table{}
-	dTotal, _, _ := GetTotalDelta(states)
-	t.AppendHeader(table.Row{fmt.Sprintf("The total cost change for all resources is %f.", dTotal)})
+	autoMerge := table.RowConfig{AutoMerge: true}
 
-	t.AppendRow(addHeader("Pricing Information"))
-	t.AppendRow(table.Row{"Name", "MachineType", "Action", "Change", "Delta"})
-	for _, state := range states {
-		if row, err := state.getSummary(); err == nil {
+	dTotal, _, _ := getTotalDelta(states)
+	t.SetTitle(fmt.Sprintf("The total cost change for all Compute Instances is %.6f USD/hour.", dTotal))
+
+	t.AppendRow(table.Row{header, header, header, header, header}, autoMerge)
+	t.AppendRow(table.Row{"Instance name", "Instance ID", "Machine type", "Action", "Delta"})
+	for _, s := range states {
+		if row, err := getSummaryRow(s); err == nil {
 			t.AppendRow(row)
+		} else {
+			log.Printf("Error: %v", err)
 		}
 	}
 	t.SetStyle(table.StyleLight)
@@ -102,113 +97,177 @@ func GetTotalSummary(states []*ComputeInstanceState) *table.Table {
 	return t
 }
 
-// getSummary() returns the row for SummaryTable to be outputted about the certain state.
-func (state *ComputeInstanceState) getSummary() (table.Row, error) {
-	dCore, dMem, err := state.getDelta()
-	if err != nil {
-		return table.Row{}, err
-	}
-
-	change := "No change"
-	if dTotal := dCore + dMem; dTotal > 0 {
-		change = "Up (↑)"
-	} else if dTotal < 0 {
-		change = "Down (↓)"
-	}
-
-	var r *ComputeInstance
-	if state.After == nil {
-		r = state.Before
-	} else {
-		r = state.After
-	}
-
-	if r == nil {
-		return table.Row{}, fmt.Errorf("Before and After resources can't be nil at the  same time.")
-	}
-	return table.Row{r.Name, r.MachineType, state.Action, change, dCore + dMem}, nil
-}
-
-// OutputPricing writes pricing information about each resource and summary for all
-// resources of the array.
+// OutputPricing writes pricing information about each resource and summary for the list of Compute Instances.
 func OutputPricing(states []*ComputeInstanceState, f *os.File) {
 	if f == nil {
 		return
 	}
-	f.Write([]byte(GetTotalSummary(states).Render()))
+	f.Write([]byte(GetSummaryTable(states).Render() + "\n\n"))
+	f.Write([]byte("\n List of all Compute Instances:\n\n"))
 	for _, s := range states {
 		if s != nil {
 			t, err := s.ToTable()
 			if err == nil {
-				f.Write([]byte(t.Render()))
+				f.Write([]byte(t.Render() + "\n\n\n"))
+			} else {
+				log.Printf("Error: %v", err)
 			}
 		}
 	}
 }
 
-// Pricing contains the details of core and memory
-// pricing information to be outputted.
-type Pricing struct {
-	//if the cost of unit is unknown we use string "-"
-	UnitCost  string  `json:"cost_per_unit"`
-	NumUnits  int     `json:"number_of_units"`
-	TotalCost float64 `json:"cost_of_units"`
+// getTotalDelta returns the cost change of all Compute Instance resources.
+func getTotalDelta(states []*ComputeInstanceState) (dTotal, dCore, dMem float64) {
+	for _, s := range states {
+		core, mem, err := s.getDelta()
+		if err == nil {
+			dCore = core + dCore
+			dMem = mem + dMem
+		}
+	}
+	return dCore + dMem, dCore, dMem
 }
 
-// InstancePricingOut contains ComputeInstance pricing
-// information to be outputted.
+// getMemCoreInfo returns two arrays with resource's core and memory information and the totalCost.
+func getMemCoreInfo(r *ComputeInstance) (core, mem []string, t float64, err error) {
+	if r == nil {
+		return []string{"-", "0", "0"}, []string{"-", "0", "0"}, 0, nil
+	}
+
+	core = append(core, fmt.Sprintf("%.6f", float64(r.Cores.UnitPricing.HourlyUnitPrice)))
+	core = append(core, fmt.Sprintf("%d", r.Cores.Number))
+	core = append(core, fmt.Sprintf("%.6f", float64(r.Cores.getTotalPrice())))
+
+	mem = append(mem, fmt.Sprintf("%.6f", float64(r.Memory.UnitPricing.HourlyUnitPrice)))
+	unitType := strings.Split(r.Memory.UnitPricing.UsageUnit, " ")[0]
+	memNum, err := conv.Convert("gib", r.Memory.AmountGiB, unitType)
+	if err != nil {
+		return nil, nil, 0, err
+	}
+	mem = append(mem, fmt.Sprintf("%.2f", memNum))
+	p, err := r.Memory.getTotalPrice()
+	if err != nil {
+		return nil, nil, 0, err
+	}
+	mem = append(mem, fmt.Sprintf("%.6f", p))
+	return core, mem, r.Cores.getTotalPrice() + p, nil
+}
+
+// syncInstances replace nils in state's before and after to be able to use them.
+func syncInstances(before, after *ComputeInstance) (*ComputeInstance, *ComputeInstance, error) {
+	if after == nil && before == nil {
+		return nil, nil, fmt.Errorf("After and Before can't be nil at the same time.")
+	}
+	if after == nil {
+		return before, before, nil
+	}
+	if before == nil {
+		return after, after, nil
+	}
+	return before, after, nil
+}
+
+// initRow creates a sufficient row for the certain field in state struct depending on before and after are the same or different.
+// If end == true add " " in the end of string to avoid unwanted auto-merging in the table package.
+func initRow(h, before, after string, end bool) (row table.Row) {
+	var s string
+	switch {
+	case before == "" && after == "":
+		s = "unknown"
+	case before == "" || after == "":
+		s = before + after
+	case before == after:
+		s = before
+	default:
+		s = before + " ->\n-> " + after
+	}
+	if end {
+		s = s + " "
+	}
+
+	row = append(row, h)
+	for i := 1; i < 5; i++ {
+		row = append(row, s)
+	}
+	return row
+}
+
+// getSummaryRow() returns the row for SummaryTable to be outputted about the certain state.
+func getSummaryRow(state *ComputeInstanceState) (table.Row, error) {
+	dCore, dMem, err := state.getDelta()
+	if err != nil {
+		return table.Row{}, err
+	}
+	_, r, err := syncInstances(state.Before, state.After)
+	if err != nil {
+		return table.Row{}, err
+	}
+	return table.Row{r.Name, r.ID, r.MachineType, state.Action, fmt.Sprintf("%.6f", dCore+dMem)}, nil
+}
+
+// Pricing contains the details of core and memory pricing information to be outputted.
+type Pricing struct {
+	//if the cost of unit is unknown we use string "-"
+	UnitCost  string `json:"cost_per_unit"`
+	NumUnits  string `json:"number_of_units"`
+	TotalCost string `json:"cost_of_units"`
+}
+
+// InstancePricingOut contains ComputeInstance pricing information to be outputted.
 type InstancePricingOut struct {
 	Cpu       Pricing `json:"cpu"`
-	Memory    Pricing `json:"memory"`
+	Ram       Pricing `json:"ram"`
 	TotalCost float64 `json:"total_cost"`
 }
 
-// PricingInfoOut contains ComputeInstanceState pricing
-// information to be outputted.
+// PricingInfoOut contains ComputeInstanceState pricing information to be outputted.
 type PricingInfoOut struct {
 	Before   *InstancePricingOut `json:"before"`
 	After    *InstancePricingOut `json:"after"`
 	DeltaCpu float64             `json:"cpu_cost_change"`
-	DeltaMem float64             `json:"memory_cost_change"`
+	DeltaRam float64             `json:"ram_cost_change"`
 	Delta    float64             `json:"cost_change"`
 }
 
-// ComputeInstanceStateOut contains ComputeInstanceState
-// information to be outputted.
+// Change contains before and after value of the field in ComputeInstanceState.
+type Change struct {
+	Before string `json:"before"`
+	After  string `json:"after"`
+}
+
+// ComputeInstanceStateOut contains ComputeInstanceState information to be outputted.
 type ComputeInstanceStateOut struct {
-	Name        string         `json:"name"`
-	Instance_ID string         `json:"instance_id"`
-	Zone        string         `json:"zone"`
-	MachineType string         `json:"machine_type"`
-	CpuType     string         `json:"cpu_type"`
-	MemType     string         `json:"memory_type"`
+	Name        Change         `json:"name"`
+	Instance_ID Change         `json:"instance_id"`
+	Zone        Change         `json:"zone"`
+	MachineType Change         `json:"machine_type"`
+	CpuType     Change         `json:"cpu_type"`
+	RamType     Change         `json:"ram_type"`
 	Action      string         `json:"action"`
 	Pricing     PricingInfoOut `json:"pricing_info"`
 }
 
-// JsonOutput contains relevant information resources
-// and cost changes in a file.
+// JsonOutput contains relevant information resources and cost changes in a file.
 type JsonOutput struct {
-	Delta            float64                    `json:"cost_change"`
-	DeltaMem         float64                    `json:"memory_cost_change"`
-	DeltaCpu         float64                    `json:"cpu_cost_change"`
-	ResourcesPricing []*ComputeInstanceStateOut `json:"resources_pricing_info"`
+	Delta                   float64                    `json:"cost_change"`
+	PricingUnit             string                     `json:"pricing_unit"`
+	ComputeInstancesPricing []*ComputeInstanceStateOut `json:"resources_pricing_info"`
 }
 
-// ToStateOut extracts ComputeInstanceStateOut from state struct to render output in json
-// format.
+// ToStateOut extracts ComputeInstanceStateOut from state struct to render output in json format.
 func (state *ComputeInstanceState) ToStateOut() (*ComputeInstanceStateOut, error) {
 	before, after, err := syncInstances(state.Before, state.After)
 	if err != nil {
 		return nil, err
 	}
 	out := &ComputeInstanceStateOut{
-		Name:        getComponent(before.Name, after.Name),
-		Instance_ID: getComponent(before.ID, after.ID),
-		Zone:        getComponent(before.Zone, after.Zone),
-		MachineType: getComponent(before.MachineType, after.MachineType),
-		CpuType:     getComponent(before.Cores.Type, after.Cores.Type),
-		MemType:     getComponent(before.Memory.Type, after.Memory.Type),
+		Name:        Change{before.Name, after.Name},
+		Instance_ID: Change{before.ID, after.ID},
+		Zone:        Change{before.Zone, after.Zone},
+		MachineType: Change{before.MachineType, after.MachineType},
+		CpuType:     Change{before.Cores.Type, after.Cores.Type},
+		RamType:     Change{before.Memory.Type, after.Memory.Type},
+		Action:      state.Action,
 	}
 
 	dCore, dMem, err := state.getDelta()
@@ -227,11 +286,49 @@ func (state *ComputeInstanceState) ToStateOut() (*ComputeInstanceStateOut, error
 		Before:   beforeOut,
 		After:    afterOut,
 		DeltaCpu: dCore,
-		DeltaMem: dMem,
+		DeltaRam: dMem,
 		Delta:    dCore + dMem,
 	}
 	out.Pricing = pricing
 	return out, nil
+}
+
+// RenderJson returns the string with json output struct for all resources.
+func RenderJson(states []*ComputeInstanceState) (string, error) {
+	out := JsonOutput{}
+	out.Delta, _, _ = getTotalDelta(states)
+	out.PricingUnit = "USD/hour"
+	var r []*ComputeInstanceStateOut
+	for _, state := range states {
+		s, err := state.ToStateOut()
+		if err == nil || s != nil {
+			r = append(r, s)
+		}
+	}
+	out.ComputeInstancesPricing = r
+	jsonString, err := json.Marshal(out)
+	if err != nil {
+		return "", err
+	}
+	return string(jsonString), err
+}
+
+// GenerateJsonOut generates a json file with the pricing information of the specified resources.
+func GenerateJsonOut(outPath string, res []*ComputeInstanceState) error {
+	f, err := os.Create(outPath)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	jsonString, err := RenderJson(res)
+	if err != nil {
+		return nil
+	}
+	if _, err = io.WriteString(f, jsonString); err != nil {
+		return err
+	}
+	return nil
 }
 
 func completeResourceOut(r *ComputeInstance) (*InstancePricingOut, error) {
@@ -242,175 +339,16 @@ func completeResourceOut(r *ComputeInstance) (*InstancePricingOut, error) {
 
 	rOut := &InstancePricingOut{
 		Cpu: Pricing{
-			NumUnits:  core[1].(int),
-			TotalCost: core[2].(float64),
+			UnitCost:  core[0],
+			NumUnits:  core[1],
+			TotalCost: core[2],
 		},
-		Memory: Pricing{
-			NumUnits:  mem[1].(int),
-			TotalCost: mem[2].(float64),
+		Ram: Pricing{
+			UnitCost:  mem[0],
+			NumUnits:  mem[1],
+			TotalCost: mem[2],
 		},
 		TotalCost: t,
 	}
-
-	if core[0] == "-" {
-		rOut.Cpu.UnitCost = "-"
-	} else {
-		rOut.Cpu.UnitCost = fmt.Sprintf("%f", core[0])
-	}
-
-	if mem[0] == "-" {
-		rOut.Memory.UnitCost = "-"
-	} else {
-		rOut.Memory.UnitCost = fmt.Sprintf("%f", mem[0])
-	}
 	return rOut, nil
-}
-
-// RederJson returns ComputeInstanceState as a JSON string.
-func (state *ComputeInstanceState) RederStateJson() (string, error) {
-	out, err := state.ToStateOut()
-	if err != nil || out == nil {
-		return "", err
-	}
-	jsonString, err := json.Marshal(out)
-	if err != nil {
-		return "", err
-	}
-	return string(jsonString), nil
-}
-
-// RenderJson returns the string with json output struct for all
-// resources.
-func RenderJson(states []*ComputeInstanceState) (string, error) {
-	out := JsonOutput{}
-	out.Delta, out.DeltaMem, out.DeltaCpu = GetTotalDelta(states)
-	var r []*ComputeInstanceStateOut
-	for _, state := range states {
-		s, err := state.ToStateOut()
-		if err == nil || s != nil {
-			r = append(r, s)
-		}
-	}
-	out.ResourcesPricing = r
-	jsonString, err := json.Marshal(out)
-	if err != nil {
-		return "", err
-	}
-	return string(jsonString), err
-}
-
-// GenerateJsonOut generates a json file with the pricing information of the specified resources.
-func GenerateJsonOut(outputPath string, res []*ComputeInstanceState) error {
-	f, err := os.Create(outputPath)
-	if err != nil {
-		return err
-	}
-
-	defer f.Close()
-
-	jsonString, err := RenderJson(res)
-	if err != nil {
-		return nil
-	}
-
-	if _, err = io.WriteString(f, jsonString); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// GetTotalDelta returns the cost changes of all resources.
-func GetTotalDelta(states []*ComputeInstanceState) (dTotal, dCore, dMem float64) {
-	for _, state := range states {
-		core, mem, err := state.getDelta()
-		if err == nil {
-			dCore = core + dCore
-			dMem = mem + dMem
-		}
-	}
-	dTotal = dCore + dMem
-	return dTotal, dCore, dMem
-}
-
-// getComponent returns the string to be outputted
-// instead of before and after.
-func getComponent(before, after string) string {
-	var s string
-	if before == "" && after == "" {
-		s = "unknown"
-	} else if before == "" || after == "" {
-		s = before + after
-	} else if before == after {
-		s = before
-	} else {
-		s = before + after
-	}
-	return s
-}
-
-func syncInstances(before, after *ComputeInstance) (*ComputeInstance, *ComputeInstance, error) {
-	if after == nil {
-		after = before
-	} else if before == nil {
-		before = after
-	}
-	if after == nil && before == nil {
-		return nil, nil, fmt.Errorf("After and Before can't be nil at the same time.")
-	}
-	return before, after, nil
-}
-
-// initRow creates a sufficient row for the cases when the certain field
-// in state struct for before and after are the same or different.
-// If end == true add " " in the end of string to avoid unwanted auto-merging
-// in the table package.
-func initRow(header, before, after string, end bool) (row table.Row) {
-	row = append(row, header)
-	s := getComponent(before, after)
-	if before != "" && after != "" && before != after {
-		s = before + " ->\n-> " + after
-	}
-	if end {
-		s = s + " "
-	}
-	for i := 1; i < numColumns; i++ {
-		row = append(row, s)
-	}
-	return row
-}
-
-// getMemCoreInfo returns two arrays with resource's core and memory
-// information and the totalCost.
-func getMemCoreInfo(r *ComputeInstance) (core, mem []interface{}, t float64, err error) {
-	if r == nil {
-		core = []interface{}{"-", 0, 0}
-		mem = []interface{}{"-", 0, 0}
-		return core, mem, 0, nil
-	}
-	core = append(core, r.Cores.UnitPricing.HourlyUnitPrice)
-	core = append(core, r.Cores.Number)
-	core = append(core, r.Cores.getTotalPrice())
-
-	mem = append(mem, r.Memory.UnitPricing.HourlyUnitPrice)
-	unitType := strings.Split(r.Memory.UnitPricing.UsageUnit, " ")[0]
-	memNum, err := conv.Convert("gib", r.Memory.AmountGiB, unitType)
-	if err != nil {
-		return nil, nil, 0, err
-	}
-	mem = append(mem, memNum)
-	p, err := r.Memory.getTotalPrice()
-	if err != nil {
-		return nil, nil, 0, err
-	}
-	mem = append(mem, p)
-	return core, mem, r.Cores.getTotalPrice() + p, nil
-}
-
-// addHeader creates a row with the same string in every column.
-func addHeader(header string) (row table.Row) {
-	for i := 0; i < numColumns; i++ {
-		row = append(row, header)
-	}
-	return row
 }
