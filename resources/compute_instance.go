@@ -2,7 +2,6 @@ package resources
 
 import (
 	"fmt"
-	"os"
 	"strings"
 
 	billing "github.com/googleinterns/terraform-cost-estimation/billing"
@@ -141,19 +140,6 @@ func NewComputeInstance(id, name, machineType, zone, usageType string) (*Compute
 	return instance, nil
 }
 
-func (instance *ComputeInstance) filterSKUs(skus []*billingpb.Sku) ([]*billingpb.Sku, error) {
-	filtered, err := billing.RegionFilter(skus, instance.Region)
-	if err != nil {
-		return nil, err
-	}
-
-	filtered, err = billing.DescriptionFilter(filtered, instance.Description.Contains, instance.Description.Omits)
-	if err != nil {
-		return nil, err
-	}
-	return filtered, nil
-}
-
 // CompletePricingInfo fills the pricing information fields.
 func (instance *ComputeInstance) CompletePricingInfo(catalog *billing.ComputeEngineCatalog) error {
 	cores, err := catalog.GetCoreSKUs(instance.UsageType)
@@ -166,12 +152,12 @@ func (instance *ComputeInstance) CompletePricingInfo(catalog *billing.ComputeEng
 		return err
 	}
 
-	filteredCores, err := instance.filterSKUs(cores)
+	filteredCores, err := filterSKUs(cores, instance.Region, instance.Description)
 	if err != nil {
 		return err
 	}
 
-	filteredRAM, err := instance.filterSKUs(mem)
+	filteredRAM, err := filterSKUs(mem, instance.Region, instance.Description)
 	if err != nil {
 		return err
 	}
@@ -187,8 +173,7 @@ func (instance *ComputeInstance) CompletePricingInfo(catalog *billing.ComputeEng
 	return nil
 }
 
-// ComputeInstanceState holds the before and after states of a compute instance
-// and the action performed (created, destroyed etc.)
+// ComputeInstanceState holds the before and after states of a compute instance and the action performed (created, destroyed etc.)
 type ComputeInstanceState struct {
 	Before *ComputeInstance
 	After  *ComputeInstance
@@ -199,7 +184,7 @@ type ComputeInstanceState struct {
 func (state *ComputeInstanceState) CompletePricingInfo(catalog *billing.ComputeEngineCatalog) error {
 	if state.Before != nil {
 		if err := state.Before.CompletePricingInfo(catalog); err != nil {
-			return fmt.Errorf(state.Before.Name + "(" + state.After.MachineType + ")" + ": " + err.Error())
+			return fmt.Errorf(state.Before.Name + "(" + state.Before.MachineType + ")" + ": " + err.Error())
 		}
 	}
 
@@ -230,17 +215,6 @@ func (state *ComputeInstanceState) getDelta() (DCore, DMem float64, err error) {
 	}
 
 	return core2 - core1, mem2 - mem1, nil
-}
-
-// WritePricingInfo outputs the pricing estimation in a file/terminal.
-func (state *ComputeInstanceState) WritePricingInfo(f *os.File) {
-	if f == nil {
-		return
-	}
-	a := state.After
-	c := a.Cores.getTotalPrice()
-	m, _ := a.Memory.getTotalPrice()
-	f.Write([]byte(fmt.Sprintf("%s -> Cores: %+v, Memory: %+v, Total: %+v\n\n", a.MachineType, c, m, c+m)))
 }
 
 // GetSummary returns a summary of the cost change for a compute instance state.
@@ -285,6 +259,8 @@ func (state *ComputeInstanceState) getGeneralChanges() (name, ID, action,
 
 		if state.After.ID == "" {
 			ID = "unknown"
+		} else {
+			ID = state.After.ID
 		}
 		machineType = state.After.MachineType
 		zone = state.After.Zone
@@ -293,50 +269,19 @@ func (state *ComputeInstanceState) getGeneralChanges() (name, ID, action,
 
 	case state.After == nil:
 		name = state.Before.Name
-
-		if state.Before.ID == "" {
-			ID = "unknown"
-		}
+		ID = state.Before.ID
 		machineType = state.Before.MachineType
 		zone = state.Before.Zone
 		cpuType = state.Before.Cores.Type
 		memType = state.Before.Memory.Type
 
 	default:
-		if state.Before.Name != state.After.Name {
-			name = state.Before.Name + " -> " + state.After.Name
-		} else {
-			name = state.Before.Name
-		}
-		if state.After.ID == "" {
-			ID = "unknown"
-		} else {
-			if state.Before.ID != state.After.ID {
-				ID = state.Before.ID + " -> " + state.After.ID
-			} else {
-				ID = state.Before.ID
-			}
-		}
-
-		if state.Before.MachineType != state.After.MachineType {
-			machineType = state.Before.MachineType + " -> " + state.After.MachineType
-		} else {
-			machineType = state.Before.MachineType
-		}
-
-		if state.Before.Zone != state.After.Zone {
-			zone = state.Before.Zone + " -> " + state.After.Zone
-		} else {
-			zone = state.Before.Zone
-		}
-
-		if state.Before.Cores.Type != state.After.Cores.Type {
-			cpuType = state.Before.Cores.Type + " -> " + state.After.Cores.Type
-			memType = state.Before.Memory.Type + " -> " + state.After.Memory.Type
-		} else {
-			cpuType = state.Before.Cores.Type
-			memType = state.Before.Memory.Type
-		}
+		name = generalChange(state.Before.Name, state.After.Name)
+		ID = state.Before.ID
+		machineType = generalChange(state.Before.MachineType, state.After.MachineType)
+		zone = generalChange(state.Before.Zone, state.After.Zone)
+		cpuType = generalChange(state.Before.Cores.Type, state.After.Cores.Type)
+		memType = generalChange(state.Before.Memory.Type, state.After.Memory.Type)
 	}
 	return
 }

@@ -1,18 +1,9 @@
 package resources
 
 import (
-	"os"
-
 	billing "github.com/googleinterns/terraform-cost-estimation/billing"
 	"github.com/googleinterns/terraform-cost-estimation/io/web"
 	billingpb "google.golang.org/genproto/googleapis/cloud/billing/v1"
-)
-
-const (
-	nano            = float64(1000 * 1000 * 1000)
-	epsilon         = 1e-10
-	hourlyToMonthly = float64(24 * 30)
-	hourlyToYearly  = float64(24 * 365)
 )
 
 // PricingInfo stores the information from the billing API.
@@ -36,7 +27,6 @@ func (p *PricingInfo) fillMonthlyBase(sku *billingpb.Sku) {
 //ResourceState is the interface of a general before/after resource state(ComputeInstance,...).
 type ResourceState interface {
 	CompletePricingInfo(catalog *billing.ComputeEngineCatalog) error
-	WritePricingInfo(f *os.File)
 	GetWebTables(stateNum int) *web.PricingTypeTables
 	GetSummary() string
 }
