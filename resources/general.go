@@ -9,24 +9,28 @@ import (
 )
 
 const (
-	nano    = float64(1000 * 1000 * 1000)
-	epsilon = 1e-10
+	nano            = float64(1000 * 1000 * 1000)
+	epsilon         = 1e-10
+	hourlyToMonthly = float64(24 * 30)
+	hourlyToYearly  = float64(24 * 365)
 )
 
 // PricingInfo stores the information from the billing API.
 type PricingInfo struct {
 	UsageUnit       string
-	HourlyUnitPrice int64
+	HourlyUnitPrice float64
 	CurrencyType    string
-	CurrencyUnit    string
 }
 
-func (p *PricingInfo) fillInfo(sku *billingpb.Sku) {
-	usageUnit, hourlyUnitPrice, currencyType, currencyUnit := billing.GetPricingInfo(sku)
+func (p *PricingInfo) fillHourlyBase(sku *billingpb.Sku) {
+	p.UsageUnit, p.HourlyUnitPrice, p.CurrencyType = billing.PricingInfo(sku)
+}
+
+func (p *PricingInfo) fillMonthlyBase(sku *billingpb.Sku) {
+	usageUnit, monthly, currencyType := billing.PricingInfo(sku)
 	p.UsageUnit = usageUnit
-	p.HourlyUnitPrice = hourlyUnitPrice
+	p.HourlyUnitPrice = monthly / hourlyToMonthly
 	p.CurrencyType = currencyType
-	p.CurrencyUnit = currencyUnit
 }
 
 //ResourceState is the interface of a general before/after resource state(ComputeInstance,...).

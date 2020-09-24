@@ -10,6 +10,8 @@ import (
 	billingpb "google.golang.org/genproto/googleapis/cloud/billing/v1"
 )
 
+const nano = float64(1000 * 1000 * 1000)
+
 func fitsDescription(sku *billingpb.Sku, contains, omits []string) bool {
 	if contains != nil {
 		for _, d := range contains {
@@ -47,18 +49,17 @@ func fitsRegion(sku *billingpb.Sku, region string) bool {
 	return false
 }
 
-// GetPricingInfo returns the pricing information of an SKU.
-func GetPricingInfo(sku *billingpb.Sku) (usageUnit string, hourlyUnitPrice int64, currencyType, currencyUnit string) {
-	currencyUnit = "nano"
+// PricingInfo returns the pricing information of an SKU.
+func PricingInfo(sku *billingpb.Sku) (usageUnit string, pricePerUnit float64, currencyType string) {
 	pExpr := sku.PricingInfo[0].PricingExpression
-	usageUnit = pExpr.UsageUnitDescription
+	usageUnit = strings.Split(pExpr.UsageUnitDescription, " ")[0]
 
 	if pExpr.TieredRates == nil || len(pExpr.TieredRates) == 0 {
 		return
 	}
 
 	unitPrice := pExpr.TieredRates[0].UnitPrice
-	hourlyUnitPrice = int64(unitPrice.Nanos)
+	pricePerUnit = float64(unitPrice.Nanos) / nano
 	currencyType = unitPrice.CurrencyCode
 	return
 }

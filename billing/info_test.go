@@ -1,6 +1,7 @@
 package billing
 
 import (
+	"math"
 	"testing"
 
 	billingpb "google.golang.org/genproto/googleapis/cloud/billing/v1"
@@ -71,34 +72,32 @@ func TestFitsRegion(t *testing.T) {
 }
 
 func TestGetPricingInfo(t *testing.T) {
+	const epsilon = 1e-10
 	skus, err := readSKUs()
 	if err != nil {
 		t.Fatal("Failed to read SKU JSON files")
 	}
 
 	tests := []struct {
-		name            string
-		sku             *billingpb.Sku
-		usageUnit       string
-		hourlyUnitPrice int64
-		currencyType    string
-		currencyUnit    string
+		name         string
+		sku          *billingpb.Sku
+		usageUnit    string
+		pricePerUnit float64
+		currencyType string
 	}{
-		{"no_pricing", skus[6], "hour", 0, "", "nano"},
-		{"one_pricing", skus[0], "gibibyte hour", 5928000, "USD", "nano"},
-		{"more_pricing", skus[5], "gibibyte hour", 5696340, "USD", "nano"},
+		{"no_pricing", skus[6], "hour", 0, ""},
+		{"one_pricing", skus[0], "gibibyte", 5928000 / nano, "USD"},
+		{"more_pricing", skus[5], "gibibyte", 5696340 / nano, "USD"},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			usageUnit, hourlyUnitPrice, currencyType, currencyUnit := GetPricingInfo(test.sku)
+			usageUnit, pricePerUnit, currencyType := PricingInfo(test.sku)
 			// Test fails if any return value is different than the expected one.
-			f1 := usageUnit != test.usageUnit || hourlyUnitPrice != test.hourlyUnitPrice
-			f2 := currencyType != test.currencyType || currencyUnit != test.currencyUnit
-			if f1 || f2 {
-				t.Errorf("GetPricingInfo(sku) = %+v, %+v, %+v, %+v; want %+v, %+v, %+v, %+v",
-					usageUnit, hourlyUnitPrice, currencyType, currencyUnit,
-					test.usageUnit, test.hourlyUnitPrice, test.currencyType, test.currencyUnit)
+			if usageUnit != test.usageUnit || math.Abs(pricePerUnit-test.pricePerUnit) > epsilon || currencyType != test.currencyType {
+				t.Errorf("GetPricingInfo(sku) = %+v, %+v, %+v; want %+v, %+v, %+v",
+					usageUnit, pricePerUnit, currencyType,
+					test.usageUnit, test.pricePerUnit, test.currencyType)
 			}
 		})
 	}
