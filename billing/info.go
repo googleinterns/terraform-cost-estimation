@@ -50,17 +50,25 @@ func fitsRegion(sku *billingpb.Sku, region string) bool {
 }
 
 // PricingInfo returns the pricing information of an SKU.
-func PricingInfo(sku *billingpb.Sku) (usageUnit string, pricePerUnit float64, currencyType string) {
+func PricingInfo(sku *billingpb.Sku, correctTieredRate func(*billingpb.PricingExpression_TierRate) bool) (usageUnit string,
+	pricePerUnit float64, currencyType string) {
+
 	pExpr := sku.PricingInfo[0].PricingExpression
 	usageUnit = strings.Split(pExpr.UsageUnitDescription, " ")[0]
 
-	if pExpr.TieredRates == nil || len(pExpr.TieredRates) == 0 {
+	var tr *billingpb.PricingExpression_TierRate
+	for i := len(pExpr.TieredRates) - 1; i >= 0; i-- {
+		if correctTieredRate(pExpr.TieredRates[i]) {
+			tr = pExpr.TieredRates[i]
+			break
+		}
+	}
+	if tr == nil {
 		return
 	}
 
-	unitPrice := pExpr.TieredRates[0].UnitPrice
-	pricePerUnit = float64(unitPrice.Nanos) / nano
-	currencyType = unitPrice.CurrencyCode
+	pricePerUnit = float64(tr.UnitPrice.Nanos) / nano
+	currencyType = tr.UnitPrice.CurrencyCode
 	return
 }
 

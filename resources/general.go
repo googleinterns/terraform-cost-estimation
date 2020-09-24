@@ -13,12 +13,12 @@ type PricingInfo struct {
 	CurrencyType    string
 }
 
-func (p *PricingInfo) fillHourlyBase(sku *billingpb.Sku) {
-	p.UsageUnit, p.HourlyUnitPrice, p.CurrencyType = billing.PricingInfo(sku)
+func (p *PricingInfo) fillHourlyBase(sku *billingpb.Sku, correctTieredRate func(*billingpb.PricingExpression_TierRate) bool) {
+	p.UsageUnit, p.HourlyUnitPrice, p.CurrencyType = billing.PricingInfo(sku, correctTieredRate)
 }
 
-func (p *PricingInfo) fillMonthlyBase(sku *billingpb.Sku) {
-	usageUnit, monthly, currencyType := billing.PricingInfo(sku)
+func (p *PricingInfo) fillMonthlyBase(sku *billingpb.Sku, correctTieredRate func(*billingpb.PricingExpression_TierRate) bool) {
+	usageUnit, monthly, currencyType := billing.PricingInfo(sku, correctTieredRate)
 	p.UsageUnit = usageUnit
 	p.HourlyUnitPrice = monthly / hourlyToMonthly
 	p.CurrencyType = currencyType
@@ -28,7 +28,6 @@ func (p *PricingInfo) fillMonthlyBase(sku *billingpb.Sku) {
 type ResourceState interface {
 	CompletePricingInfo(catalog *billing.ComputeEngineCatalog) error
 	GetWebTables(stateNum int) *web.PricingTypeTables
-	GetSummary() string
 }
 
 // skuObject is the interface for SKU types (core, memory etc.)

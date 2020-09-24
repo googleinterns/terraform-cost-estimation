@@ -49,10 +49,10 @@ func mapToDescription(skus []*billingpb.Sku) (mapped []string) {
 	return
 }
 
-func mapToPricingInfo(skus []*billingpb.Sku) (mapped []PricingInfo) {
+func mapToPricingInfo(skus []*billingpb.Sku, correctTierRate func(*billingpb.PricingExpression_TierRate) bool) (mapped []PricingInfo) {
 	for _, sku := range skus {
 		p := PricingInfo{}
-		p.fillHourlyBase(sku)
+		p.fillHourlyBase(sku, correctTierRate)
 		mapped = append(mapped, p)
 	}
 	return
@@ -71,7 +71,7 @@ func TestCompletePricingInfo(t *testing.T) {
 	m2 := MemoryInfo{ResourceGroup: "N1Standard"}
 	m3 := m1
 
-	p := mapToPricingInfo(skus)
+	p := mapToPricingInfo(skus, func(*billingpb.PricingExpression_TierRate) bool { return true })
 
 	tests := []struct {
 		name    string

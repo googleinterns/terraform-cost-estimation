@@ -81,18 +81,19 @@ func TestGetPricingInfo(t *testing.T) {
 	tests := []struct {
 		name         string
 		sku          *billingpb.Sku
+		f            func(*billingpb.PricingExpression_TierRate) bool
 		usageUnit    string
 		pricePerUnit float64
 		currencyType string
 	}{
-		{"no_pricing", skus[6], "hour", 0, ""},
-		{"one_pricing", skus[0], "gibibyte", 5928000 / nano, "USD"},
-		{"more_pricing", skus[5], "gibibyte", 5696340 / nano, "USD"},
+		{"no_pricing", skus[6], func(*billingpb.PricingExpression_TierRate) bool { return true }, "hour", 0, ""},
+		{"one_pricing", skus[0], func(*billingpb.PricingExpression_TierRate) bool { return true }, "gibibyte", 5928000 / nano, "USD"},
+		{"more_pricing", skus[5], func(*billingpb.PricingExpression_TierRate) bool { return true }, "gibibyte", 5226000 / nano, "USD"},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			usageUnit, pricePerUnit, currencyType := PricingInfo(test.sku)
+			usageUnit, pricePerUnit, currencyType := PricingInfo(test.sku, test.f)
 			// Test fails if any return value is different than the expected one.
 			if usageUnit != test.usageUnit || math.Abs(pricePerUnit-test.pricePerUnit) > epsilon || currencyType != test.currencyType {
 				t.Errorf("GetPricingInfo(sku) = %+v, %+v, %+v; want %+v, %+v, %+v",

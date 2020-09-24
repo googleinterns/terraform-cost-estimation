@@ -34,7 +34,7 @@ func (core *CoreInfo) completePricingInfo(skus []*billingpb.Sku) error {
 		return fmt.Errorf("could not find core pricing information")
 	}
 
-	core.UnitPricing.fillHourlyBase(sku)
+	core.UnitPricing.fillHourlyBase(sku, func(tr *billingpb.PricingExpression_TierRate) bool { return true })
 	core.Type = sku.Description
 	return nil
 }
@@ -67,7 +67,7 @@ func (mem *MemoryInfo) completePricingInfo(skus []*billingpb.Sku) error {
 		return fmt.Errorf("could not find memory pricing information")
 	}
 
-	mem.UnitPricing.fillHourlyBase(sku)
+	mem.UnitPricing.fillHourlyBase(sku, func(tr *billingpb.PricingExpression_TierRate) bool { return true })
 	mem.Type = sku.Description
 	return nil
 }
@@ -215,38 +215,6 @@ func (state *ComputeInstanceState) getDelta() (DCore, DMem float64, err error) {
 	}
 
 	return core2 - core1, mem2 - mem1, nil
-}
-
-// GetSummary returns a summary of the cost change for a compute instance state.
-func (state *ComputeInstanceState) GetSummary() string {
-	format := "Name: %s, Machine Type: %s, Action: %s, Total Cost: %f USD/hour, %s by %f USD/hour\n"
-	var instance *ComputeInstance
-	var change string
-
-	dCore, dMem, err := state.getDelta()
-	if err != nil {
-		if state.After == nil {
-			return "Could not make summary for compute instance initially named " + state.Before.Name + "\n"
-		}
-		return "Could not make summary for compute instance finally named " + state.After.Name + "\n"
-	}
-
-	if dCore+dMem < 0 {
-		change = "Down"
-	} else {
-		change = "Up"
-	}
-
-	if state.After == nil {
-		instance = state.Before
-	} else {
-		instance = state.After
-	}
-
-	c := instance.Cores.getTotalPrice()
-	m, _ := instance.Memory.getTotalPrice()
-
-	return fmt.Sprintf(format, instance.Name, instance.MachineType, state.Action, c+m, change, dCore+dMem)
 }
 
 func (state *ComputeInstanceState) getGeneralChanges() (name, ID, action,
