@@ -35,13 +35,13 @@ func (core *CoreInfo) completePricingInfo(skus []*billingpb.Sku) error {
 		return fmt.Errorf("could not find core pricing information")
 	}
 
-	core.UnitPricing.fillInfo(sku)
+	core.UnitPricing.fillHourlyBase(sku)
 	core.Type = sku.Description
 	return nil
 }
 
 func (core *CoreInfo) getTotalPrice() float64 {
-	return float64(core.UnitPricing.HourlyUnitPrice*int64(core.Number)) / nano * core.Fractional
+	return core.UnitPricing.HourlyUnitPrice * float64(core.Number) * core.Fractional
 }
 
 // MemoryInfo stores memory details.
@@ -68,20 +68,18 @@ func (mem *MemoryInfo) completePricingInfo(skus []*billingpb.Sku) error {
 		return fmt.Errorf("could not find memory pricing information")
 	}
 
-	mem.UnitPricing.fillInfo(sku)
+	mem.UnitPricing.fillHourlyBase(sku)
 	mem.Type = sku.Description
 	return nil
 }
 
 func (mem *MemoryInfo) getTotalPrice() (float64, error) {
-	unitType := strings.Split(mem.UnitPricing.UsageUnit, " ")[0]
-	unitsNum, err := conv.Convert("gib", mem.AmountGiB, unitType)
-
+	unitsNum, err := conv.Convert("gib", mem.AmountGiB, mem.UnitPricing.UsageUnit)
 	if err != nil {
 		return 0, err
 	}
 
-	return float64(mem.UnitPricing.HourlyUnitPrice) * unitsNum / nano, nil
+	return mem.UnitPricing.HourlyUnitPrice * unitsNum, nil
 }
 
 // ComputeInstance stores information about the compute instance resource type.
@@ -347,17 +345,17 @@ func (state *ComputeInstanceState) getCostChanges() (cpuCostPerUnit1, cpuCostPer
 	memCostPerUnit1, memCostPerUnit2, memUnits1, memUnits2 float64) {
 
 	if state.Before != nil {
-		cpuCostPerUnit1 = float64(state.Before.Cores.UnitPricing.HourlyUnitPrice) / nano
+		cpuCostPerUnit1 = state.Before.Cores.UnitPricing.HourlyUnitPrice
 		cpuUnits1 = state.Before.Cores.Number
-		memCostPerUnit1 = float64(state.Before.Memory.UnitPricing.HourlyUnitPrice) / nano
-		memUnits1, _ = conv.Convert("gib", state.Before.Memory.AmountGiB, strings.Split(state.Before.Memory.UnitPricing.UsageUnit, " ")[0])
+		memCostPerUnit1 = state.Before.Memory.UnitPricing.HourlyUnitPrice
+		memUnits1, _ = conv.Convert("gib", state.Before.Memory.AmountGiB, state.Before.Memory.UnitPricing.UsageUnit)
 	}
 
 	if state.After != nil {
-		cpuCostPerUnit2 = float64(state.After.Cores.UnitPricing.HourlyUnitPrice) / nano
+		cpuCostPerUnit2 = state.After.Cores.UnitPricing.HourlyUnitPrice
 		cpuUnits2 = state.After.Cores.Number
-		memCostPerUnit2 = float64(state.After.Memory.UnitPricing.HourlyUnitPrice) / nano
-		memUnits2, _ = conv.Convert("gib", state.After.Memory.AmountGiB, strings.Split(state.After.Memory.UnitPricing.UsageUnit, " ")[0])
+		memCostPerUnit2 = state.After.Memory.UnitPricing.HourlyUnitPrice
+		memUnits2, _ = conv.Convert("gib", state.After.Memory.AmountGiB, state.After.Memory.UnitPricing.UsageUnit)
 	}
 
 	return
@@ -368,9 +366,6 @@ func (state *ComputeInstanceState) GetWebTables(stateNum int) *web.PricingTypeTa
 	name, ID, action, machineType, zone, cpuType, memType := state.getGeneralChanges()
 	cpuCostPerUnit1, cpuCostPerUnit2, cpuUnits1, cpuUnits2,
 		memCostPerUnit1, memCostPerUnit2, memUnits1, memUnits2 := state.getCostChanges()
-
-	hourlyToMonthly := float64(24 * 30)
-	hourlyToYearly := float64(24 * 365)
 
 	h := web.Table{Index: stateNum, Type: "hourly"}
 	h.AddComputeInstanceGeneralInfo(name, ID, action, machineType, zone, cpuType, memType)
