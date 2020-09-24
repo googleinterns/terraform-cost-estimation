@@ -69,3 +69,19 @@ func (d *Description) fillForComputeInstance(machineType, usageType string) erro
 
 	return nil
 }
+
+func (d *Description) fillForComputeDisk(diskType string, regional bool) {
+	switch diskType {
+	case "pd-standard":
+		d.Contains = []string{"Storage PD Capacity"}
+	case "pd-ssd":
+		d.Contains = []string{"SSD backed PD Capacity"}
+	default:
+	}
+
+	if regional {
+		d.Contains = append(d.Contains, "Regional")
+	} else {
+		d.Omits = append(d.Omits, "Regional")
+	}
+}

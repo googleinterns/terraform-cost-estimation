@@ -53,3 +53,30 @@ func (t *Table) AddComputeInstancePricing(priceUnit string, cpuCostPerUnit1, cpu
 	}
 	t.Total = [3]string{f1(cpuTot1 + memTot1), f1(cpuTot2 + memTot2), f1(dCPU + dMem)}
 }
+
+// AddComputeDiskGeneralInfo fills the table with general information about the resource change.
+func (t *Table) AddComputeDiskGeneralInfo(name, id, action, diskType, zones, image, snapshot string) {
+	t.Header = [2]string{"Name", name}
+	t.GeneralRows = [][2]string{
+		{"ID", id},
+		{"Action", action},
+		{"Disk Type", diskType},
+		{"Zones", zones},
+		{"Image", image},
+		{"Snapshot", snapshot},
+	}
+}
+
+// AddComputeDiskPricing fills the table with the pricing information section for all billing components.
+func (t *Table) AddComputeDiskPricing(priceUnit string, costPerUnit1, costPerUnit2 float64, units1, units2 int64, delta float64) {
+	f1 := func(x float64) string { return fmt.Sprintf("%.6f USD/%s", x, priceUnit) }
+	f2 := func(x int64) string { return fmt.Sprintf("%d", x) }
+
+	tot1 := costPerUnit1 * float64(units1)
+	tot2 := costPerUnit2 * float64(units2)
+
+	t.PricingInfo = [][8]string{
+		{"Disk", f1(costPerUnit1), f2(units1), f1(tot1), f1(costPerUnit2), f2(units2), f1(tot2), f1(delta)},
+	}
+	t.Total = [3]string{f1(tot1), f1(tot2), f1(delta)}
+}

@@ -27,7 +27,7 @@ type disk struct {
 	MaxSize        int64
 }
 
-// Disks are stored first by type, then by zone/region.
+// Variable diskTypes stores disk type information first by disk type, then by zone/region.
 var diskTypes map[string]map[string]*disk
 
 func convertToDisk(d diskJSON) (*disk, error) {
