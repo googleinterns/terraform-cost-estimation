@@ -3,6 +3,7 @@ package resources
 import (
 	billing "github.com/googleinterns/terraform-cost-estimation/billing"
 	"github.com/googleinterns/terraform-cost-estimation/io/web"
+	"github.com/jedib0t/go-pretty/v6/table"
 	billingpb "google.golang.org/genproto/googleapis/cloud/billing/v1"
 )
 
@@ -28,6 +29,7 @@ func (p *PricingInfo) fillMonthlyBase(sku *billingpb.Sku, correctTieredRate func
 type ResourceState interface {
 	CompletePricingInfo(catalog *billing.ComputeEngineCatalog) error
 	GetWebTables(stateNum int) *web.PricingTypeTables
+	ToTable() (*table.Table, error)
 }
 
 // skuObject is the interface for SKU types (core, memory etc.)

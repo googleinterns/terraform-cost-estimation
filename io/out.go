@@ -42,7 +42,7 @@ func FinishOutput(outputFile *os.File) error {
 }
 
 // GenerateWebPage generates a webpage file with the pricing information of the specified resources.
-func GenerateWebPage(outputPath string, res []*resources.ComputeInstanceState) error {
+func GenerateWebPage(outputPath string, res []resources.ResourceState) error {
 	f, err := os.Create(outputPath)
 	if err != nil {
 		return err
@@ -62,7 +62,7 @@ func GenerateWebPage(outputPath string, res []*resources.ComputeInstanceState) e
 	return nil
 }
 
-func mapToWebTables(res []*resources.ComputeInstanceState) (t []*web.PricingTypeTables) {
+func mapToWebTables(res []resources.ResourceState) (t []*web.PricingTypeTables) {
 	for i, r := range res {
 		t = append(t, r.GetWebTables(i))
 	}

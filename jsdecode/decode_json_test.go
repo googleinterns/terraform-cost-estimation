@@ -2,10 +2,10 @@ package jsdecode
 
 import (
 	"encoding/json"
+	"io/ioutil"
 	"os"
 	"reflect"
 	"testing"
-	"io/ioutil"
 
 	"github.com/davecgh/go-spew/spew"
 	resources "github.com/googleinterns/terraform-cost-estimation/resources"
@@ -52,13 +52,12 @@ func TesttoComputeInstance(t *testing.T) {
 			t.Fatal(err)
 		}
 		if !reflect.DeepEqual(test.expected, actual) {
-			t.Errorf("expected:\n\n%s\n\ngot:\n\n%s", 
-				spew.Sdump(test.expected), spew.Sdump(actual))
+			t.Errorf("expected:\n\n%s\n\ngot:\n\n%s", spew.Sdump(test.expected), spew.Sdump(actual))
 		}
 	}
 }
 
-func readResource(filePath string)(interface{}, error){
+func readResource(filePath string) (interface{}, error) {
 	f, err := os.Open(filePath)
 	if err != nil {
 		return nil, err
@@ -77,7 +76,7 @@ func readResource(filePath string)(interface{}, error){
 	return res, nil
 }
 
-func TestGetChange(t *testing.T) {
+func TesttoInstanceState(t *testing.T) {
 	f, err := os.Open("../testdata/new-compute-instance/tfplan.json")
 	if err != nil {
 		t.Fatal(err)
@@ -101,7 +100,7 @@ func TestGetChange(t *testing.T) {
 	}
 
 	var actual *resources.ComputeInstanceState
-	actual, err = GetChange(plan.ResourceChanges[0].Change)
+	actual, err = toInstanceState(plan.ResourceChanges[0].Change)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -127,7 +126,7 @@ func TestGetResources(t *testing.T) {
 
 	before, _ := resources.NewComputeInstance("5889159656940809264", "test", "n1-standard-1", "us-central1-a", "OnDemand")
 	after, _ := resources.NewComputeInstance("5889159656940809264", "test", "n1-standard-2", "us-central1-a", "OnDemand")
-	expected := []*resources.ComputeInstanceState{
+	expected := []resources.ResourceState{
 		&resources.ComputeInstanceState{
 			Before: before,
 			After:  after,
