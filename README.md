@@ -32,14 +32,14 @@ $ go run main.go [OPTIONS] FILES
 	- Mixed file names and stdout values are allowed.
 
 ## Examples
-Usage on command line:
+### Usage on command line:
 ```
 $ go run main.go input.json
 $ go run main.go -output=json input.json
 $ go run main.go -format=html -output=out1.html,out2.html input1.json input2.json
 ```
 
-Plain text output:
+### Plain text output:
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
 │ The total cost change for all Resources is 0.047500 USD/hour.                                               │
@@ -96,6 +96,6 @@ Plain text output:
 │ DELTA               │ UP (↑)              │ 0.031611            │ 0.01588875          │ 0.04749975          │
 └─────────────────────┴─────────────────────┴─────────────────────┴─────────────────────┴─────────────────────┘
 ```
- Html output:
+### Html output:
 
-<img src="images/html_output.png" width="1250">
+<img src="images/html_output.png" width="1300">
