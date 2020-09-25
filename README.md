@@ -96,6 +96,6 @@ Plain text output:
 │ DELTA               │ UP (↑)              │ 0.031611            │ 0.01588875          │ 0.04749975          │
 └─────────────────────┴─────────────────────┴─────────────────────┴─────────────────────┴─────────────────────┘
 ```
-Html output:
+html output:
 
-<img src="images/html_output.png" width="1100">
+<img src="images/html_output.png" width="1200">
