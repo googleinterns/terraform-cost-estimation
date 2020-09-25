@@ -1,4 +1,4 @@
-package classdetail
+package instance
 
 import (
 	"encoding/json"
@@ -12,14 +12,13 @@ import (
 	memconv "github.com/googleinterns/terraform-cost-estimation/memconverter"
 )
 
-type computeInstance struct {
+// ComputeInstanceInfo holds information about compute instance types.
+type ComputeInstanceInfo struct {
 	CoreNumber int
 	MemoryGiB  float64
 }
 
-var machineTypes map[string]computeInstance
-
-var sharedCoreDiscounts = map[string]float64{
+var sharedCoreFractional = map[string]float64{
 	"e2-micro":  0.125,
 	"e2-small":  0.25,
 	"e2-medium": 0.5,
@@ -27,7 +26,9 @@ var sharedCoreDiscounts = map[string]float64{
 	"g1-small":  0.5,
 }
 
-func readMachineTypes() (map[string]computeInstance, error) {
+// ReadMachineTypes reads JSON file with compute instance type information.
+func ReadMachineTypes() (map[string]ComputeInstanceInfo, error) {
+	// Get path to JSON  file relative to this directory.
 	_, callerFile, _, _ := runtime.Caller(0)
 	inputPath := filepath.Dir(callerFile) + "/machine_types.json"
 
@@ -36,7 +37,7 @@ func readMachineTypes() (map[string]computeInstance, error) {
 		return nil, err
 	}
 
-	var jsonMap map[string]computeInstance
+	var jsonMap map[string]ComputeInstanceInfo
 	json.Unmarshal(data, &jsonMap)
 	return jsonMap, nil
 }
@@ -83,12 +84,9 @@ func getCustomMachineDetails(machineType string) (coreNum int, memGiB float64, e
 }
 
 // GetMachineDetails returns the number of cores and GBs of memory for a specific machine type.
-func GetMachineDetails(machineType string) (coreNum int, memGiB float64, err error) {
+func GetMachineDetails(machineTypes map[string]ComputeInstanceInfo, machineType string) (coreNum int, memGiB float64, err error) {
 	if machineTypes == nil {
-		machineTypes, err = readMachineTypes()
-		if err != nil {
-			return 0, 0, err
-		}
+		return 0, 0, fmt.Errorf("machine type information is not initialized")
 	}
 
 	if strings.Contains(machineType, "custom") {
@@ -105,7 +103,7 @@ func GetMachineDetails(machineType string) (coreNum int, memGiB float64, err err
 // GetMachineFractionalCore returns fractional vCPU of the machine type.
 // For non-shared-core machines, the return value is 1.
 func GetMachineFractionalCore(machineType string) float64 {
-	if d, ok := sharedCoreDiscounts[machineType]; ok {
+	if d, ok := sharedCoreFractional[machineType]; ok {
 		return d
 	}
 	return 1

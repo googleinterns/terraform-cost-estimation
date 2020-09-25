@@ -8,8 +8,7 @@ import (
 	billing "github.com/googleinterns/terraform-cost-estimation/billing"
 	"github.com/googleinterns/terraform-cost-estimation/io/web"
 	conv "github.com/googleinterns/terraform-cost-estimation/memconverter"
-	dsk "github.com/googleinterns/terraform-cost-estimation/resources/classdetail/disk"
-	img "github.com/googleinterns/terraform-cost-estimation/resources/classdetail/image"
+	cd "github.com/googleinterns/terraform-cost-estimation/resources/classdetail"
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/jedib0t/go-pretty/v6/text"
 	billingpb "google.golang.org/genproto/googleapis/cloud/billing/v1"
@@ -32,9 +31,9 @@ type ComputeDisk struct {
 
 // NewComputeDisk builds a compute disk with the specified fields and fills the other resource details.
 // Image, snapshot and size parameters are considered null fields when "" or <= 0.
-// Returns a pointer to a ComputeInstance structure, or nil and error upon failure.
+// Priority of size-related parameters is: size, image/snapshot size, default size.
 // Currently not supported: snapshots.
-func NewComputeDisk(name, id, diskType string, zones []string, image, snapshot string, size int64) (*ComputeDisk, error) {
+func NewComputeDisk(details *cd.ResourceDetail, name, id, diskType string, zones []string, image, snapshot string, size int64) (*ComputeDisk, error) {
 	disk := &ComputeDisk{Name: name, ID: id, Type: diskType, Zones: zones}
 	disk.Description.fillForComputeDisk(diskType, len(zones) > 1)
 
@@ -44,7 +43,7 @@ func NewComputeDisk(name, id, diskType string, zones []string, image, snapshot s
 	}
 	disk.Region = zones[0][:i]
 
-	def, min, max, err := dsk.Details(diskType, zones[0], disk.Region)
+	def, min, max, err := details.DiskDetails(diskType, zones[0], disk.Region)
 	if err != nil {
 		return nil, err
 	}
@@ -58,14 +57,14 @@ func NewComputeDisk(name, id, diskType string, zones []string, image, snapshot s
 		}
 
 	case size <= 0:
-		s, err := img.GetImageDiskSize(image)
+		s, err := details.ImageSize(image)
 		if err != nil {
 			return nil, err
 		}
 		disk.SizeGiB = s
 
 	default:
-		s, err := img.GetImageDiskSize(image)
+		s, err := details.ImageSize(image)
 		if err != nil {
 			return nil, err
 		}
@@ -101,6 +100,8 @@ func (disk *ComputeDisk) completePricingInfo(catalog *billing.ComputeEngineCatal
 		return int64(tr.StartUsageAmount) <= disk.SizeGiB
 	}
 	disk.UnitPricing.fillMonthlyBase(filtered[0], correctTieredRate)
+
+	// If SKU memory unit is not supported, then return error.
 	if _, err := conv.Convert("gib", 0, disk.UnitPricing.UsageUnit); err != nil {
 		return fmt.Errorf("memory unit of SKU is not supported")
 	}
@@ -288,10 +289,10 @@ func (state *ComputeDiskState) ToTable(colorful bool) (*table.Table, error) {
 }
 
 func (state *ComputeDiskState) getSummaryRow() (table.Row, error) {
-	return nil, nil
+	return nil, fmt.Errorf("disk row not supported yet")
 }
 
 // ToStateOut returns a json output.
 func (state *ComputeDiskState) ToStateOut() (JSONOut, error) {
-	return nil, nil
+	return nil, fmt.Errorf("disk json not supported yet")
 }

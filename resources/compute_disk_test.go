@@ -5,9 +5,16 @@ import (
 	"math"
 	"reflect"
 	"testing"
+
+	cd "github.com/googleinterns/terraform-cost-estimation/resources/classdetail"
 )
 
 func TestNewComputeDisk(t *testing.T) {
+	details, err := cd.NewResourceDetail()
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+
 	tests := []struct {
 		name     string
 		diskName string
@@ -51,11 +58,8 @@ func TestNewComputeDisk(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			d, err := NewComputeDisk(test.diskName, test.id, test.diskType, test.zones, test.image, test.snapshot, test.size)
-			// Test fails if errors have different values, messages or the return values are different.
-			f1 := (err == nil && test.err != nil) || (err != nil && test.err == nil)
-			f2 := err != nil && test.err != nil && err.Error() != test.err.Error()
-			if f1 || f2 || !reflect.DeepEqual(d, test.disk) {
+			d, err := NewComputeDisk(details, test.diskName, test.id, test.diskType, test.zones, test.image, test.snapshot, test.size)
+			if !reflect.DeepEqual(err, test.err) || !reflect.DeepEqual(d, test.disk) {
 				t.Errorf("NewComputeDisk(%s, %s, %s, %s, %s, %s, %d) = %+v, %+v; want %+v, %+v",
 					test.diskName, test.id, test.diskType, test.zones, test.image, test.snapshot, test.size, d, err, test.disk, test.err)
 			}
@@ -158,7 +162,7 @@ func TestDiskStateCostChanges(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			costPerUnit1, costPerUnit2, units1, units2, delta := test.state.costChanges()
-			// Test fails if error or return values are different.
+			// Test fails if return values are different.
 			f1 := costPerUnit1 != test.costPerUnit1 || costPerUnit2 != test.costPerUnit2
 			f2 := units1 != test.units1 || units2 != test.units2 || delta != test.delta
 			if f1 || f2 {

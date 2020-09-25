@@ -3,11 +3,13 @@ package jsdecode
 import (
 	"encoding/json"
 	"fmt"
-	resources "github.com/googleinterns/terraform-cost-estimation/resources"
-	tfjson "github.com/hashicorp/terraform-json"
 	"io"
 	"io/ioutil"
 	"log"
+
+	resources "github.com/googleinterns/terraform-cost-estimation/resources"
+	cd "github.com/googleinterns/terraform-cost-estimation/resources/classdetail"
+	tfjson "github.com/hashicorp/terraform-json"
 )
 
 // ComputeInstanceType and ComputeDiskType are the supported by this package types of ResourceChange and Resource.
@@ -60,7 +62,7 @@ func ExtractPlanStruct(reader io.Reader) (*tfjson.Plan, error) {
 }
 
 // toComputeInstance extracts ComputeInstance from the interface that contains information about the resource.
-func toComputeInstance(resource interface{}) (*resources.ComputeInstance, error) {
+func toComputeInstance(details *cd.ResourceDetail, resource interface{}) (*resources.ComputeInstance, error) {
 	if resource == nil {
 		return nil, nil
 	}
@@ -78,11 +80,11 @@ func toComputeInstance(resource interface{}) (*resources.ComputeInstance, error)
 	if len(r.Scheduling) >= 1 && r.Scheduling[0].IsPreemptible {
 		usageType = "Preemptible"
 	}
-	return resources.NewComputeInstance(r.InstanceID, r.Name, r.MachineType, r.Zone, usageType)
+	return resources.NewComputeInstance(details, r.InstanceID, r.Name, r.MachineType, r.Zone, usageType)
 }
 
 // toComputeDisk extracts ComputeDisk from the interface that contains information about the resource.
-func toComputeDisk(resource interface{}) (*resources.ComputeDisk, error) {
+func toComputeDisk(details *cd.ResourceDetail, resource interface{}) (*resources.ComputeDisk, error) {
 	if resource == nil {
 		return nil, nil
 	}
@@ -97,16 +99,16 @@ func toComputeDisk(resource interface{}) (*resources.ComputeDisk, error) {
 	}
 	var zones []string
 	zones = append(zones, r.Zone)
-	return resources.NewComputeDisk(r.Name, r.InstanceID, r.DiskType, zones, r.Image, r.Snapshot, r.SizeGiB)
+	return resources.NewComputeDisk(details, r.Name, r.InstanceID, r.DiskType, zones, r.Image, r.Snapshot, r.SizeGiB)
 }
 
 // toInstanceState returns the pointer to the struct with states of the certain resource of ComputeInstance type.
-func toInstanceState(change *tfjson.Change) (*resources.ComputeInstanceState, error) {
-	before, err := toComputeInstance(change.Before)
+func toInstanceState(details *cd.ResourceDetail, change *tfjson.Change) (*resources.ComputeInstanceState, error) {
+	before, err := toComputeInstance(details, change.Before)
 	if err != nil {
 		return nil, err
 	}
-	after, err := toComputeInstance(change.After)
+	after, err := toComputeInstance(details, change.After)
 	if err != nil {
 		return nil, err
 	}
@@ -127,12 +129,12 @@ func toInstanceState(change *tfjson.Change) (*resources.ComputeInstanceState, er
 
 // toDiskState returns the pointer to the struct with states of the certain
 // resource of ComputeInstance type.
-func toDiskState(change *tfjson.Change) (*resources.ComputeDiskState, error) {
-	before, err := toComputeDisk(change.Before)
+func toDiskState(details *cd.ResourceDetail, change *tfjson.Change) (*resources.ComputeDiskState, error) {
+	before, err := toComputeDisk(details, change.Before)
 	if err != nil {
 		return nil, err
 	}
-	after, err := toComputeDisk(change.After)
+	after, err := toComputeDisk(details, change.After)
 	if err != nil {
 		return nil, err
 	}
@@ -172,16 +174,16 @@ func initAction(actions tfjson.Actions) (string, error) {
 }
 
 // GetResources extracts all resources of ComputeInstance and ComputeDisk type and their before and after states from plan file.
-func GetResources(plan *tfjson.Plan) []resources.ResourceState {
+func GetResources(details *cd.ResourceDetail, plan *tfjson.Plan) []resources.ResourceState {
 	var states []resources.ResourceState
 	var r resources.ResourceState
 	var err error
 	for _, resourceChange := range plan.ResourceChanges {
 		switch resourceChange.Type {
 		case ComputeInstanceType:
-			r, err = toInstanceState(resourceChange.Change)
+			r, err = toInstanceState(details, resourceChange.Change)
 		case ComputeDiskType:
-			r, err = toDiskState(resourceChange.Change)
+			r, err = toDiskState(details, resourceChange.Change)
 		default:
 			log.Printf("Unsupported resource type: %v", resourceChange.Type)
 		}
@@ -191,21 +193,6 @@ func GetResources(plan *tfjson.Plan) []resources.ResourceState {
 			states = append(states, r)
 		}
 		r, err = nil, nil
-	}
-	return states
-}
-
-// TODO when the ResourceState interface will support more methods including outputting,
-// delete this function.
-// GetInstances extracts all resources of ComputeInstance type and their before and after states from plan file.
-func GetInstances(plan *tfjson.Plan) []*resources.ComputeInstanceState {
-	var states []*resources.ComputeInstanceState
-	for _, resourceChange := range plan.ResourceChanges {
-		if resourceChange.Type == ComputeInstanceType {
-			if r, err := toInstanceState(resourceChange.Change); err == nil && r != nil {
-				states = append(states, r)
-			}
-		}
 	}
 	return states
 }

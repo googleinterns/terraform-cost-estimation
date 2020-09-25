@@ -18,7 +18,8 @@ type diskJSON struct {
 	ValidDiskSize     string
 }
 
-type disk struct {
+// Disk holds information about disk size depending on type and zone/region.
+type Disk struct {
 	Type           string
 	Region         string
 	Zone           string
@@ -27,11 +28,8 @@ type disk struct {
 	MaxSize        int64
 }
 
-// Variable diskTypes stores disk type information first by disk type, then by zone/region.
-var diskTypes map[string]map[string]*disk
-
-func convertToDisk(d diskJSON) (*disk, error) {
-	final := &disk{Type: d.Name, Region: d.Region, Zone: d.Zone}
+func convertToDisk(d diskJSON) (*Disk, error) {
+	final := &Disk{Type: d.Name, Region: d.Region, Zone: d.Zone}
 
 	def, err := strconv.ParseInt(d.DefaultDiskSizeGb, 10, 64)
 	if err != nil {
@@ -60,26 +58,30 @@ func convertToDisk(d diskJSON) (*disk, error) {
 	return final, nil
 }
 
-func readDiskInfo() error {
+// ReadDiskInfo reads the JSON file with disk information.
+func ReadDiskInfo() (map[string]map[string]*Disk, error) {
+	var diskTypes map[string]map[string]*Disk
+
+	// Get json file path relative to this directory.
 	_, callerFile, _, _ := runtime.Caller(0)
 	inputPath := filepath.Dir(callerFile) + "/compute_disk_types.json"
 
 	data, err := ioutil.ReadFile(inputPath)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	var jsonMap []diskJSON
 	json.Unmarshal(data, &jsonMap)
 
-	diskTypes = map[string]map[string]*disk{}
+	diskTypes = map[string]map[string]*Disk{}
 	for _, d := range jsonMap {
 		d2, err := convertToDisk(d)
 		if err != nil {
-			return err
+			return nil, err
 		}
 		if diskTypes[d.Name] == nil {
-			diskTypes[d.Name] = map[string]*disk{}
+			diskTypes[d.Name] = map[string]*Disk{}
 		}
 
 		if d.Zone != "" {
@@ -89,16 +91,14 @@ func readDiskInfo() error {
 		}
 	}
 
-	return nil
+	return diskTypes, nil
 }
 
 // Details returns default, minimum and maximum size (in GiB) of a disk type running in the specific zone or region.
 // If the combination of disk type and location is invalid, an error is returned.
-func Details(diskType, zone, region string) (int64, int64, int64, error) {
+func Details(diskTypes map[string]map[string]*Disk, diskType, zone, region string) (int64, int64, int64, error) {
 	if diskTypes == nil {
-		if err := readDiskInfo(); err != nil {
-			return 0, 0, 0, err
-		}
+		return 0, 0, 0, fmt.Errorf("disk details are not initialized")
 	}
 
 	d1, ok := diskTypes[diskType]

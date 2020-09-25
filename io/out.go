@@ -15,7 +15,6 @@ import (
 // GetOutputWriter returns the output os.File (stdout/file) for a given output path or an error.
 func GetOutputWriter(outputPath string) (*os.File, error) {
 	if outputPath == "stdout" {
-		fmt.Println("-----------------------------------------------------------------------------------------------------------------------------")
 		return os.Stdout, nil
 	}
 
@@ -28,11 +27,8 @@ func GetOutputWriter(outputPath string) (*os.File, error) {
 }
 
 // FinishOutput closes the file when the output is done and returns an error where is the case.
-// If the output file is Stdout, thenit is not closed and 2 newlines are printed.
+// If the output file is Stdout, thenit is not closed and 2 newlines are printed so that different plan file outputs can be separated.
 func FinishOutput(outputFile *os.File) error {
-	if outputFile == nil {
-		return nil
-	}
 	if outputFile != os.Stdout {
 		return outputFile.Close()
 	}
@@ -41,8 +37,9 @@ func FinishOutput(outputFile *os.File) error {
 	return nil
 }
 
-// GenerateWebPage generates a webpage file with the pricing information of the specified resources.
+// GenerateWebPage generates a html output with the pricing information of the specified resources.
 func GenerateWebPage(f *os.File, res []resources.ResourceState) error {
+	// Get path of template relative to this file.
 	_, callerFile, _, _ := runtime.Caller(0)
 	t, err := template.ParseFiles(filepath.Dir(callerFile) + "/web/web_template.gohtml")
 	if err != nil {

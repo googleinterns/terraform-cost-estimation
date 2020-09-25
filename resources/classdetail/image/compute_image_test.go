@@ -1,11 +1,17 @@
-package classdetail
+package image
 
 import (
 	"fmt"
+	"reflect"
 	"testing"
 )
 
 func TestGetImageDiskSize(t *testing.T) {
+	imgInfo, err := ReadComputeImagesInfo()
+	if err != nil {
+		t.Fatal("could not read image information")
+	}
+
 	tests := []struct {
 		name      string
 		imgFormat string
@@ -28,13 +34,8 @@ func TestGetImageDiskSize(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			size, err := GetImageDiskSize(test.imgFormat)
-
 			// Test fails if errors have different values, messages or the return value differs from the expected one.
-			f1 := (test.err == nil && err != nil) || (test.err != nil && err == nil)
-			f2 := test.err != nil && err != nil && test.err.Error() != err.Error()
-			f3 := size != test.size
-			if f1 || f2 || f3 {
+			if size, err := GetImageDiskSize(imgInfo, test.imgFormat); !reflect.DeepEqual(err, test.err) || size != test.size {
 				t.Errorf("GetImageDiskSize(%s)= %+v, %+v ; want %+v %+v",
 					test.imgFormat, size, err, test.size, test.err)
 			}
