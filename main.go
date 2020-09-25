@@ -86,7 +86,7 @@ func main() {
 
 		switch {
 		case *format == "json":
-			if err = res.GenerateJsonOut(fout, finalResources); err != nil {
+			if err = io.GenerateJsonOut(fout, finalResources); err != nil {
 				log.Printf("Error: %v", err)
 			}
 		case *format == "html":
@@ -94,7 +94,7 @@ func main() {
 				log.Printf("Error: %v", err)
 			}
 		case *format == "txt":
-			res.OutputPricing(finalResources, fout)
+			io.OutputPricing(finalResources, fout)
 		default:
 		}
 

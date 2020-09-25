@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	billing "github.com/googleinterns/terraform-cost-estimation/billing"
+	"github.com/googleinterns/terraform-cost-estimation/io/js"
 	"github.com/googleinterns/terraform-cost-estimation/io/web"
 	conv "github.com/googleinterns/terraform-cost-estimation/memconverter"
 	cd "github.com/googleinterns/terraform-cost-estimation/resources/classdetail"
@@ -140,7 +141,7 @@ func (state *ComputeDiskState) CompletePricingInfo(catalog *billing.ComputeEngin
 	return nil
 }
 
-func (state *ComputeDiskState) getDelta() float64 {
+func (state *ComputeDiskState) GetDelta() float64 {
 	var t1, t2 float64
 	if state.Before != nil {
 		t1 = state.Before.totalPrice()
@@ -231,7 +232,7 @@ func (state *ComputeDiskState) GetWebTables(stateNum int) *web.PricingTypeTables
 }
 
 // ToTable creates a table.Table and fills it with the pricing information from ComputeDiskState.
-func (state *ComputeDiskState) ToTable(colorful bool) (*table.Table, error) {
+func (state *ComputeDiskState) ToTable() (*table.Table, error) {
 	name, id, action, diskType, zones, image, snapshot := state.generalChanges()
 	t := &table.Table{}
 	autoMerge := table.RowConfig{AutoMerge: true}
@@ -271,28 +272,70 @@ func (state *ComputeDiskState) ToTable(colorful bool) (*table.Table, error) {
 	} else if delta > 0 {
 		change = "Up (↑)"
 	}
-	if colorful {
-		t.SetColumnConfigs([]table.ColumnConfig{
-			{Number: 1, AutoMerge: true},
-			{Number: 5, AutoMerge: true, ColorsFooter: text.Colors{color}},
-		})
-	} else {
-		t.SetColumnConfigs([]table.ColumnConfig{
-			{Number: 1, AutoMerge: true},
-			{Number: 5, AutoMerge: true},
-		})
-	}
+	t.SetColumnConfigs([]table.ColumnConfig{
+		{Number: 1, AutoMerge: true},
+		{Number: 5, AutoMerge: true, ColorsFooter: text.Colors{color}},
+	})
 	t.AppendFooter(table.Row{"DELTA", change, f1(delta)})
 	t.SetStyle(table.StyleLight)
 	t.Style().Options.SeparateRows = true
 	return t, nil
 }
 
-func (state *ComputeDiskState) getSummaryRow() (table.Row, error) {
-	return nil, fmt.Errorf("disk row not supported yet")
+// GetSummaryRow() returns the row for SummaryTable to be outputted about the certain state.
+func (state *ComputeDiskState) GetSummaryRow() (table.Row, error) {
+	_, r, err := syncDisks(state.Before, state.After)
+	if err != nil {
+		return table.Row{}, err
+	}
+	return table.Row{r.Name, r.ID, r.Type, state.Action, state.GetDelta()}, nil
 }
 
 // ToStateOut returns a json output.
-func (state *ComputeDiskState) ToStateOut() (JSONOut, error) {
-	return nil, fmt.Errorf("disk json not supported yet")
+func (state *ComputeDiskState) ToStateOut() (js.JSONOut, error) {
+	before, after, err := syncDisks(state.Before, state.After)
+	if err != nil {
+		return nil, err
+	}
+	out := &js.ComputeDiskStateOut{
+		Name:     js.Change{before.Name, after.Name},
+		ID:       js.Change{before.ID, after.ID},
+		Zones:    js.Change{fmt.Sprint(before.Zones), fmt.Sprint(after.Zones)},
+		DiskType: js.Change{before.Type, after.Type},
+		Action:   state.Action,
+	}
+	costPerUnit1, costPerUnit2, units1, units2, delta := state.costChanges()
+	pricing := js.DiskStatePricing{
+		Before: &js.DiskPricing{
+			Disk: js.Pricing{
+				UnitCost:  fmt.Sprintf("%.6f", costPerUnit1),
+				NumUnits:  fmt.Sprintf("%d", units1),
+				TotalCost: fmt.Sprintf("%.6f", costPerUnit1*float64(units1)),
+			},
+		},
+		After: &js.DiskPricing{
+			Disk: js.Pricing{
+				UnitCost:  fmt.Sprintf("%.6f", costPerUnit2),
+				NumUnits:  fmt.Sprintf("%d", units2),
+				TotalCost: fmt.Sprintf("%.6f", costPerUnit2*float64(units2)),
+			},
+		},
+		Delta: delta,
+	}
+	out.Pricing = pricing
+	return out, nil
+}
+
+// syncDisks replace nils in state's before and after to be able to use them.
+func syncDisks(before, after *ComputeDisk) (*ComputeDisk, *ComputeDisk, error) {
+	if after == nil && before == nil {
+		return nil, nil, fmt.Errorf("After and Before can't be nil at the same time.")
+	}
+	if after == nil {
+		return before, before, nil
+	}
+	if before == nil {
+		return after, after, nil
+	}
+	return before, after, nil
 }

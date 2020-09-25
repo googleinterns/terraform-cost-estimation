@@ -5,9 +5,12 @@ import (
 	"strings"
 
 	billing "github.com/googleinterns/terraform-cost-estimation/billing"
+	"github.com/googleinterns/terraform-cost-estimation/io/js"
 	"github.com/googleinterns/terraform-cost-estimation/io/web"
 	conv "github.com/googleinterns/terraform-cost-estimation/memconverter"
 	cd "github.com/googleinterns/terraform-cost-estimation/resources/classdetail"
+	"github.com/jedib0t/go-pretty/v6/table"
+	"github.com/jedib0t/go-pretty/v6/text"
 	billingpb "google.golang.org/genproto/googleapis/cloud/billing/v1"
 )
 
@@ -204,7 +207,7 @@ func (state *ComputeInstanceState) getDeltas() (DCore, DMem float64) {
 	return core2 - core1, mem2 - mem1
 }
 
-func (state *ComputeInstanceState) getDelta() float64 {
+func (state *ComputeInstanceState) GetDelta() float64 {
 	dcore, dmem := state.getDeltas()
 	return dcore + dmem
 }
@@ -289,4 +292,121 @@ func (state *ComputeInstanceState) GetWebTables(stateNum int) *web.PricingTypeTa
 		memCostPerUnit1*hourlyToYearly, memCostPerUnit2*hourlyToYearly, memUnits1, memUnits2)
 
 	return &web.PricingTypeTables{Hourly: h, Monthly: m, Yearly: y}
+}
+
+// ToTable creates a table.Table and fills it with the pricing information from ComputeInstanceState.
+func (state *ComputeInstanceState) ToTable() (*table.Table, error) {
+	before, after, err := syncInstances(state.Before, state.After)
+	if err != nil {
+		return nil, err
+	}
+
+	t := &table.Table{}
+	autoMerge := table.RowConfig{AutoMerge: true}
+	t.AppendRow(initRow("Name", before.Name, after.Name, false), autoMerge)
+	t.AppendRow(initRow("ID", before.ID, after.ID, true), autoMerge)
+	t.AppendRow(initRow("Zone", before.Zone, after.Zone, false), autoMerge)
+	t.AppendRow(initRow("Machine type", before.MachineType, after.MachineType, true), autoMerge)
+	t.AppendRow(initRow("Action", state.Action, state.Action, false), autoMerge)
+	h := "Pricing Information\n(USD/h)"
+	t.AppendRow(table.Row{h, h, h, h, h}, autoMerge)
+	core1, mem1, t1, err := getMemCoreInfo(state.Before)
+	if err != nil {
+		return nil, err
+	}
+	core2, mem2, t2, err := getMemCoreInfo(state.After)
+	if err != nil {
+		return nil, err
+	}
+	t1Str := fmt.Sprintf("%.6f", t1)
+	// Add " " in the end of string to avoid unwanted auto-merging in the table package.
+	t2Str := fmt.Sprintf("%.6f ", t2)
+	t.AppendRow(table.Row{" ", " ", "CPU", "RAM", "Total"}, autoMerge)
+	t.AppendRows([]table.Row{
+		{"Before", "Cost\nper\nunit", core1[0], mem1[0], t1Str},
+		{"Before", "Number\nof\nunits", core1[1] + " ", mem1[1] + " ", t1Str},
+		{"Before", "Units\ncost", core1[2], mem1[2], t1Str},
+		{"After", "Cost\nper\nunit", core2[0] + " ", mem2[0] + " ", t2Str},
+		{"After", "Number\nof\nunits", core2[1], mem2[1], t2Str},
+		{"After", "Units\ncost", core2[2] + " ", mem2[2] + " ", t2Str},
+	})
+
+	dCore, dMem := state.getDeltas()
+
+	color := text.FgGreen
+	change := "No change"
+	if dTotal := dCore + dMem; dTotal < 0 {
+		change = "Down (↓)"
+		color = text.FgRed
+	} else if dTotal > 0 {
+		change = "Up (↑)"
+	}
+	t.SetColumnConfigs([]table.ColumnConfig{
+		{Number: 1, AutoMerge: true},
+		{Number: 5, AutoMerge: true, ColorsFooter: text.Colors{color}},
+	})
+	t.AppendFooter(table.Row{"DELTA", change, dCore, dMem, dCore + dMem})
+	t.SetStyle(table.StyleLight)
+	t.Style().Options.SeparateRows = true
+	return t, nil
+}
+
+// GetSummaryRow() returns the row for SummaryTable to be outputted about the certain state.
+func (state *ComputeInstanceState) GetSummaryRow() (table.Row, error) {
+	dCore, dMem := state.getDeltas()
+	_, r, err := syncInstances(state.Before, state.After)
+	if err != nil {
+		return table.Row{}, err
+	}
+	return table.Row{r.Name, r.ID, r.MachineType, state.Action, fmt.Sprintf("%.6f", dCore+dMem)}, nil
+}
+
+// ToStateOut creates ComputeInstanceStateOut from state struct to render output in json format.
+func (state *ComputeInstanceState) ToStateOut() (js.JSONOut, error) {
+	before, after, err := syncInstances(state.Before, state.After)
+	if err != nil {
+		return nil, err
+	}
+	out := &js.ComputeInstanceStateOut{
+		Name:        js.Change{before.Name, after.Name},
+		InstanceID:  js.Change{before.ID, after.ID},
+		Zone:        js.Change{before.Zone, after.Zone},
+		MachineType: js.Change{before.MachineType, after.MachineType},
+		CpuType:     js.Change{before.Cores.Type, after.Cores.Type},
+		RamType:     js.Change{before.Memory.Type, after.Memory.Type},
+		Action:      state.Action,
+	}
+
+	dCore, dMem := state.getDeltas()
+	beforeOut, err := completeInstanceOut(state.Before)
+	if err != nil {
+		return nil, err
+	}
+	afterOut, err := completeInstanceOut(state.After)
+	if err != nil {
+		return nil, err
+	}
+	pricing := js.InstanceStatePricing{
+		Before:   beforeOut,
+		After:    afterOut,
+		DeltaCpu: dCore,
+		DeltaRam: dMem,
+		Delta:    dCore + dMem,
+	}
+	out.Pricing = pricing
+	return out, nil
+}
+
+// syncInstances replace nils in state's before and after to be able to use them.
+func syncInstances(before, after *ComputeInstance) (*ComputeInstance, *ComputeInstance, error) {
+	if after == nil && before == nil {
+		return nil, nil, fmt.Errorf("After and Before can't be nil at the same time.")
+	}
+	if after == nil {
+		return before, before, nil
+	}
+	if before == nil {
+		return after, after, nil
+	}
+	return before, after, nil
 }
