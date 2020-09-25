@@ -12,9 +12,6 @@ import (
 	"strings"
 )
 
-// header is used to hardcode table output
-const header = "Pricing Information\n(USD/h)"
-
 // ToTable creates a table.Table and fills it with the pricing information from ComputeInstanceState.
 func (state *ComputeInstanceState) ToTable() (*table.Table, error) {
 	before, after, err := syncInstances(state.Before, state.After)
@@ -29,8 +26,8 @@ func (state *ComputeInstanceState) ToTable() (*table.Table, error) {
 	t.AppendRow(initRow("Zone", before.Zone, after.Zone, false), autoMerge)
 	t.AppendRow(initRow("Machine type", before.MachineType, after.MachineType, true), autoMerge)
 	t.AppendRow(initRow("Action", state.Action, state.Action, false), autoMerge)
-
-	t.AppendRow(table.Row{header, header, header, header, header}, autoMerge)
+	h := "Pricing Information\n(USD/h)"
+	t.AppendRow(table.Row{h, h, h, h, h}, autoMerge)
 	core1, mem1, t1, err := getMemCoreInfo(state.Before)
 	if err != nil {
 		return nil, err
@@ -82,8 +79,8 @@ func GetSummaryTable(states []*ComputeInstanceState) *table.Table {
 
 	dTotal, _, _ := getTotalDelta(states)
 	t.SetTitle(fmt.Sprintf("The total cost change for all Compute Instances is %.6f USD/hour.", dTotal))
-
-	t.AppendRow(table.Row{header, header, header, header, header}, autoMerge)
+	h := "Pricing Information\n(USD/h)"
+	t.AppendRow(table.Row{h, h, h, h, h}, autoMerge)
 	t.AppendRow(table.Row{"Instance name", "Instance ID", "Machine type", "Action", "Delta"})
 	for _, s := range states {
 		if row, err := getSummaryRow(s); err == nil {
@@ -205,7 +202,65 @@ func getSummaryRow(state *ComputeInstanceState) (table.Row, error) {
 	return table.Row{r.Name, r.ID, r.MachineType, state.Action, fmt.Sprintf("%.6f", dCore+dMem)}, nil
 }
 
-// Pricing contains the details of core and memory pricing information to be outputted.
+// JsonOutput contains relevant information resources and cost changes in a file.
+type JsonOutput struct {
+	Delta                   float64                    `json:"cost_change"`
+	PricingUnit             string                     `json:"pricing_unit"`
+	ComputeInstancesPricing []*ComputeInstanceStateOut `json:"instances_pricing_info"`
+	ComputeDisksPricing     []*ComputeDiskStateOut     `json:"disks_pricing_info"`
+}
+
+// ComputeInstanceStateOut contains ComputeInstanceState information to be outputted.
+type ComputeInstanceStateOut struct {
+	Name        Change               `json:"name"`
+	Instance_ID Change               `json:"instance_id"`
+	Zone        Change               `json:"zone"`
+	MachineType Change               `json:"machine_type"`
+	CpuType     Change               `json:"cpu_type"`
+	RamType     Change               `json:"ram_type"`
+	Action      string               `json:"action"`
+	Pricing     InstanceStatePricing `json:"pricing_info"`
+}
+
+// ComputeDiskStateOut contains ComputeDiskState information to be outputted.
+type ComputeDiskStateOut struct {
+	Name        Change           `json:"name"`
+	Instance_ID Change           `json:"instance_id"`
+	Zones       Change           `json:"zones"`
+	DiskType    Change           `json:"disk_type"`
+	Action      string           `json:"action"`
+	Pricing     DiskStatePricing `json:"pricing_info"`
+}
+
+// InstanceStatePricing contains ComputeInstanceState pricing info to be outputted.
+type InstanceStatePricing struct {
+	Before   *InstancePricing `json:"before"`
+	After    *InstancePricing `json:"after"`
+	DeltaCpu float64          `json:"cpu_cost_change"`
+	DeltaRam float64          `json:"ram_cost_change"`
+	Delta    float64          `json:"cost_change"`
+}
+
+// DiskStatePricing contains ComputeDiskState pricing info to be outputted.
+type DiskStatePricing struct {
+	Before *DiskPricing `json:"before"`
+	After  *DiskPricing `json:"after"`
+	Delta  float64      `json:"cost_change"`
+}
+
+// InstancePricing contains ComputeInstance pricing info to be outputted.
+type InstancePricing struct {
+	Cpu       Pricing `json:"cpu"`
+	Ram       Pricing `json:"ram"`
+	TotalCost float64 `json:"total_cost"`
+}
+
+// DiskPricing contains ComputeDisk pricing info to be outputted.
+type DiskPricing struct {
+	Disk Pricing `json:"disk"`
+}
+
+// Pricing contains the pricing details about a certain  component.
 type Pricing struct {
 	//if the cost of unit is unknown we use string "-"
 	UnitCost  string `json:"cost_per_unit"`
@@ -213,48 +268,13 @@ type Pricing struct {
 	TotalCost string `json:"cost_of_units"`
 }
 
-// InstancePricingOut contains ComputeInstance pricing information to be outputted.
-type InstancePricingOut struct {
-	Cpu       Pricing `json:"cpu"`
-	Ram       Pricing `json:"ram"`
-	TotalCost float64 `json:"total_cost"`
-}
-
-// PricingInfoOut contains ComputeInstanceState pricing information to be outputted.
-type PricingInfoOut struct {
-	Before   *InstancePricingOut `json:"before"`
-	After    *InstancePricingOut `json:"after"`
-	DeltaCpu float64             `json:"cpu_cost_change"`
-	DeltaRam float64             `json:"ram_cost_change"`
-	Delta    float64             `json:"cost_change"`
-}
-
-// Change contains before and after value of the field in ComputeInstanceState.
+// Change contains before and after value of the certain field.
 type Change struct {
 	Before string `json:"before"`
 	After  string `json:"after"`
 }
 
-// ComputeInstanceStateOut contains ComputeInstanceState information to be outputted.
-type ComputeInstanceStateOut struct {
-	Name        Change         `json:"name"`
-	Instance_ID Change         `json:"instance_id"`
-	Zone        Change         `json:"zone"`
-	MachineType Change         `json:"machine_type"`
-	CpuType     Change         `json:"cpu_type"`
-	RamType     Change         `json:"ram_type"`
-	Action      string         `json:"action"`
-	Pricing     PricingInfoOut `json:"pricing_info"`
-}
-
-// JsonOutput contains relevant information resources and cost changes in a file.
-type JsonOutput struct {
-	Delta                   float64                    `json:"cost_change"`
-	PricingUnit             string                     `json:"pricing_unit"`
-	ComputeInstancesPricing []*ComputeInstanceStateOut `json:"resources_pricing_info"`
-}
-
-// ToStateOut extracts ComputeInstanceStateOut from state struct to render output in json format.
+// ToStateOut creates ComputeInstanceStateOut from state struct to render output in json format.
 func (state *ComputeInstanceState) ToStateOut() (*ComputeInstanceStateOut, error) {
 	before, after, err := syncInstances(state.Before, state.After)
 	if err != nil {
@@ -282,7 +302,7 @@ func (state *ComputeInstanceState) ToStateOut() (*ComputeInstanceStateOut, error
 	if err != nil {
 		return nil, err
 	}
-	pricing := PricingInfoOut{
+	pricing := InstanceStatePricing{
 		Before:   beforeOut,
 		After:    afterOut,
 		DeltaCpu: dCore,
@@ -331,13 +351,13 @@ func GenerateJsonOut(outPath string, res []*ComputeInstanceState) error {
 	return nil
 }
 
-func completeResourceOut(r *ComputeInstance) (*InstancePricingOut, error) {
+func completeResourceOut(r *ComputeInstance) (*InstancePricing, error) {
 	core, mem, t, err := getMemCoreInfo(r)
 	if err != nil {
 		return nil, err
 	}
 
-	rOut := &InstancePricingOut{
+	rOut := &InstancePricing{
 		Cpu: Pricing{
 			UnitCost:  core[0],
 			NumUnits:  core[1],
@@ -352,3 +372,4 @@ func completeResourceOut(r *ComputeInstance) (*InstancePricingOut, error) {
 	}
 	return rOut, nil
 }
+ 

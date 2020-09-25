@@ -63,6 +63,8 @@ func main() {
 		}
 
 		resources := jsdecode.GetResources(plan)
+		// TODO json and table outputs supports only Compute Instances, delete it in future.
+		instances := jsdecode.GetInstances(plan)
 		outputName := outputs[minInt(i, len(outputs)-1)]
 
 		var fout *os.File
@@ -79,9 +81,13 @@ func main() {
 				continue
 			}
 		}
+		// TODO delete, when the ResourceState will support all output formats.
+		for _, i := range instances {
+			i.CompletePricingInfo(catalog)
+		}
 
 		if *format == "json" && outputName != "stdout" {
-			if err = res.GenerateJsonOut(outputName, resources); err != nil {
+			if err = res.GenerateJsonOut(outputName, instances); err != nil {
 				log.Printf("Error: %v", err)
 			}
 		}
@@ -92,7 +98,7 @@ func main() {
 			}
 		}
 
-		res.OutputPricing(resources, fout)
+		res.OutputPricing(instances, fout)
 
 		if err = io.FinishOutput(fout); err != nil {
 			log.Fatalf("Error: %v", err)

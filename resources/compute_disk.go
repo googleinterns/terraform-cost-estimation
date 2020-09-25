@@ -10,6 +10,8 @@ import (
 	conv "github.com/googleinterns/terraform-cost-estimation/memconverter"
 	dsk "github.com/googleinterns/terraform-cost-estimation/resources/classdetail/disk"
 	img "github.com/googleinterns/terraform-cost-estimation/resources/classdetail/image"
+	"github.com/jedib0t/go-pretty/v6/table"
+	"github.com/jedib0t/go-pretty/v6/text"
 	billingpb "google.golang.org/genproto/googleapis/cloud/billing/v1"
 )
 
@@ -213,4 +215,55 @@ func (state *ComputeDiskState) GetWebTables(stateNum int) *web.PricingTypeTables
 	y.AddComputeDiskPricing("year", costPerUnit1/hourlyToYearly, costPerUnit2/hourlyToYearly, units1, units2, delta/hourlyToYearly)
 
 	return &web.PricingTypeTables{Hourly: h, Monthly: m, Yearly: y}
+}
+
+// ToTable creates a table.Table and fills it with the pricing information from ComputeDiskState.
+func (state *ComputeDiskState) ToTable() (*table.Table, error) {
+	name, id, action, diskType, zones, image, snapshot := state.generalChanges()
+	t := &table.Table{}
+	autoMerge := table.RowConfig{AutoMerge: true}
+	// Add " " in the end of string to avoid unwanted auto-merging in the table package.
+	t.AppendRow(table.Row{"Name", name, name}, autoMerge)
+	t.AppendRow(table.Row{"ID", id + " ", id + " "}, autoMerge)
+	t.AppendRow(table.Row{"Zones", zones, zones}, autoMerge)
+	t.AppendRow(table.Row{"Disk type", diskType + " ", diskType + " "}, autoMerge)
+	t.AppendRow(table.Row{"Image", image, image}, autoMerge)
+	t.AppendRow(table.Row{"Snapshot", snapshot + " ", snapshot + " "}, autoMerge)
+	t.AppendRow(table.Row{"Action", action + " ", action + " "}, autoMerge)
+
+	header := "Pricing Information\n(USD/h)"
+	t.AppendRow(table.Row{header, header, header}, autoMerge)
+	t.AppendRow(table.Row{" ", " ", "Disk"}, autoMerge)
+
+	costPerUnit1, costPerUnit2, units1, units2, delta := state.costChanges()
+	f1 := func(x float64) string { return fmt.Sprintf("%.6f", x) }
+	f2 := func(x int64) string { return fmt.Sprintf("%d", x) }
+	total1 := f1(costPerUnit1 * float64(units1))
+	total2 := f1(costPerUnit2 * float64(units2))
+	// Add " " in the end of string to avoid unwanted auto-merging in the table package.
+	t.AppendRows([]table.Row{
+		{"Before", "Cost\nper\nunit", f1(costPerUnit1)},
+		{"Before", "Number\nof\nunits", f2(units1) + " "},
+		{"Before", "Cost\nof\nunits", total1},
+		{"After", "Cost\nper\nunit", f1(costPerUnit2) + " "},
+		{"After", "Number\nof\nunits", f2(units2)},
+		{"After", "Cost\nof\nunits", total2 + " "},
+	})
+
+	color := text.FgGreen
+	change := "No change"
+	if delta < 0 {
+		change = "Down (↓)"
+		color = text.FgRed
+	} else if delta > 0 {
+		change = "Up (↑)"
+	}
+	t.SetColumnConfigs([]table.ColumnConfig{
+		{Number: 1, AutoMerge: true},
+		{Number: 5, AutoMerge: true, ColorsFooter: text.Colors{color}},
+	})
+	t.AppendFooter(table.Row{"DELTA", change, f1(delta)})
+	t.SetStyle(table.StyleLight)
+	t.Style().Options.SeparateRows = true
+	return t, nil
 }
