@@ -1,14 +1,20 @@
-package classdetail
+package instance
 
 import (
 	"fmt"
 	"math"
+	"reflect"
 	"testing"
 )
 
 const epsilon = 1e-10
 
 func TestGetMachineDetails(t *testing.T) {
+	machineTypes, err := ReadMachineTypes()
+	if err != nil {
+		t.Fatal("could not read machine type information")
+	}
+
 	tests := []struct {
 		name        string
 		machineType string
@@ -36,12 +42,9 @@ func TestGetMachineDetails(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			c, m, e := GetMachineDetails(test.machineType)
-			// Test fails if the errors have different values, messages or the return values are different.
-			f1 := (e == nil && test.err != nil) || (e != nil && test.err == nil)
-			f2 := e != nil && test.err != nil && e.Error() != test.err.Error()
-			f3 := c != test.cores || math.Abs(m-test.mem) > epsilon
-			if f1 || f2 || f3 {
+			c, m, e := GetMachineDetails(machineTypes, test.machineType)
+			// Test fails if the errors or the return values are different.
+			if !reflect.DeepEqual(e, test.err) || c != test.cores || math.Abs(m-test.mem) > epsilon {
 				t.Errorf("GetMachineDetails(%s) = %+v, %+v, %+v; want %+v, %+v, %+v",
 					test.machineType, c, m, e, test.cores, test.mem, test.err)
 			}

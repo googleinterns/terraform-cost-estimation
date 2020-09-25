@@ -35,8 +35,7 @@ type ResourceState interface {
 	ToStateOut() (JSONOut, error)
 }
 
-// skuObject is the interface for SKU types (core, memory etc.)
-// that can be looked up in the billing catalog.
+// skuObject is the interface for CPU cores and RAM SKUs from the billing catalog.
 type skuObject interface {
 	isMatch(sku *billingpb.Sku) bool
 	completePricingInfo(skus []*billingpb.Sku) error

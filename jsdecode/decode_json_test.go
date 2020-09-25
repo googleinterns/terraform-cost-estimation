@@ -9,19 +9,25 @@ import (
 
 	"github.com/davecgh/go-spew/spew"
 	resources "github.com/googleinterns/terraform-cost-estimation/resources"
+	cd "github.com/googleinterns/terraform-cost-estimation/resources/classdetail"
 	tfjson "github.com/hashicorp/terraform-json"
 )
 
 func TesttoComputeInstance(t *testing.T) {
+	classDetails, err := cd.NewResourceDetail()
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+
 	res1, _ := readResource("../testdata/compute_instances/resource1.json")
 	res2, _ := readResource("../testdata/compute_instances/resource2.json")
 	res3, _ := readResource("../testdata/compute_instances/resource3.json")
 	res4, _ := readResource("../testdata/compute_instances/resource4.json")
 
-	out1, _ := resources.NewComputeInstance("", "test", "n1-standard-1", "us-central1-a", "OnDemand")
-	out2, _ := resources.NewComputeInstance("5889159656940809264", "test", "n1-standard-1", "us-central1-a", "Preemptible")
-	out3, _ := resources.NewComputeInstance("", "test-us-east1-a-1", "n1-standard-1", "us-east1-a", "OnDemand")
-	out4, _ := resources.NewComputeInstance("", "test-c2-standard-8", "c2-standard-8", "us-central1-a", "OnDemand")
+	out1, _ := resources.NewComputeInstance(classDetails, "", "test", "n1-standard-1", "us-central1-a", "OnDemand")
+	out2, _ := resources.NewComputeInstance(classDetails, "5889159656940809264", "test", "n1-standard-1", "us-central1-a", "Preemptible")
+	out3, _ := resources.NewComputeInstance(classDetails, "", "test-us-east1-a-1", "n1-standard-1", "us-east1-a", "OnDemand")
+	out4, _ := resources.NewComputeInstance(classDetails, "", "test-c2-standard-8", "c2-standard-8", "us-central1-a", "OnDemand")
 
 	tests := []struct {
 		in       interface{}
@@ -47,7 +53,7 @@ func TesttoComputeInstance(t *testing.T) {
 
 	for _, test := range tests {
 		var actual *resources.ComputeInstance
-		actual, err := toComputeInstance(test.in)
+		actual, err := toComputeInstance(classDetails, test.in)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -77,6 +83,11 @@ func readResource(filePath string) (interface{}, error) {
 }
 
 func TesttoInstanceState(t *testing.T) {
+	classDetails, err := cd.NewResourceDetail()
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+
 	f, err := os.Open("../testdata/new-compute-instance/tfplan.json")
 	if err != nil {
 		t.Fatal(err)
@@ -92,7 +103,7 @@ func TesttoInstanceState(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	after, _ := resources.NewComputeInstance("", "test", "n1-standard-1", "us-central1-a", "OnDemand")
+	after, _ := resources.NewComputeInstance(classDetails, "", "test", "n1-standard-1", "us-central1-a", "OnDemand")
 	expected := &resources.ComputeInstanceState{
 		Before: nil,
 		After:  after,
@@ -100,7 +111,7 @@ func TesttoInstanceState(t *testing.T) {
 	}
 
 	var actual *resources.ComputeInstanceState
-	actual, err = toInstanceState(plan.ResourceChanges[0].Change)
+	actual, err = toInstanceState(classDetails, plan.ResourceChanges[0].Change)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -112,6 +123,11 @@ func TesttoInstanceState(t *testing.T) {
 }
 
 func TestGetResources(t *testing.T) {
+	classDetails, err := cd.NewResourceDetail()
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+
 	f, err := os.Open("../testdata/modified-compute-instance/tfplan.json")
 	if err != nil {
 		t.Fatal(err)
@@ -124,8 +140,8 @@ func TestGetResources(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	before, _ := resources.NewComputeInstance("5889159656940809264", "test", "n1-standard-1", "us-central1-a", "OnDemand")
-	after, _ := resources.NewComputeInstance("5889159656940809264", "test", "n1-standard-2", "us-central1-a", "OnDemand")
+	before, _ := resources.NewComputeInstance(classDetails, "5889159656940809264", "test", "n1-standard-1", "us-central1-a", "OnDemand")
+	after, _ := resources.NewComputeInstance(classDetails, "5889159656940809264", "test", "n1-standard-2", "us-central1-a", "OnDemand")
 	expected := []resources.ResourceState{
 		&resources.ComputeInstanceState{
 			Before: before,
@@ -134,7 +150,7 @@ func TestGetResources(t *testing.T) {
 		},
 	}
 
-	actual := GetResources(plan)
+	actual := GetResources(classDetails, plan)
 	if !reflect.DeepEqual(expected, actual) {
 		t.Errorf("expected:\n\n%s\n\ngot:\n\n%s", spew.Sdump(expected), spew.Sdump(actual))
 	}

@@ -2,10 +2,16 @@ package disk
 
 import (
 	"fmt"
+	"reflect"
 	"testing"
 )
 
 func TestDetails(t *testing.T) {
+	diskTypes, err := ReadDiskInfo()
+	if err != nil {
+		t.Fatal("could not read disk information")
+	}
+
 	tests := []struct {
 		name     string
 		diskType string
@@ -28,12 +34,10 @@ func TestDetails(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			def, min, max, err := Details(test.diskType, test.zone, test.region)
-			// Test fails if the errors have different values, messages or the return values differ.
-			f1 := (test.err == nil && err != nil) || (test.err != nil && err == nil)
-			f2 := test.err != nil && err != nil && test.err.Error() != err.Error()
-			f3 := def != test.def || min != test.min || max != test.max
-			if f1 || f2 || f3 {
+
+			def, min, max, err := Details(diskTypes, test.diskType, test.zone, test.region)
+			// Test fails if the errors or the return values differ.
+			if !reflect.DeepEqual(err, test.err) || def != test.def || min != test.min || max != test.max {
 				t.Errorf("Details(%s, %s, %s) = %d, %d, %d, %+v ; want %d, %d, %d, %+v",
 					test.diskType, test.zone, test.region, def, min, max, err, test.def, test.min, test.max, test.err)
 			}

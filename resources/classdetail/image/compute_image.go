@@ -1,4 +1,4 @@
-package classdetail
+package image
 
 import (
 	"encoding/json"
@@ -17,40 +17,43 @@ type computeImage struct {
 	DiskSizeGib       int64
 }
 
-type imageByDate []computeImage
+// ImageInfo holds information about compute images.
+type ImageInfo struct {
+	imagesByFamily map[string][]computeImage
+	imagesDiskSize map[string]int64
+}
 
-var imagesByFamily map[string][]computeImage
-var imagesDiskSize map[string]int64
-
-func setComputeImagesInfo() error {
+// ReadComputeImagesInfo reads the JSON file with information about compute images.
+func ReadComputeImagesInfo() (*ImageInfo, error) {
+	imgInfo := &ImageInfo{}
+	// Get path of the json file relative to this directory.
 	_, callerFile, _, _ := runtime.Caller(0)
 	inputPath := filepath.Dir(callerFile) + "/compute_images.json"
 
 	data, err := ioutil.ReadFile(inputPath)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	var jsonMap []computeImage
 	json.Unmarshal(data, &jsonMap)
 
-	imagesByFamily = map[string][]computeImage{}
-	imagesDiskSize = map[string]int64{}
+	imgInfo.imagesByFamily = map[string][]computeImage{}
+	imgInfo.imagesDiskSize = map[string]int64{}
 	for _, img := range jsonMap {
-		if imagesByFamily[img.Family] == nil {
-			imagesByFamily[img.Family] = []computeImage{}
+		if imgInfo.imagesByFamily[img.Family] == nil {
+			imgInfo.imagesByFamily[img.Family] = []computeImage{}
 		}
-		imagesByFamily[img.Family] = append(imagesByFamily[img.Family], img)
-
-		imagesDiskSize[img.Image] = img.DiskSizeGib
+		imgInfo.imagesByFamily[img.Family] = append(imgInfo.imagesByFamily[img.Family], img)
+		imgInfo.imagesDiskSize[img.Image] = img.DiskSizeGib
 	}
 
-	for k := range imagesByFamily {
-		sort.SliceStable(imagesByFamily[k], func(i, j int) bool {
-			return imagesByFamily[k][i].CreationTimestamp > imagesByFamily[k][j].CreationTimestamp
+	for k := range imgInfo.imagesByFamily {
+		sort.SliceStable(imgInfo.imagesByFamily[k], func(i, j int) bool {
+			return imgInfo.imagesByFamily[k][i].CreationTimestamp > imgInfo.imagesByFamily[k][j].CreationTimestamp
 		})
 	}
-	return nil
+	return imgInfo, nil
 }
 
 func concreteImageVal(s string) string {
@@ -62,22 +65,21 @@ func concreteImageVal(s string) string {
 }
 
 // GetImageDiskSize return the disk size for an image specified in any format allowed in google_compute_image resource.
-func GetImageDiskSize(img string) (int64, error) {
-	if imagesByFamily == nil || imagesDiskSize == nil {
-		err := setComputeImagesInfo()
-		if err != nil {
-			return 0, err
-		}
+func GetImageDiskSize(imgInfo *ImageInfo, img string) (int64, error) {
+	if imgInfo == nil {
+		return 0, fmt.Errorf("image information was not initialized")
 	}
 
 	img = concreteImageVal(img)
 
-	if l, ok := imagesByFamily[img]; ok {
+	// Check if it is family and return size if so.
+	if l, ok := imgInfo.imagesByFamily[img]; ok {
 		latest := l[0].Image
-		return imagesDiskSize[latest], nil
+		return imgInfo.imagesDiskSize[latest], nil
 	}
 
-	size, ok := imagesDiskSize[img]
+	// Check it is image type.
+	size, ok := imgInfo.imagesDiskSize[img]
 	if !ok {
 		return 0, fmt.Errorf("invalid image specification '" + img + "'")
 	}

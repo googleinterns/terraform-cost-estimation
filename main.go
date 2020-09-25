@@ -11,6 +11,7 @@ import (
 	"github.com/googleinterns/terraform-cost-estimation/io"
 	"github.com/googleinterns/terraform-cost-estimation/jsdecode"
 	res "github.com/googleinterns/terraform-cost-estimation/resources"
+	cd "github.com/googleinterns/terraform-cost-estimation/resources/classdetail"
 )
 
 var (
@@ -55,13 +56,18 @@ func main() {
 		log.Fatalf("Error: %v", err)
 	}
 
+	classDetails, err := cd.NewResourceDetail()
+	if err != nil {
+		log.Fatalf("Error: %+v", err)
+	}
+
 	for i, inputName := range flag.Args() {
 		plan, err := io.GetPlan(inputName)
 		if err != nil {
 			log.Fatalf("Error: %v", err)
 		}
 
-		resources := jsdecode.GetResources(plan)
+		resources := jsdecode.GetResources(classDetails, plan)
 
 		finalResources := []res.ResourceState{}
 		for _, r := range resources {

@@ -7,7 +7,7 @@ import (
 	billing "github.com/googleinterns/terraform-cost-estimation/billing"
 	"github.com/googleinterns/terraform-cost-estimation/io/web"
 	conv "github.com/googleinterns/terraform-cost-estimation/memconverter"
-	cd "github.com/googleinterns/terraform-cost-estimation/resources/classdetail/instance"
+	cd "github.com/googleinterns/terraform-cost-estimation/resources/classdetail"
 	billingpb "google.golang.org/genproto/googleapis/cloud/billing/v1"
 )
 
@@ -68,6 +68,7 @@ func (mem *MemoryInfo) completePricingInfo(skus []*billingpb.Sku) error {
 	}
 
 	mem.UnitPricing.fillHourlyBase(sku, func(tr *billingpb.PricingExpression_TierRate) bool { return true })
+	// If the SKU memory unit is not supported, return error.
 	if _, err := conv.Convert("gib", 0, mem.UnitPricing.UsageUnit); err != nil {
 		return fmt.Errorf("memory unit of SKU is not supported")
 	}
@@ -94,16 +95,9 @@ type ComputeInstance struct {
 	Cores       CoreInfo
 }
 
-// NewComputeInstance builds a compute instance with the specified fields
-// and fills the other resource details.
-// Returns a pointer to a ComputeInstance structure.
-func NewComputeInstance(id, name, machineType, zone, usageType string) (*ComputeInstance, error) {
-	instance := new(ComputeInstance)
-
-	instance.ID = id
-	instance.Name = name
-	instance.MachineType = machineType
-	instance.Zone = zone
+// NewComputeInstance builds a compute instance with the specified fields nd fills the other resource details.
+func NewComputeInstance(details *cd.ResourceDetail, id, name, machineType, zone, usageType string) (*ComputeInstance, error) {
+	instance := &ComputeInstance{ID: id, Name: name, MachineType: machineType, Zone: zone, UsageType: usageType}
 
 	i := strings.LastIndex(zone, "-")
 	if i < 0 {
@@ -111,13 +105,12 @@ func NewComputeInstance(id, name, machineType, zone, usageType string) (*Compute
 	}
 	instance.Region = zone[:i]
 
-	instance.UsageType = usageType
 	err := instance.Description.fillForComputeInstance(machineType, usageType)
 	if err != nil {
 		return nil, err
 	}
 
-	instance.Cores.Number, instance.Memory.AmountGiB, err = cd.GetMachineDetails(machineType)
+	instance.Cores.Number, instance.Memory.AmountGiB, err = details.MachineDetails(machineType)
 	if err != nil {
 		return nil, err
 	}
@@ -135,7 +128,7 @@ func NewComputeInstance(id, name, machineType, zone, usageType string) (*Compute
 		instance.Cores.ResourceGroup = "CPU"
 	}
 
-	instance.Cores.Fractional = cd.GetMachineFractionalCore(machineType)
+	instance.Cores.Fractional = details.MachineFractionalCore(machineType)
 
 	return instance, nil
 }
@@ -220,6 +213,7 @@ func (state *ComputeInstanceState) getGeneralChanges() (name, ID, action,
 	machineType, zone, cpuType, memType string) {
 	action = state.Action
 
+	// Before and After can't be nil at the same time. Take return values from the non nil state or a combination of both.
 	switch {
 	case state.Before == nil:
 		name = state.After.Name
@@ -273,7 +267,7 @@ func (state *ComputeInstanceState) getCostChanges() (cpuCostPerUnit1, cpuCostPer
 	return
 }
 
-// GetWebTables returns html pricing information table strings to be displayed in a web page.
+// GetWebTables returns html pricing information table with hourly, monthly and yearly pricing.
 func (state *ComputeInstanceState) GetWebTables(stateNum int) *web.PricingTypeTables {
 	name, ID, action, machineType, zone, cpuType, memType := state.getGeneralChanges()
 	cpuCostPerUnit1, cpuCostPerUnit2, cpuUnits1, cpuUnits2,
