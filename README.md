@@ -98,4 +98,4 @@ Plain text output:
 ```
 html output:
 
-<img src="images/html_output.png" width="1200">
+<img src="images/html_output.png" width="1250">
