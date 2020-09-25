@@ -42,13 +42,7 @@ func FinishOutput(outputFile *os.File) error {
 }
 
 // GenerateWebPage generates a webpage file with the pricing information of the specified resources.
-func GenerateWebPage(outputPath string, res []resources.ResourceState) error {
-	f, err := os.Create(outputPath)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-
+func GenerateWebPage(f *os.File, res []resources.ResourceState) error {
 	_, callerFile, _, _ := runtime.Caller(0)
 	t, err := template.ParseFiles(filepath.Dir(callerFile) + "/web/web_template.gohtml")
 	if err != nil {

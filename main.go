@@ -5,7 +5,6 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"os"
 	"strings"
 
 	"github.com/googleinterns/terraform-cost-estimation/billing"
@@ -63,42 +62,35 @@ func main() {
 		}
 
 		resources := jsdecode.GetResources(plan)
-		// TODO json and table outputs supports only Compute Instances, delete it in future.
-		instances := jsdecode.GetInstances(plan)
-		outputName := outputs[minInt(i, len(outputs)-1)]
 
-		var fout *os.File
-		if *format != "html" && *format != "json" {
-			fout, err = io.GetOutputWriter(outputName)
-			if err != nil {
-				log.Fatalf("Error: %v", err)
-			}
-		}
-
+		finalResources := []res.ResourceState{}
 		for _, r := range resources {
 			if err = r.CompletePricingInfo(catalog); err != nil {
 				log.Printf("In file %s got error: %v", inputName, err)
 				continue
 			}
-		}
-		// TODO delete, when the ResourceState will support all output formats.
-		for _, i := range instances {
-			i.CompletePricingInfo(catalog)
+			finalResources = append(finalResources, r)
 		}
 
-		if *format == "json" && outputName != "stdout" {
-			if err = res.GenerateJsonOut(outputName, instances); err != nil {
+		outputName := outputs[minInt(i, len(outputs)-1)]
+		fout, err := io.GetOutputWriter(outputName)
+		if err != nil {
+			log.Fatalf("Error: %v", err)
+		}
+
+		switch {
+		case *format == "json":
+			if err = res.GenerateJsonOut(fout, finalResources); err != nil {
 				log.Printf("Error: %v", err)
 			}
-		}
-
-		if *format == "html" && outputName != "stdout" {
-			if err = io.GenerateWebPage(outputName, resources); err != nil {
+		case *format == "html":
+			if err = io.GenerateWebPage(fout, finalResources); err != nil {
 				log.Printf("Error: %v", err)
 			}
+		case *format == "txt":
+			res.OutputPricing(finalResources, fout)
+		default:
 		}
-
-		res.OutputPricing(instances, fout)
 
 		if err = io.FinishOutput(fout); err != nil {
 			log.Fatalf("Error: %v", err)
