@@ -101,19 +101,18 @@ func (disk *ComputeDisk) completePricingInfo(catalog *billing.ComputeEngineCatal
 		return int64(tr.StartUsageAmount) <= disk.SizeGiB
 	}
 	disk.UnitPricing.fillMonthlyBase(filtered[0], correctTieredRate)
+	if _, err := conv.Convert("gib", 0, disk.UnitPricing.UsageUnit); err != nil {
+		return fmt.Errorf("memory unit of SKU is not supported")
+	}
 
 	return nil
 }
 
-func (disk *ComputeDisk) totalPrice() (float64, error) {
+func (disk *ComputeDisk) totalPrice() float64 {
 	monthlyToHourly := 1.0 / float64(30*24)
+	units, _ := conv.Convert("gib", float64(disk.SizeGiB), strings.Split(disk.UnitPricing.UsageUnit, " ")[0])
 
-	units, err := conv.Convert("gib", float64(disk.SizeGiB), strings.Split(disk.UnitPricing.UsageUnit, " ")[0])
-	if err != nil {
-		return 0, err
-	}
-
-	return units * float64(disk.UnitPricing.HourlyUnitPrice) / nano * monthlyToHourly, nil
+	return units * float64(disk.UnitPricing.HourlyUnitPrice) / nano * monthlyToHourly
 }
 
 // ComputeDiskState holdsthe before and after states of a compute disk and the action performed.
@@ -138,6 +137,19 @@ func (state *ComputeDiskState) CompletePricingInfo(catalog *billing.ComputeEngin
 	}
 
 	return nil
+}
+
+func (state *ComputeDiskState) getDelta() float64 {
+	var t1, t2 float64
+	if state.Before != nil {
+		t1 = state.Before.totalPrice()
+	}
+
+	if state.After != nil {
+		t2 = state.After.totalPrice()
+	}
+
+	return t2 - t1
 }
 
 func (state *ComputeDiskState) generalChanges() (name, id, action, diskType, zones, image, snapshot string) {
@@ -218,7 +230,7 @@ func (state *ComputeDiskState) GetWebTables(stateNum int) *web.PricingTypeTables
 }
 
 // ToTable creates a table.Table and fills it with the pricing information from ComputeDiskState.
-func (state *ComputeDiskState) ToTable() (*table.Table, error) {
+func (state *ComputeDiskState) ToTable(colorful bool) (*table.Table, error) {
 	name, id, action, diskType, zones, image, snapshot := state.generalChanges()
 	t := &table.Table{}
 	autoMerge := table.RowConfig{AutoMerge: true}
@@ -258,12 +270,28 @@ func (state *ComputeDiskState) ToTable() (*table.Table, error) {
 	} else if delta > 0 {
 		change = "Up (↑)"
 	}
-	t.SetColumnConfigs([]table.ColumnConfig{
-		{Number: 1, AutoMerge: true},
-		{Number: 5, AutoMerge: true, ColorsFooter: text.Colors{color}},
-	})
+	if colorful {
+		t.SetColumnConfigs([]table.ColumnConfig{
+			{Number: 1, AutoMerge: true},
+			{Number: 5, AutoMerge: true, ColorsFooter: text.Colors{color}},
+		})
+	} else {
+		t.SetColumnConfigs([]table.ColumnConfig{
+			{Number: 1, AutoMerge: true},
+			{Number: 5, AutoMerge: true},
+		})
+	}
 	t.AppendFooter(table.Row{"DELTA", change, f1(delta)})
 	t.SetStyle(table.StyleLight)
 	t.Style().Options.SeparateRows = true
 	return t, nil
+}
+
+func (state *ComputeDiskState) getSummaryRow() (table.Row, error) {
+	return nil, nil
+}
+
+// ToStateOut returns a json output.
+func (state *ComputeDiskState) ToStateOut() (JSONOut, error) {
+	return nil, nil
 }

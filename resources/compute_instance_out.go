@@ -3,17 +3,18 @@ package resources
 import (
 	"encoding/json"
 	"fmt"
-	conv "github.com/googleinterns/terraform-cost-estimation/memconverter"
-	"github.com/jedib0t/go-pretty/v6/table"
-	"github.com/jedib0t/go-pretty/v6/text"
 	"io"
 	"log"
 	"os"
 	"strings"
+
+	conv "github.com/googleinterns/terraform-cost-estimation/memconverter"
+	"github.com/jedib0t/go-pretty/v6/table"
+	"github.com/jedib0t/go-pretty/v6/text"
 )
 
 // ToTable creates a table.Table and fills it with the pricing information from ComputeInstanceState.
-func (state *ComputeInstanceState) ToTable() (*table.Table, error) {
+func (state *ComputeInstanceState) ToTable(colorful bool) (*table.Table, error) {
 	before, after, err := syncInstances(state.Before, state.After)
 	if err != nil {
 		return nil, err
@@ -49,10 +50,7 @@ func (state *ComputeInstanceState) ToTable() (*table.Table, error) {
 		{"After", "Units\ncost", core2[2] + " ", mem2[2] + " ", t2Str},
 	})
 
-	dCore, dMem, err := state.getDelta()
-	if err != nil {
-		return nil, err
-	}
+	dCore, dMem := state.getDeltas()
 
 	color := text.FgGreen
 	change := "No change"
@@ -62,10 +60,17 @@ func (state *ComputeInstanceState) ToTable() (*table.Table, error) {
 	} else if dTotal > 0 {
 		change = "Up (↑)"
 	}
-	t.SetColumnConfigs([]table.ColumnConfig{
-		{Number: 1, AutoMerge: true},
-		{Number: 5, AutoMerge: true, ColorsFooter: text.Colors{color}},
-	})
+	if colorful {
+		t.SetColumnConfigs([]table.ColumnConfig{
+			{Number: 1, AutoMerge: true},
+			{Number: 5, AutoMerge: true, ColorsFooter: text.Colors{color}},
+		})
+	} else {
+		t.SetColumnConfigs([]table.ColumnConfig{
+			{Number: 1, AutoMerge: true},
+			{Number: 5, AutoMerge: true},
+		})
+	}
 	t.AppendFooter(table.Row{"DELTA", change, dCore, dMem, dCore + dMem})
 	t.SetStyle(table.StyleLight)
 	t.Style().Options.SeparateRows = true
@@ -73,17 +78,17 @@ func (state *ComputeInstanceState) ToTable() (*table.Table, error) {
 }
 
 // GetSummaryTable returns the table with brief cost changes info about all Compute Instance resources.
-func GetSummaryTable(states []*ComputeInstanceState) *table.Table {
+func GetSummaryTable(states []ResourceState) *table.Table {
 	t := &table.Table{}
 	autoMerge := table.RowConfig{AutoMerge: true}
 
-	dTotal, _, _ := getTotalDelta(states)
+	dTotal := getTotalDelta(states)
 	t.SetTitle(fmt.Sprintf("The total cost change for all Compute Instances is %.6f USD/hour.", dTotal))
 	h := "Pricing Information\n(USD/h)"
 	t.AppendRow(table.Row{h, h, h, h, h}, autoMerge)
 	t.AppendRow(table.Row{"Instance name", "Instance ID", "Machine type", "Action", "Delta"})
 	for _, s := range states {
-		if row, err := getSummaryRow(s); err == nil {
+		if row, err := s.getSummaryRow(); err == nil {
 			t.AppendRow(row)
 		} else {
 			log.Printf("Error: %v", err)
@@ -94,16 +99,17 @@ func GetSummaryTable(states []*ComputeInstanceState) *table.Table {
 	return t
 }
 
-// OutputPricing writes pricing information about each resource and summary for the list of Compute Instances.
-func OutputPricing(states []*ComputeInstanceState, f *os.File) {
-	if f == nil {
-		return
+// OutputPricing writes pricing information about each resource and summary.
+func OutputPricing(states []ResourceState, f *os.File) {
+	var colorful bool
+	if f == os.Stdout {
+		colorful = true
 	}
 	f.Write([]byte(GetSummaryTable(states).Render() + "\n\n"))
-	f.Write([]byte("\n List of all Compute Instances:\n\n"))
+	f.Write([]byte("\n List of all Resources:\n\n"))
 	for _, s := range states {
 		if s != nil {
-			t, err := s.ToTable()
+			t, err := s.ToTable(colorful)
 			if err == nil {
 				f.Write([]byte(t.Render() + "\n\n\n"))
 			} else {
@@ -114,15 +120,12 @@ func OutputPricing(states []*ComputeInstanceState, f *os.File) {
 }
 
 // getTotalDelta returns the cost change of all Compute Instance resources.
-func getTotalDelta(states []*ComputeInstanceState) (dTotal, dCore, dMem float64) {
+func getTotalDelta(states []ResourceState) float64 {
+	var t float64
 	for _, s := range states {
-		core, mem, err := s.getDelta()
-		if err == nil {
-			dCore = core + dCore
-			dMem = mem + dMem
-		}
+		t += s.getDelta()
 	}
-	return dCore + dMem, dCore, dMem
+	return t
 }
 
 // getMemCoreInfo returns two arrays with resource's core and memory information and the totalCost.
@@ -142,10 +145,7 @@ func getMemCoreInfo(r *ComputeInstance) (core, mem []string, t float64, err erro
 		return nil, nil, 0, err
 	}
 	mem = append(mem, fmt.Sprintf("%.2f", memNum))
-	p, err := r.Memory.getTotalPrice()
-	if err != nil {
-		return nil, nil, 0, err
-	}
+	p := r.Memory.getTotalPrice()
 	mem = append(mem, fmt.Sprintf("%.6f", p))
 	return core, mem, r.Cores.getTotalPrice() + p, nil
 }
@@ -190,11 +190,8 @@ func initRow(h, before, after string, end bool) (row table.Row) {
 }
 
 // getSummaryRow() returns the row for SummaryTable to be outputted about the certain state.
-func getSummaryRow(state *ComputeInstanceState) (table.Row, error) {
-	dCore, dMem, err := state.getDelta()
-	if err != nil {
-		return table.Row{}, err
-	}
+func (state *ComputeInstanceState) getSummaryRow() (table.Row, error) {
+	dCore, dMem := state.getDeltas()
 	_, r, err := syncInstances(state.Before, state.After)
 	if err != nil {
 		return table.Row{}, err
@@ -222,6 +219,10 @@ type ComputeInstanceStateOut struct {
 	Pricing     InstanceStatePricing `json:"pricing_info"`
 }
 
+func (out *ComputeInstanceStateOut) addToJSONTableList(json *JsonOutput) {
+	json.ComputeInstancesPricing = append(json.ComputeInstancesPricing, out)
+}
+
 // ComputeDiskStateOut contains ComputeDiskState information to be outputted.
 type ComputeDiskStateOut struct {
 	Name        Change           `json:"name"`
@@ -230,6 +231,10 @@ type ComputeDiskStateOut struct {
 	DiskType    Change           `json:"disk_type"`
 	Action      string           `json:"action"`
 	Pricing     DiskStatePricing `json:"pricing_info"`
+}
+
+func (out *ComputeDiskStateOut) addToJSONTableList(json *JsonOutput) {
+	json.ComputeDisksPricing = append(json.ComputeDisksPricing, out)
 }
 
 // InstanceStatePricing contains ComputeInstanceState pricing info to be outputted.
@@ -275,7 +280,7 @@ type Change struct {
 }
 
 // ToStateOut creates ComputeInstanceStateOut from state struct to render output in json format.
-func (state *ComputeInstanceState) ToStateOut() (*ComputeInstanceStateOut, error) {
+func (state *ComputeInstanceState) ToStateOut() (JSONOut, error) {
 	before, after, err := syncInstances(state.Before, state.After)
 	if err != nil {
 		return nil, err
@@ -290,10 +295,7 @@ func (state *ComputeInstanceState) ToStateOut() (*ComputeInstanceStateOut, error
 		Action:      state.Action,
 	}
 
-	dCore, dMem, err := state.getDelta()
-	if err != nil {
-		return nil, err
-	}
+	dCore, dMem := state.getDeltas()
 	beforeOut, err := completeResourceOut(state.Before)
 	if err != nil {
 		return nil, err
@@ -314,18 +316,16 @@ func (state *ComputeInstanceState) ToStateOut() (*ComputeInstanceStateOut, error
 }
 
 // RenderJson returns the string with json output struct for all resources.
-func RenderJson(states []*ComputeInstanceState) (string, error) {
+func RenderJson(states []ResourceState) (string, error) {
 	out := JsonOutput{}
-	out.Delta, _, _ = getTotalDelta(states)
+	out.Delta = getTotalDelta(states)
 	out.PricingUnit = "USD/hour"
-	var r []*ComputeInstanceStateOut
 	for _, state := range states {
 		s, err := state.ToStateOut()
 		if err == nil || s != nil {
-			r = append(r, s)
+			s.addToJSONTableList(&out)
 		}
 	}
-	out.ComputeInstancesPricing = r
 	jsonString, err := json.Marshal(out)
 	if err != nil {
 		return "", err
@@ -334,13 +334,7 @@ func RenderJson(states []*ComputeInstanceState) (string, error) {
 }
 
 // GenerateJsonOut generates a json file with the pricing information of the specified resources.
-func GenerateJsonOut(outPath string, res []*ComputeInstanceState) error {
-	f, err := os.Create(outPath)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-
+func GenerateJsonOut(f *os.File, res []ResourceState) error {
 	jsonString, err := RenderJson(res)
 	if err != nil {
 		return nil
@@ -372,4 +366,3 @@ func completeResourceOut(r *ComputeInstance) (*InstancePricing, error) {
 	}
 	return rOut, nil
 }
- 

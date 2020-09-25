@@ -28,8 +28,11 @@ func (p *PricingInfo) fillMonthlyBase(sku *billingpb.Sku, correctTieredRate func
 //ResourceState is the interface of a general before/after resource state(ComputeInstance,...).
 type ResourceState interface {
 	CompletePricingInfo(catalog *billing.ComputeEngineCatalog) error
+	getDelta() float64
 	GetWebTables(stateNum int) *web.PricingTypeTables
-	ToTable() (*table.Table, error)
+	ToTable(colorful bool) (*table.Table, error)
+	getSummaryRow() (table.Row, error)
+	ToStateOut() (JSONOut, error)
 }
 
 // skuObject is the interface for SKU types (core, memory etc.)
@@ -47,4 +50,9 @@ func findMatchingSKU(skuObj skuObject, skus []*billingpb.Sku) *billingpb.Sku {
 		}
 	}
 	return nil
+}
+
+// JSONOut is a general interface of a JSON output.
+type JSONOut interface {
+	addToJSONTableList(*JsonOutput)
 }

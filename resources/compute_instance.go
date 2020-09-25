@@ -68,17 +68,17 @@ func (mem *MemoryInfo) completePricingInfo(skus []*billingpb.Sku) error {
 	}
 
 	mem.UnitPricing.fillHourlyBase(sku, func(tr *billingpb.PricingExpression_TierRate) bool { return true })
+	if _, err := conv.Convert("gib", 0, mem.UnitPricing.UsageUnit); err != nil {
+		return fmt.Errorf("memory unit of SKU is not supported")
+	}
+
 	mem.Type = sku.Description
 	return nil
 }
 
-func (mem *MemoryInfo) getTotalPrice() (float64, error) {
-	unitsNum, err := conv.Convert("gib", mem.AmountGiB, mem.UnitPricing.UsageUnit)
-	if err != nil {
-		return 0, err
-	}
-
-	return mem.UnitPricing.HourlyUnitPrice * unitsNum, nil
+func (mem *MemoryInfo) getTotalPrice() float64 {
+	unitsNum, _ := conv.Convert("gib", mem.AmountGiB, mem.UnitPricing.UsageUnit)
+	return mem.UnitPricing.HourlyUnitPrice * unitsNum
 }
 
 // ComputeInstance stores information about the compute instance resource type.
@@ -196,25 +196,24 @@ func (state *ComputeInstanceState) CompletePricingInfo(catalog *billing.ComputeE
 	return nil
 }
 
-func (state *ComputeInstanceState) getDelta() (DCore, DMem float64, err error) {
+func (state *ComputeInstanceState) getDeltas() (DCore, DMem float64) {
 	var core1, mem1, core2, mem2 float64
 	if state.Before != nil {
 		core1 = state.Before.Cores.getTotalPrice()
-		mem1, err = state.Before.Memory.getTotalPrice()
-		if err != nil {
-			return 0, 0, fmt.Errorf(state.Before.Name + "(" + state.Before.MachineType + ")" + ": " + err.Error())
-		}
+		mem1 = state.Before.Memory.getTotalPrice()
 	}
 
 	if state.After != nil {
 		core2 = state.After.Cores.getTotalPrice()
-		mem2, err = state.After.Memory.getTotalPrice()
-		if err != nil {
-			return 0, 0, fmt.Errorf(state.After.Name + "(" + state.After.MachineType + ")" + ": " + err.Error())
-		}
+		mem2 = state.After.Memory.getTotalPrice()
 	}
 
-	return core2 - core1, mem2 - mem1, nil
+	return core2 - core1, mem2 - mem1
+}
+
+func (state *ComputeInstanceState) getDelta() float64 {
+	dcore, dmem := state.getDeltas()
+	return dcore + dmem
 }
 
 func (state *ComputeInstanceState) getGeneralChanges() (name, ID, action,

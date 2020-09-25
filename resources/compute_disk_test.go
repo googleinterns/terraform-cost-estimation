@@ -70,28 +70,24 @@ func TestDiskTotalPrice(t *testing.T) {
 		name string
 		d    *ComputeDisk
 		tot  float64
-		err  error
 	}{
 		{"wrong_unit", &ComputeDisk{SizeGiB: 10, UnitPricing: PricingInfo{HourlyUnitPrice: 1000, UsageUnit: "gibibite"}},
-			0, fmt.Errorf("unknown final unit gibibite")},
+			0},
 
 		{"test_0", &ComputeDisk{SizeGiB: 200, UnitPricing: PricingInfo{HourlyUnitPrice: 1234, UsageUnit: "gibibyte"}},
-			200 * 1234 / nano * monthlyToHourly, nil},
+			200 * 1234 / nano * monthlyToHourly},
 
 		{"test_1", &ComputeDisk{SizeGiB: 50, UnitPricing: PricingInfo{HourlyUnitPrice: 5678, UsageUnit: "gibibyte"}},
-			50 * 5678 / nano * monthlyToHourly, nil},
+			50 * 5678 / nano * monthlyToHourly},
+
 		{"test_2", &ComputeDisk{SizeGiB: 400, UnitPricing: PricingInfo{HourlyUnitPrice: 23456, UsageUnit: "gibibyte"}},
-			400 * 23456 / nano * monthlyToHourly, nil},
+			400 * 23456 / nano * monthlyToHourly},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			tot, err := test.d.totalPrice()
-			// Test fails if errors have different values, messages or the return values are different.
-			f1 := (err == nil && test.err != nil) || (err != nil && test.err == nil)
-			f2 := err != nil && test.err != nil && err.Error() != test.err.Error()
-			if f1 || f2 || math.Abs(tot-test.tot) > epsilon {
-				t.Errorf("disk.totalPrice() = %f, %+v; want %f, %+v", tot, err, test.tot, test.err)
+			if tot := test.d.totalPrice(); math.Abs(tot-test.tot) > epsilon {
+				t.Errorf("disk.totalPrice() = %f; want %f", tot, test.tot)
 			}
 		})
 	}
