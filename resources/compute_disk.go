@@ -221,11 +221,11 @@ func (state *ComputeDiskState) GetWebTables(stateNum int) *web.PricingTypeTables
 
 	m := web.Table{Index: stateNum, Type: "monthly"}
 	m.AddComputeDiskGeneralInfo(name, id, action, diskType, zones, image, snapshot)
-	m.AddComputeDiskPricing("month", costPerUnit1/hourlyToMonthly, costPerUnit2/hourlyToMonthly, units1, units2, delta/hourlyToMonthly)
+	m.AddComputeDiskPricing("month", costPerUnit1*hourlyToMonthly, costPerUnit2*hourlyToMonthly, units1, units2, delta*hourlyToMonthly)
 
 	y := web.Table{Index: stateNum, Type: "yearly"}
 	y.AddComputeDiskGeneralInfo(name, id, action, diskType, zones, image, snapshot)
-	y.AddComputeDiskPricing("year", costPerUnit1/hourlyToYearly, costPerUnit2/hourlyToYearly, units1, units2, delta/hourlyToYearly)
+	y.AddComputeDiskPricing("year", costPerUnit1*hourlyToYearly, costPerUnit2*hourlyToYearly, units1, units2, delta*hourlyToYearly)
 
 	return &web.PricingTypeTables{Hourly: h, Monthly: m, Yearly: y}
 }
