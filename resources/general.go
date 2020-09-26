@@ -2,6 +2,7 @@ package resources
 
 import (
 	billing "github.com/googleinterns/terraform-cost-estimation/billing"
+	"github.com/googleinterns/terraform-cost-estimation/io/js"
 	"github.com/googleinterns/terraform-cost-estimation/io/web"
 	"github.com/jedib0t/go-pretty/v6/table"
 	billingpb "google.golang.org/genproto/googleapis/cloud/billing/v1"
@@ -28,11 +29,11 @@ func (p *PricingInfo) fillMonthlyBase(sku *billingpb.Sku, correctTieredRate func
 //ResourceState is the interface of a general before/after resource state(ComputeInstance,...).
 type ResourceState interface {
 	CompletePricingInfo(catalog *billing.ComputeEngineCatalog) error
-	getDelta() float64
+	GetDelta() float64
 	GetWebTables(stateNum int) *web.PricingTypeTables
-	ToTable(colorful bool) (*table.Table, error)
-	getSummaryRow() (table.Row, error)
-	ToStateOut() (JSONOut, error)
+	ToTable() (*table.Table, error)
+	GetSummaryRow() (table.Row, error)
+	ToStateOut() (js.JSONOut, error)
 }
 
 // skuObject is the interface for CPU cores and RAM SKUs from the billing catalog.
@@ -49,9 +50,4 @@ func findMatchingSKU(skuObj skuObject, skus []*billingpb.Sku) *billingpb.Sku {
 		}
 	}
 	return nil
-}
-
-// JSONOut is a general interface of a JSON output.
-type JSONOut interface {
-	addToJSONTableList(*JsonOutput)
 }
